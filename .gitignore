@@ -1,0 +1,7 @@
+.DS_Store
+**/.DS_Store
+designs/.playwright-mcp/
+**/.playwright-mcp/
+*.log
+.idea/
+.vscode/

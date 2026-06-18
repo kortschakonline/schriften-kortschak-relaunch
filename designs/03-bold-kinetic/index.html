@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kortschak Schriften GmbH — Werbeagentur für Werbetechnik & Sichtbarkeit | Trofaiach</title>
+<meta name="description" content="Kortschak Schriften GmbH in Trofaiach, Steiermark — seit 1958. Fahrzeugbeschriftung, Car Wrapping, Textildruck, Schilder, Online-Marketing & Webdesign. Kreation. Klarheit. Fokus.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter+Tight:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --brand:#FF1C20;
+    --brand-hover:#CC1418;
+    --orange:#F18700;
+    --black:#0d0d0b;
+    --fg:#1A1D1A;
+    --white:#FFFFFF;
+    --surface:#F3F3F3;
+    --muted:#6B6F68;
+    --border:#E2E2E2;
+    --gutter:clamp(20px,4vw,56px);
+    --maxw:1480px;
+    --display:'Anton',Impact,sans-serif;
+    --body:'Inter Tight',system-ui,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+
+  *,*::before,*::after{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}}
+  body{
+    margin:0;
+    font-family:var(--body);
+    color:var(--fg);
+    background:var(--white);
+    font-size:clamp(16px,1.05vw,18px);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  img{max-width:100%;display:block;}
+  a{color:inherit;}
+  ::selection{background:var(--black);color:var(--brand);}
+
+  /* ---------- Focus ---------- */
+  :focus-visible{
+    outline:3px solid var(--orange);
+    outline-offset:3px;
+  }
+  .on-red :focus-visible,
+  .hero :focus-visible{
+    outline:3px solid var(--white);
+    outline-offset:3px;
+  }
+
+  /* ---------- Skip link ---------- */
+  .skip-link{
+    position:absolute;left:var(--gutter);top:-100px;z-index:2000;
+    background:var(--black);color:var(--white);
+    padding:14px 22px;font-family:var(--mono);font-size:.8rem;
+    text-transform:uppercase;letter-spacing:.06em;text-decoration:none;
+    transition:top .2s ease;
+  }
+  .skip-link:focus{top:14px;}
+
+  /* ---------- Shared layout ---------- */
+  .wrap{max-width:var(--maxw);margin-inline:auto;padding-inline:var(--gutter);}
+  section{padding-block:clamp(64px,9vw,128px);}
+  .eyebrow{
+    font-family:var(--mono);font-size:.74rem;font-weight:500;
+    text-transform:uppercase;letter-spacing:.22em;
+    display:inline-flex;align-items:center;gap:.6em;margin:0 0 1.4rem;
+  }
+  .eyebrow::before{content:"";width:34px;height:2px;background:var(--brand);display:inline-block;}
+  .on-red .eyebrow,.on-black .eyebrow{color:rgba(255,255,255,.85);}
+  .on-red .eyebrow::before{background:var(--white);}
+  .on-black .eyebrow::before{background:var(--brand);}
+
+  h1,h2,h3{font-family:var(--display);font-weight:400;text-transform:uppercase;margin:0;line-height:.92;letter-spacing:.005em;}
+  .section-title{font-size:clamp(2.6rem,7vw,6rem);}
+  p{margin:0 0 1rem;}
+  p:last-child{margin-bottom:0;}
+
+  /* ---------- Buttons ---------- */
+  .btn{
+    display:inline-flex;align-items:center;gap:.6em;
+    font-family:var(--mono);font-weight:500;font-size:.84rem;
+    text-transform:uppercase;letter-spacing:.08em;text-decoration:none;
+    padding:.95em 1.7em;border-radius:999px;border:2px solid var(--black);
+    background:var(--black);color:var(--white);cursor:pointer;
+    transition:transform .15s ease,background .15s ease,color .15s ease;
+  }
+  .btn:hover{transform:translateY(-2px);}
+  .btn--brand{background:var(--brand);border-color:var(--brand);color:var(--white);}
+  .btn--brand:hover{background:var(--brand-hover);border-color:var(--brand-hover);}
+  .btn--ghost{background:transparent;color:var(--black);}
+  .btn--ghost:hover{background:var(--black);color:var(--white);}
+  .on-red .btn--solid-white,.hero .btn--solid-white{background:var(--white);border-color:var(--white);color:var(--black);}
+  .on-red .btn--solid-white:hover,.hero .btn--solid-white:hover{background:transparent;color:var(--white);}
+  .on-red .btn--ghost,.hero .btn--ghost{color:var(--white);border-color:var(--white);}
+  .on-red .btn--ghost:hover,.hero .btn--ghost:hover{background:var(--white);color:var(--black);}
+  .btn .arr{transition:transform .15s ease;}
+  .btn:hover .arr{transform:translateX(4px);}
+
+  /* ---------- Header ---------- */
+  .header{
+    position:sticky;top:0;z-index:1000;background:var(--white);
+    border-bottom:2px solid var(--black);
+  }
+  .header__inner{
+    display:flex;align-items:center;justify-content:space-between;gap:1.5rem;
+    min-height:74px;padding-block:10px;
+  }
+  .brand{display:flex;align-items:baseline;gap:.7rem;text-decoration:none;flex-shrink:0;}
+  .brand__mark{font-family:var(--display);font-size:1.75rem;letter-spacing:.01em;color:var(--black);text-transform:uppercase;line-height:1;}
+  .brand__mark span{color:var(--brand);}
+  .brand__sub{font-family:var(--mono);font-size:.62rem;text-transform:uppercase;letter-spacing:.18em;color:var(--muted);}
+  .nav{display:flex;align-items:center;gap:.3rem;}
+  .nav__list{display:flex;list-style:none;margin:0;padding:0;gap:.2rem;}
+  .nav__list a{
+    font-family:var(--mono);font-size:.76rem;text-transform:uppercase;letter-spacing:.06em;
+    text-decoration:none;color:var(--fg);padding:.5em .8em;border-radius:999px;
+    transition:background .15s ease,color .15s ease;white-space:nowrap;
+  }
+  .nav__list a:hover{background:var(--surface);color:var(--brand);}
+  .header .btn{padding:.7em 1.3em;}
+
+  .burger{
+    display:none;width:48px;height:48px;border:2px solid var(--black);background:var(--white);
+    border-radius:999px;cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+  }
+  .burger span{display:block;width:20px;height:2px;background:var(--black);transition:transform .2s ease,opacity .2s ease;}
+  .burger[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+  .burger[aria-expanded="true"] span:nth-child(2){opacity:0;}
+  .burger[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+
+  /* ---------- Mobile nav ---------- */
+  @media (max-width:1080px){
+    .nav__list,.nav > .btn{display:none;}
+    .burger{display:flex;}
+    .mobile-nav{
+      position:fixed;inset:74px 0 0;background:var(--black);color:var(--white);
+      z-index:999;padding:var(--gutter);overflow-y:auto;
+      transform:translateY(-12px);opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;
+    }
+    .mobile-nav[data-open="true"]{opacity:1;transform:none;pointer-events:auto;}
+    .mobile-nav ul{list-style:none;margin:0 0 2rem;padding:0;}
+    .mobile-nav a{
+      display:block;font-family:var(--display);font-size:clamp(1.6rem,7vw,2.4rem);
+      text-transform:uppercase;text-decoration:none;color:var(--white);
+      padding:.35em 0;border-bottom:1px solid rgba(255,255,255,.14);
+    }
+    .mobile-nav a:hover{color:var(--brand);}
+    .mobile-nav .btn{margin-top:1rem;}
+  }
+  @media (min-width:1081px){.mobile-nav{display:none;}}
+
+  /* ---------- Hero ---------- */
+  .hero{background:var(--black);color:var(--white);position:relative;overflow:hidden;padding-block:clamp(56px,7vw,96px);}
+  .hero__grid{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(28px,4vw,64px);align-items:center;}
+  .hero__meta{font-family:var(--mono);font-size:.8rem;text-transform:uppercase;letter-spacing:.16em;color:var(--orange);margin-bottom:1.4rem;}
+  .hero h1{
+    font-size:clamp(3.4rem,12vw,10rem);line-height:.86;margin-bottom:1.6rem;
+  }
+  .hero h1 .red{color:var(--brand);display:block;}
+  .hero__lead{font-size:clamp(1.05rem,1.5vw,1.3rem);max-width:46ch;color:rgba(255,255,255,.82);margin-bottom:2rem;}
+  .hero__ctas{display:flex;flex-wrap:wrap;gap:1rem;margin-bottom:2.4rem;}
+  .hero__tagline{
+    font-family:var(--display);text-transform:uppercase;font-size:clamp(1.1rem,2.2vw,1.7rem);
+    color:var(--white);letter-spacing:.02em;
+  }
+  .hero__tagline em{font-style:normal;color:var(--brand);}
+  .hero__media{position:relative;}
+  .hero__media img{width:100%;height:clamp(320px,42vw,560px);object-fit:cover;filter:grayscale(.1) contrast(1.05);}
+  .hero__badge{
+    position:absolute;left:-18px;bottom:24px;background:var(--brand);color:var(--white);
+    font-family:var(--display);text-transform:uppercase;font-size:clamp(1.3rem,2.6vw,2.1rem);
+    padding:.45em .7em;line-height:1;
+  }
+  .hero__badge small{display:block;font-family:var(--mono);font-size:.46em;letter-spacing:.14em;margin-top:.4em;font-weight:500;}
+  @media (max-width:880px){
+    .hero__grid{grid-template-columns:1fr;}
+    .hero__media{order:-1;}
+    .hero__badge{left:0;}
+  }
+
+  /* ---------- Marquee ---------- */
+  .marquee{background:var(--brand);color:var(--white);border-block:2px solid var(--black);overflow:hidden;padding-block:18px;}
+  .marquee__track{display:flex;width:max-content;animation:scroll 34s linear infinite;}
+  .marquee__group{display:flex;flex-shrink:0;}
+  .marquee__item{
+    font-family:var(--display);text-transform:uppercase;font-size:clamp(1.4rem,3vw,2.4rem);
+    padding-inline:clamp(18px,2.6vw,40px);white-space:nowrap;letter-spacing:.01em;
+  }
+  .marquee__item::after{content:"·";margin-left:clamp(18px,2.6vw,40px);color:var(--black);}
+  @keyframes scroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+  @media (prefers-reduced-motion:reduce){
+    .marquee__track{animation:none;flex-wrap:wrap;width:auto;}
+    .marquee{padding-block:14px;}
+  }
+
+  /* ---------- Leistungen ---------- */
+  .services{background:var(--white);}
+  .services__head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:1.5rem;margin-bottom:clamp(36px,5vw,64px);}
+  .services__head p{max-width:42ch;color:var(--muted);}
+  .tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;background:var(--black);border:2px solid var(--black);}
+  @media (max-width:760px){.tiles{grid-template-columns:1fr;}}
+  .tile{
+    position:relative;background:var(--white);overflow:hidden;
+    display:flex;flex-direction:column;min-height:340px;text-decoration:none;color:inherit;
+  }
+  .tile__media{position:relative;flex:1;overflow:hidden;background:var(--surface);min-height:180px;}
+  .tile__media img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;transition:transform .5s ease;}
+  .tile:hover .tile__media img{transform:scale(1.06);}
+  .tile__idx{
+    position:absolute;top:10px;left:14px;z-index:2;
+    font-family:var(--mono);font-weight:700;font-size:clamp(2.6rem,5vw,4.2rem);
+    color:var(--white);line-height:1;text-shadow:0 2px 18px rgba(0,0,0,.45);mix-blend-mode:normal;
+  }
+  .tile__body{padding:22px clamp(18px,2vw,28px) 26px;background:var(--white);}
+  .tile--red .tile__body{background:var(--brand);color:var(--white);}
+  .tile--black .tile__body{background:var(--black);color:var(--white);}
+  .tile h3{font-size:clamp(1.3rem,2.2vw,1.85rem);margin-bottom:.5rem;}
+  .tile p{font-size:.95rem;color:var(--muted);}
+  .tile--red p,.tile--black p{color:rgba(255,255,255,.85);}
+  .tile__more{margin-top:.9rem;font-family:var(--mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;display:inline-flex;gap:.5em;}
+  .tile--red .tile__more,.tile--black .tile__more{color:var(--white);}
+
+  /* ---------- Unternehmen (red statement) ---------- */
+  .company{background:var(--brand);color:var(--white);}
+  .company__grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,5vw,72px);align-items:center;}
+  @media (max-width:880px){.company__grid{grid-template-columns:1fr;}}
+  .company h2{font-size:clamp(2.4rem,6vw,5rem);margin-bottom:1.5rem;}
+  .company h2 .year{display:block;color:var(--black);}
+  .company__lead{font-size:clamp(1.1rem,1.6vw,1.45rem);max-width:48ch;}
+  .company__media img{width:100%;height:clamp(300px,38vw,460px);object-fit:cover;}
+  .company__stats{display:flex;gap:clamp(24px,4vw,56px);margin-top:2.2rem;flex-wrap:wrap;}
+  .stat__num{font-family:var(--display);font-size:clamp(2.4rem,4vw,3.4rem);line-height:1;}
+  .stat__lbl{font-family:var(--mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.8);margin-top:.4em;}
+
+  /* ---------- Team ---------- */
+  .team{background:var(--surface);}
+  .team__grid{display:grid;grid-template-columns:.95fr 1.05fr;gap:clamp(28px,4vw,64px);align-items:center;}
+  @media (max-width:880px){.team__grid{grid-template-columns:1fr;}}
+  .team__media{position:relative;}
+  .team__media img{width:100%;object-fit:cover;border:2px solid var(--black);}
+  .team__name{font-family:var(--display);text-transform:uppercase;font-size:clamp(2rem,4vw,3.4rem);margin:1.2rem 0 .3rem;}
+  .team__role{font-family:var(--mono);font-size:.82rem;text-transform:uppercase;letter-spacing:.12em;color:var(--brand);margin-bottom:1.4rem;}
+  .team__quote{font-size:clamp(1.1rem,1.6vw,1.4rem);max-width:42ch;}
+
+  /* ---------- Referenzen ---------- */
+  .refs{background:var(--black);color:var(--white);}
+  .refs__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.16);margin-top:clamp(36px,5vw,56px);}
+  @media (max-width:760px){.refs__grid{grid-template-columns:1fr;}}
+  .ref{background:var(--black);padding:clamp(26px,3vw,40px);display:flex;flex-direction:column;gap:1.4rem;}
+  .ref__logo{background:var(--white);border-radius:6px;padding:14px 18px;align-self:flex-start;}
+  .ref__logo img{height:42px;width:auto;}
+  .ref blockquote{margin:0;font-size:clamp(1.05rem,1.5vw,1.3rem);font-weight:500;}
+  .ref blockquote::before{content:"„";color:var(--brand);font-family:var(--display);font-size:1.4em;line-height:0;}
+  .ref cite{font-family:var(--mono);font-size:.74rem;text-transform:uppercase;letter-spacing:.1em;color:var(--orange);font-style:normal;margin-top:auto;}
+
+  /* ---------- Stundensätze ---------- */
+  .rates{background:var(--white);}
+  .rates__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--black);border:2px solid var(--black);margin-top:clamp(36px,5vw,56px);}
+  @media (max-width:760px){.rates__grid{grid-template-columns:1fr;}}
+  .rate{background:var(--white);padding:clamp(28px,3vw,44px);display:flex;flex-direction:column;gap:.7rem;}
+  .rate--featured{background:var(--brand);color:var(--white);}
+  .rate__idx{font-family:var(--mono);font-size:.74rem;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;}
+  .rate--featured .rate__idx{color:rgba(255,255,255,.8);}
+  .rate__name{font-family:var(--display);text-transform:uppercase;font-size:clamp(1.5rem,2.4vw,2.1rem);}
+  .rate__price{font-family:var(--display);font-size:clamp(3rem,6vw,5rem);line-height:.9;}
+  .rate__price small{font-size:.3em;font-family:var(--mono);font-weight:500;letter-spacing:.06em;vertical-align:super;}
+  .rate__note{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;color:var(--muted);text-transform:uppercase;}
+  .rate--featured .rate__note{color:rgba(255,255,255,.8);}
+  .rates__foot{font-family:var(--mono);font-size:.78rem;color:var(--muted);margin-top:1.4rem;text-transform:uppercase;letter-spacing:.06em;}
+
+  /* ---------- Kontakt ---------- */
+  .contact{background:var(--surface);}
+  .contact__grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,5vw,72px);align-items:start;}
+  @media (max-width:880px){.contact__grid{grid-template-columns:1fr;}}
+  .contact h2{font-size:clamp(2.4rem,6vw,4.6rem);margin-bottom:1.4rem;}
+  .contact__info{font-family:var(--mono);font-size:.92rem;line-height:2;text-transform:uppercase;letter-spacing:.04em;}
+  .contact__info a{color:var(--brand);text-decoration:none;}
+  .contact__info a:hover{text-decoration:underline;}
+  .contact__info dt{color:var(--muted);font-size:.74rem;letter-spacing:.12em;margin-top:1.1rem;}
+  .contact__info dd{margin:0;color:var(--fg);}
+  form{display:grid;gap:1.1rem;}
+  .field{display:flex;flex-direction:column;gap:.4rem;}
+  label{font-family:var(--mono);font-size:.74rem;text-transform:uppercase;letter-spacing:.1em;color:var(--fg);}
+  .req{color:var(--brand);}
+  input,textarea,select{
+    font-family:var(--body);font-size:1rem;padding:.85em 1em;border:2px solid var(--black);
+    background:var(--white);color:var(--fg);border-radius:0;width:100%;
+  }
+  textarea{resize:vertical;min-height:130px;}
+  input:focus,textarea:focus,select:focus{outline:3px solid var(--orange);outline-offset:2px;}
+  .check{display:flex;gap:.7rem;align-items:flex-start;font-family:var(--body);text-transform:none;letter-spacing:normal;font-size:.92rem;color:var(--fg);}
+  .check input{width:22px;height:22px;flex-shrink:0;accent-color:var(--brand);}
+  .check a{color:var(--brand);}
+
+  /* ---------- Footer ---------- */
+  .footer{background:var(--black);color:var(--white);padding-block:clamp(56px,7vw,88px) 32px;}
+  .footer__top{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:clamp(24px,3vw,48px);}
+  @media (max-width:880px){.footer__top{grid-template-columns:1fr 1fr;}}
+  @media (max-width:520px){.footer__top{grid-template-columns:1fr;}}
+  .footer__brand .brand__mark{color:var(--white);font-size:2.4rem;}
+  .footer__brand p{color:rgba(255,255,255,.65);max-width:34ch;margin-top:1rem;font-size:.92rem;}
+  .footer h4{font-family:var(--mono);font-size:.74rem;text-transform:uppercase;letter-spacing:.14em;color:var(--orange);margin:0 0 1.1rem;}
+  .footer ul{list-style:none;margin:0;padding:0;display:grid;gap:.6rem;}
+  .footer a{color:rgba(255,255,255,.8);text-decoration:none;font-size:.92rem;}
+  .footer a:hover{color:var(--brand);}
+  .footer__bottom{
+    display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem;
+    border-top:1px solid rgba(255,255,255,.16);margin-top:clamp(40px,5vw,64px);padding-top:24px;
+    font-family:var(--mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.55);
+  }
+  .footer__bottom a{color:rgba(255,255,255,.55);}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Zum Inhalt springen</a>
+
+<header class="header">
+  <div class="wrap header__inner">
+    <a class="brand" href="#main" aria-label="Kortschak Schriften GmbH — Startseite">
+      <span class="brand__mark"><span>K</span>ortschak</span>
+      <span class="brand__sub">Werbeagentur</span>
+    </a>
+    <nav class="nav" aria-label="Hauptnavigation">
+      <ul class="nav__list">
+        <li><a href="#leistungen">Leistungen</a></li>
+        <li><a href="#unternehmen">Unternehmen</a></li>
+        <li><a href="#team">Team</a></li>
+        <li><a href="#ausstattung">Ausstattung</a></li>
+        <li><a href="#stundensaetze">Stundensätze</a></li>
+        <li><a href="#kontakt">Kontakt</a></li>
+      </ul>
+      <a class="btn btn--brand" href="#kontakt">Angebot anfragen <span class="arr" aria-hidden="true">→</span></a>
+      <button class="burger" id="burger" aria-label="Menü öffnen" aria-expanded="false" aria-controls="mobile-nav">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<nav class="mobile-nav" id="mobile-nav" aria-label="Mobile Navigation" data-open="false">
+  <ul>
+    <li><a href="#leistungen">Leistungen</a></li>
+    <li><a href="#unternehmen">Unternehmen</a></li>
+    <li><a href="#team">Team</a></li>
+    <li><a href="#ausstattung">Technische Ausstattung</a></li>
+    <li><a href="#stundensaetze">Stundensätze</a></li>
+    <li><a href="#kontakt">Kontakt</a></li>
+  </ul>
+  <a class="btn btn--brand" href="#kontakt">Angebot anfragen <span class="arr" aria-hidden="true">→</span></a>
+</nav>
+
+<main id="main">
+
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap hero__grid">
+      <div>
+        <p class="hero__meta">Trofaiach, Steiermark · seit 1958</p>
+        <h1 id="hero-title">Kortschak <span class="red">Schriften</span></h1>
+        <p class="hero__lead">Eine Werbeagentur für Werbetechnik und Sichtbarkeit — von der Folienbeschriftung bis zum Werbeschild.</p>
+        <div class="hero__ctas">
+          <a class="btn btn--brand" href="#kontakt">Angebot anfragen <span class="arr" aria-hidden="true">→</span></a>
+          <a class="btn btn--ghost" href="#leistungen">Leistungen ansehen</a>
+        </div>
+        <p class="hero__tagline">Kreation. <em>Klarheit.</em> Fokus.</p>
+      </div>
+      <div class="hero__media">
+        <img src="https://www.schriften-kortschak.at/wp-content/uploads/2022/10/Headerbild_Car_Wrapping-1920x600-2.jpg" alt="Car-Wrapping-Folierung eines Fahrzeugs in der Werkstatt von Kortschak Schriften">
+        <p class="hero__badge">EST. 1958<small>Werbetechnik aus Trofaiach</small></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE (Signature) -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track">
+      <div class="marquee__group">
+        <span class="marquee__item">Fahrzeugbeschriftung</span>
+        <span class="marquee__item">Car Wrapping</span>
+        <span class="marquee__item">Folierung</span>
+        <span class="marquee__item">Werbeschilder</span>
+        <span class="marquee__item">Textildruck</span>
+        <span class="marquee__item">Großauflagen</span>
+        <span class="marquee__item">Grafikdesign</span>
+        <span class="marquee__item">Online-Marketing</span>
+        <span class="marquee__item">Webdesign</span>
+        <span class="marquee__item">Montage</span>
+        <span class="marquee__item">Sichtbarkeit</span>
+      </div>
+      <div class="marquee__group">
+        <span class="marquee__item">Fahrzeugbeschriftung</span>
+        <span class="marquee__item">Car Wrapping</span>
+        <span class="marquee__item">Folierung</span>
+        <span class="marquee__item">Werbeschilder</span>
+        <span class="marquee__item">Textildruck</span>
+        <span class="marquee__item">Großauflagen</span>
+        <span class="marquee__item">Grafikdesign</span>
+        <span class="marquee__item">Online-Marketing</span>
+        <span class="marquee__item">Webdesign</span>
+        <span class="marquee__item">Montage</span>
+        <span class="marquee__item">Sichtbarkeit</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEISTUNGEN -->
+  <section class="services" id="leistungen" aria-labelledby="services-title">
+    <div class="wrap">
+      <div class="services__head">
+        <div>
+          <p class="eyebrow">Leistungen</p>
+          <h2 class="section-title" id="services-title">Was wir machen</h2>
+        </div>
+        <p>Vom kleinsten Aufkleber bis zur Vollfolierung, vom Logo bis zur fertigen Website — alles aus einer Hand.</p>
+      </div>
+      <div class="tiles">
+        <a class="tile" href="#kontakt">
+          <div class="tile__media"><span class="tile__idx">01</span><img src="https://www.schriften-kortschak.at/wp-content/uploads/2021/02/Kortschak_Bildergallerie_Fahrzeugbeschriftung-1280x663.jpg" alt="Beschriftetes Firmenfahrzeug von Kortschak Schriften"></div>
+          <div class="tile__body"><h3>Fahrzeugbeschriftung</h3><p>Ihre mobile Werbefläche, die auch dann für Sie wirbt, wenn Sie nicht unterwegs sind.</p><span class="tile__more">Anfragen →</span></div>
+        </a>
+        <a class="tile tile--red" href="#kontakt">
+          <div class="tile__media"><span class="tile__idx">02</span><img src="https://www.schriften-kortschak.at/wp-content/uploads/2022/10/Car_Wrapping-Gallery-4.jpg" alt="Vollfolierung eines Fahrzeugs in mattem Finish"></div>
+          <div class="tile__body"><h3>Car Wrapping</h3><p>Vollfolierung in Brushed-, Carbon-Style, matt, glänzend oder perlfarben — Ihr Fahrzeug als Unikat.</p><span class="tile__more">Anfragen →</span></div>
+        </a>
+        <a class="tile" href="#kontakt">
+          <div class="tile__media"><span class="tile__idx">03</span><img src="https://www.schriften-kortschak.at/wp-content/uploads/2021/04/Kortschak_Bildergallerie_Innenbeschr-1280x663.jpg" alt="Innenbeschriftung und Sonnenschutzfolie an Glasflächen"></div>
+          <div class="tile__body"><h3>Sonnen- &amp; Steinschlagschutz</h3><p>Tönungs- und Lackschutzfolien für Komfort, Sicherheit und Werterhalt.</p><span class="tile__more">Anfragen →</span></div>
+        </a>
+        <a class="tile tile--black" href="#kontakt">
+          <div class="tile__media"><span class="tile__idx">04</span><img src="https://www.schriften-kortschak.at/wp-content/uploads/2021/02/Kortschak_Bildergallerie_Aussenbeschr-1280x663.jpg" alt="Außenbeschriftung einer Fassade mit Firmenlogo"></div>
+          <div class="tile__body"><h3>Außen- &amp; Innenbeschriftung</h3><p>Der optische Auftritt signalisiert Professionalität — Schilder, Fassaden, Glas, Leitsysteme.</p><span class="tile__more">Anfragen →</span></div>
+        </a>
+        <a class="tile tile--black" href="#kontakt">
+          <div class="tile__media"><span class="tile__idx">05</span><img src="https://www.schriften-kortschak.at/wp-content/uploads/2021/02/Kortschak_Bildergallerie_Schilder_innen_aussen-1280x567.jpg" alt="Werbeschilder und Banner für Innen und Außen"></div>
+          <div class="tile__body"><h3>Aufkleber &amp; Großauflagen</h3><p>Vom Einzelstück bis zur Massenproduktion: Aufkleber, Tafeln, Banner.</p><span class="tile__more">Anfragen →</span></div>
+        </a>
+        <a class="tile" href="#kontakt">
+          <div class="tile__media"><span class="tile__idx">06</span><img src="https://www.schriften-kortschak.at/wp-content/uploads/2023/10/Textil_Shirt_DSF1753_800x800p.jpg" alt="Bedrucktes Textil-Shirt mit individuellem Motiv"></div>
+          <div class="tile__body"><h3>Textildruck</h3><p>Personalisierte Kleidung mit Epson UltraChrome DG-Tinte — brillant auch nach vielen Waschgängen.</p><span class="tile__more">Anfragen →</span></div>
+        </a>
+        <a class="tile tile--red" href="#kontakt">
+          <div class="tile__media"><span class="tile__idx">07</span><img src="https://www.schriften-kortschak.at/wp-content/uploads/2021/02/Kortschak_Drucksorten_u_Grafikdesign_vollbreites_Bild-1280x400.jpg" alt="Drucksorten und Grafikdesign-Arbeiten von Kortschak"></div>
+          <div class="tile__body"><h3>Drucksorten &amp; Grafikdesign</h3><p>Corporate Design, Logos, Visitenkarten — ein durchgehender roter Faden.</p><span class="tile__more">Anfragen →</span></div>
+        </a>
+        <a class="tile" href="#kontakt">
+          <div class="tile__media"><span class="tile__idx">08</span><img src="https://www.schriften-kortschak.at/wp-content/uploads/2021/02/Kortschak_technische_Ausstatt_vollbreites_Bild-1280x400.jpg" alt="Online-Marketing- und Digitalarbeitsplatz mit Bildschirmen"></div>
+          <div class="tile__body"><h3>Online-Marketing</h3><p>SEO, Google Ads, Social Media, Newsletter und KI-Recruiting.</p><span class="tile__more">Anfragen →</span></div>
+        </a>
+        <a class="tile tile--black" href="#kontakt">
+          <div class="tile__media"><span class="tile__idx">09</span><img src="https://www.schriften-kortschak.at/wp-content/uploads/2021/03/Kortschak_Firmengeschichte_vollbreites_Bild-1280x400.jpg" alt="Werkstatt und Technik bei Kortschak Schriften"></div>
+          <div class="tile__body"><h3>Webdesign</h3><p>Moderne, responsive Websites inkl. Hosting und Wartung.</p><span class="tile__more">Anfragen →</span></div>
+        </a>
+        <a class="tile tile--red" href="#kontakt">
+          <div class="tile__media"><span class="tile__idx">10</span><img src="https://www.schriften-kortschak.at/wp-content/uploads/2022/10/Headerbild_Car_Wrapping-1920x600-2.jpg" alt="Fachgerechte Montage von Werbemitteln am Fahrzeug"></div>
+          <div class="tile__body"><h3>Montage</h3><p>Fachgerechte Anbringung Ihrer Werbemittel — vom Konzept bis zur Montage.</p><span class="tile__more">Anfragen →</span></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- UNTERNEHMEN -->
+  <section class="company on-red" id="unternehmen" aria-labelledby="company-title">
+    <div class="wrap company__grid">
+      <div>
+        <p class="eyebrow">Unternehmen</p>
+        <h2 id="company-title">Liebe zum Detail<span class="year">seit 1958</span></h2>
+        <p class="company__lead">Vom kleinsten Aufkleber bis zum beschrifteten LKW-Führerhaus. Was früher von Hand gezeichnet, gemalt und gedruckt wurde, entsteht heute mit modernster Technik — doch an der Liebe zum Detail hat sich seit 1958 nichts geändert. Wir machen was draus.</p>
+        <div class="company__stats">
+          <div><div class="stat__num">67</div><div class="stat__lbl">Jahre Erfahrung</div></div>
+          <div><div class="stat__num">12</div><div class="stat__lbl">im Team</div></div>
+          <div><div class="stat__num">10</div><div class="stat__lbl">Leistungsfelder</div></div>
+        </div>
+      </div>
+      <div class="company__media">
+        <img src="https://www.schriften-kortschak.at/wp-content/uploads/2021/03/Kortschak_Firmengeschichte_vollbreites_Bild-1280x400.jpg" alt="Historischer Werkstatt-Einblick der Firmengeschichte von Kortschak Schriften">
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM -->
+  <section class="team" id="team" aria-labelledby="team-title">
+    <div class="wrap team__grid">
+      <div class="team__media">
+        <img src="https://www.schriften-kortschak.at/wp-content/uploads/2025/10/Overlaybild_Video_Anja_Brandl-1080x610px.webp" alt="Anja Brandl, Geschäftsführerin von Kortschak Schriften">
+      </div>
+      <div>
+        <p class="eyebrow">Team</p>
+        <h2 class="section-title" id="team-title">Köpfe hinter der Marke</h2>
+        <p class="team__name">Anja Brandl, B.A.</p>
+        <p class="team__role">Geschäftsführung</p>
+        <p class="team__quote">Ein 12-köpfiges Team aus Technikerinnen, Grafikern und Monteuren — mit der Erfahrung von 1958 und den Werkzeugen von heute.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- REFERENZEN -->
+  <section class="refs on-black" id="referenzen" aria-labelledby="refs-title">
+    <div class="wrap">
+      <p class="eyebrow">Referenzen</p>
+      <h2 class="section-title" id="refs-title">Vertrauen aus der Region</h2>
+      <div class="refs__grid">
+        <div class="ref">
+          <span class="ref__logo"><img src="https://www.schriften-kortschak.at/wp-content/uploads/2024/10/Stadtwerke_Trofaiach-Logo-300x100px.webp" alt="Logo Stadtwerke Trofaiach"></span>
+          <blockquote>Unser regionaler Partner für Werbetechnik.</blockquote>
+          <cite>Stadtwerke Trofaiach</cite>
+        </div>
+        <div class="ref">
+          <span class="ref__logo"><img src="https://www.schriften-kortschak.at/wp-content/uploads/2024/10/OESTU_Stettin-Logo-300x100px.webp" alt="Logo ÖSTU-STETTIN"></span>
+          <blockquote>Werbedruckspezialisten unseres Vertrauens.</blockquote>
+          <cite>ÖSTU-STETTIN</cite>
+        </div>
+        <div class="ref">
+          <span class="ref__logo"><img src="https://www.schriften-kortschak.at/wp-content/uploads/2024/10/ContServe-Logo-300x100px.webp" alt="Logo IC ContServ"></span>
+          <blockquote>Vom Konzept bis zur Montage — alles aus einer Hand.</blockquote>
+          <cite>IC ContServ</cite>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STUNDENSÄTZE -->
+  <section class="rates" id="stundensaetze" aria-labelledby="rates-title">
+    <div class="wrap">
+      <p class="eyebrow">Stundensätze</p>
+      <h2 class="section-title" id="rates-title">Klare Sätze</h2>
+      <div class="rates__grid">
+        <div class="rate">
+          <span class="rate__idx">01 — Werkstatt</span>
+          <span class="rate__name">Arbeitsleistung</span>
+          <span class="rate__price">€&nbsp;90<small>,–</small></span>
+          <span class="rate__note">pro Stunde</span>
+        </div>
+        <div class="rate rate--featured">
+          <span class="rate__idx">02 — Kreation</span>
+          <span class="rate__name">Grafik</span>
+          <span class="rate__price">€&nbsp;120<small>,–</small></span>
+          <span class="rate__note">pro Stunde</span>
+        </div>
+        <div class="rate">
+          <span class="rate__idx">03 — Digital</span>
+          <span class="rate__name">Online-Marketing</span>
+          <span class="rate__price">€&nbsp;120<small>,–</small></span>
+          <span class="rate__note">pro Stunde</span>
+        </div>
+      </div>
+      <p class="rates__foot">Alle Preise exkl. MwSt.</p>
+    </div>
+  </section>
+
+  <!-- KONTAKT -->
+  <section class="contact" id="kontakt" aria-labelledby="contact-title">
+    <div class="wrap contact__grid">
+      <div>
+        <p class="eyebrow">Kontakt</p>
+        <h2 id="contact-title">Angebot anfragen</h2>
+        <dl class="contact__info">
+          <dt>Adresse</dt>
+          <dd>Kortschak Schriften GmbH<br>Trofaiach, Steiermark</dd>
+          <dt>Telefon</dt>
+          <dd><a href="tel:+43384767666">03847-67666</a></dd>
+          <dt>E-Mail</dt>
+          <dd><a href="mailto:office@schriften-kortschak.at">office@schriften-kortschak.at</a></dd>
+        </dl>
+      </div>
+      <form action="#" method="post" novalidate>
+        <div class="field">
+          <label for="name">Name <span class="req" aria-hidden="true">*</span></label>
+          <input type="text" id="name" name="name" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="email">E-Mail <span class="req" aria-hidden="true">*</span></label>
+          <input type="email" id="email" name="email" autocomplete="email" required>
+        </div>
+        <div class="field">
+          <label for="leistung">Leistung</label>
+          <select id="leistung" name="leistung">
+            <option>Fahrzeugbeschriftung</option>
+            <option>Car Wrapping</option>
+            <option>Sonnen- &amp; Steinschlagschutz</option>
+            <option>Außen- &amp; Innenbeschriftung</option>
+            <option>Aufkleber &amp; Großauflagen</option>
+            <option>Textildruck</option>
+            <option>Drucksorten &amp; Grafikdesign</option>
+            <option>Online-Marketing</option>
+            <option>Webdesign</option>
+            <option>Montage</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="nachricht">Ihre Nachricht <span class="req" aria-hidden="true">*</span></label>
+          <textarea id="nachricht" name="nachricht" required></textarea>
+        </div>
+        <div class="field">
+          <label class="check" for="datenschutz">
+            <input type="checkbox" id="datenschutz" name="datenschutz" required>
+            <span>Ich habe die <a href="#datenschutz">Datenschutzerklärung</a> gelesen und stimme der Verarbeitung meiner Daten zu. <span class="req" aria-hidden="true">*</span></span>
+          </label>
+        </div>
+        <button type="submit" class="btn btn--brand">Anfrage senden <span class="arr" aria-hidden="true">→</span></button>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <span class="brand__mark"><span style="color:var(--brand)">K</span>ortschak</span>
+        <p>Werbeagentur für Werbetechnik und Sichtbarkeit. Trofaiach, Steiermark — seit 1958.</p>
+      </div>
+      <div>
+        <h4>Leistungen</h4>
+        <ul>
+          <li><a href="#leistungen">Autofolierung</a></li>
+          <li><a href="#leistungen">Beschriftungen aller Art</a></li>
+          <li><a href="#leistungen">Online-Marketing</a></li>
+          <li><a href="#leistungen">Textildruck</a></li>
+          <li><a href="#leistungen">Möbelfolierung</a></li>
+          <li><a href="#leistungen">Drucksorten &amp; Grafikdesign</a></li>
+          <li><a href="#leistungen">Webdesign</a></li>
+          <li><a href="#leistungen">Montage</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Agentur</h4>
+        <ul>
+          <li><a href="#unternehmen">Unternehmen</a></li>
+          <li><a href="#team">Team</a></li>
+          <li><a href="#ausstattung">Technische Ausstattung</a></li>
+          <li><a href="#stundensaetze">Stundensätze</a></li>
+          <li><a href="#referenzen">Referenzen</a></li>
+          <li><a href="#kontakt">Kontakt</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Kontakt</h4>
+        <ul>
+          <li><a href="tel:+43384767666">03847-67666</a></li>
+          <li><a href="mailto:office@schriften-kortschak.at">office@schriften-kortschak.at</a></li>
+          <li>Trofaiach, Steiermark</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>© 1958–2026 Kortschak Schriften GmbH</span>
+      <span>
+        <a href="#impressum">Impressum</a> ·
+        <a href="#datenschutz">Datenschutz</a>
+      </span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    var burger = document.getElementById('burger');
+    var menu = document.getElementById('mobile-nav');
+    function setOpen(open){
+      burger.setAttribute('aria-expanded', String(open));
+      burger.setAttribute('aria-label', open ? 'Menü schließen' : 'Menü öffnen');
+      menu.setAttribute('data-open', String(open));
+      document.body.style.overflow = open ? 'hidden' : '';
+    }
+    burger.addEventListener('click', function(){
+      setOpen(burger.getAttribute('aria-expanded') !== 'true');
+    });
+    menu.addEventListener('click', function(e){
+      if(e.target.closest('a')) setOpen(false);
+    });
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape' && burger.getAttribute('aria-expanded') === 'true'){
+        setOpen(false); burger.focus();
+      }
+    });
+  })();
+</script>
+</body>
+</html>

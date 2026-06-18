@@ -1,0 +1,1058 @@
+/* Import Roboto font. */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+.test{
+    color: #FFF;
+}
+
+/**
+ -------------------------------------------------------------------------------
+ TABLE OF CONTENTS
+ -------------------------------------------------------------------------------
+  1. CAPTION
+  2. CONTROLS (buttons, scrollbar, slideshow button, etc..)
+  3. MENU
+  4. CAROUSEL & LIGHTBOX VIDEO PLAYER
+  5. LIGHTBOX
+  6. VECTOR FONT
+ */
+
+
+/** 
+ * --------------------------------------------------------------------------------
+ *	1. CAPTION
+ * --------------------------------------------------------------------------------
+ */
+.fwdu3dcar-caption{
+	text-align: center;
+}
+
+.fwdu3dcar-caption.in{
+	background: linear-gradient(180deg, rgba(0, 0, 0, 0) 8.85%, rgba(0, 0, 0, 0.171875) 26.73%, rgba(0, 0, 0, 0.510026) 53.81%, rgba(0, 0, 0, 0.6) 100%) !important;
+}
+
+.fwdu3dcar-caption.out{
+	max-width: 500px !important;
+}
+
+.fwdu3dcar-caption .fwdu3dcar-title{
+	font: 700 18px Roboto, Arial;
+	line-height: 21px;
+	transform: translateZ(0);
+	backface-visibility: hidden;
+	color: #FFFFFF;
+}
+
+.fwdu3dcar-caption.white.out .fwdu3dcar-title{
+	color: #111111;
+}
+
+.fwdu3dcar-caption.in .fwdu3dcar-title{
+	line-height: 27px;
+	margin: 38px 10px 5px !important;
+}
+
+.fwdu3dcar-caption.out .fwdu3dcar-title{
+	margin: 21px 10px 0;
+}
+
+.fwdu3dcar-caption.out .fwdu3dcar-title + .fwdu3dcar-desc{
+	margin-top: 5px !important;
+}
+
+.fwdu3dcar-caption .fwdu3dcar-desc{
+	font: 400 14px Roboto, Arial;
+	font-style: italic;
+	line-height: 19px;
+	transform: translateZ(0);
+	backface-visibility: hidden;
+	color: #E9E9E9;
+}
+
+.fwdu3dcar-caption.white.out .fwdu3dcar-desc{
+	color: #111111;
+}
+
+.fwdu3dcar-caption.white.out .fwdu3dcar-desc a{
+	background-image: linear-gradient(#111111 calc(100% - 2px), #111111 1px);
+	border-bottom: 1px solid rgba(51, 51, 51, .4);
+	color: #111111;
+}
+
+.fwdu3dcar-caption.white.out .fwdu3dcar-desc a:hover{
+	color: #000000;
+}
+
+.fwdu3dcar-caption.in .fwdu3dcar-desc{
+	margin: -3px 10px 16px;
+}
+
+.fwdu3dcar-caption.out .fwdu3dcar-desc{
+	margin: 5px 10px 0;
+}
+
+.fwdu3dcar-caption .fwdu3dcar-desc strong{
+	color: #FFFFFF !important;
+}
+
+.fwdu3dcar-caption.white.out .fwdu3dcar-desc strong{
+	color: #111111  !important;
+}
+
+.fwdu3dcar-caption.white .fwdu3dcar-desc strong{}
+
+.fwdu3dcar-caption .fwdu3dcar-desc a{
+	text-decoration: none;
+    background-image: linear-gradient(#E9E9E9 calc(100% - 2px), #E9E9E9 1px);
+    background-position: 0 calc(100% + 1px);
+    background-repeat: no-repeat;
+    background-size: 0% 1px;
+    transition: background-size 0.6s cubic-bezier(0.215, 0.61, 0.355, 1), color 0.3s ease-out, background 0.3s ease-out, border-color 0.3s ease-out;
+  	border-bottom: 1px solid rgba(233, 233, 233, 0.4);
+    color: #E9E9E9;
+}
+
+.fwdu3dcar-caption.white .fwdu3dcar-desc a{}
+
+.fwdu3dcar-caption .fwdu3dcar-desc a:hover{
+    background-size: 100% 1px;
+    color: #FFFFFF;
+}
+
+.fwdu3dcar-caption.white .fwdu3dcar-desc a:hover{}
+
+
+/** 
+ * --------------------------------------------------------------------------------
+ * 2. CONTROLS (buttons, scrollbar, slideshow button, bullets navigation) ...
+ * --------------------------------------------------------------------------------
+ */
+
+.fwdu3dcar-scrollbar-text{
+	font: 400 12px Roboto !important;
+	line-height: 14px !important;
+}
+
+
+/* Vector skin. */
+.fwdu3dcar-button{
+	position: relative !important;
+	width: 32px;
+	height: 32px;
+	font-size: 21px;
+	color: #333;
+	transition: color .25s ease-out !important;
+}
+
+.fwdu3dcar-button.white{
+	color:#D2D2D2;
+}
+
+.fwdu3dcar-button .fwdu3dcar-icon{
+ 	position: absolute;
+}
+
+.fwdu3dcar-button.selected{
+	color: #FFF;
+}
+
+.fwdu3dcar-button.white.selected{
+	color: #333333;
+}
+
+.fwdu3dcar-button .fwdu3dcar-icon-prev{
+	top: 5px;
+    left: 5px;
+}
+
+.fwdu3dcar-button .fwdu3dcar-icon-next{
+	top: 5px;
+    left: 5px;
+}
+
+.fwdu3dcar-scrollbar{
+	height: 32px;
+	border-radius: 16px;
+	background: #1F1F1F !important;
+}
+
+.fwdu3dcar-scrollbar.white{
+	background: #E8E8E8 !important;
+}
+
+.fwdu3dcar-scrollbar-handler{
+	border-radius: 16px;
+	background: #333333 !important;
+	transition: background .25s ease-out !important;
+}
+
+.fwdu3dcar-scrollbar-handler.selected{
+	background: #C8C8C8 !important;
+}
+
+.fwdu3dcar-scrollbar-handler.white{
+	background: #686868 !important;
+}
+
+.fwdu3dcar-scrollbar-handler.white.selected{
+	background: #333333 !important;
+}
+
+.fwdu3dcar-slideshow-button{
+	width: 50px;
+	height: 32px;
+	border-radius: 16px;
+}
+
+.fwdu3dcar-slideshow-button-bk{
+	width: 100%;
+	height: 100%;
+	background: #C8C8C8 !important;
+}
+
+.fwdu3dcar-slideshow-button-bk.white{
+	background: #686868 !important;
+}
+
+.fwdu3dcar-slideshow-pause-button{
+	width: 100%;
+	height: 100%;
+	background: #C8C8C8 !important;
+}
+
+.fwdu3dcar-slideshow-pause-button.white{
+	background: #333333 !important;
+}
+
+.fwdu3dcar-slideshow-pause-button .fwdu3dcar-icon{
+	position: absolute;
+	font-size: 19px;
+	left: calc(50% - 10px);
+	top: calc(50% - 10px);
+	color: #111111;
+}
+
+.fwdu3dcar-slideshow-pause-button.white .fwdu3dcar-icon{
+	color: #FFFFFF;
+}
+
+.fwdu3dcar-slideshow-play-button{
+	width: 100%;
+	height: 100%;
+	background: #333333 !important;
+	transition: background .25s ease-out !important;
+}
+
+.fwdu3dcar-slideshow-play-button.white{
+	background: #686868 !important;
+}
+
+.fwdu3dcar-slideshow-play-button.selected{
+	background: #C8C8C8 !important;
+}
+
+.fwdu3dcar-slideshow-play-button.white.selected{
+	background: #333333 !important;
+}
+
+.fwdu3dcar-slideshow-play-button .fwdu3dcar-icon{
+	position: absolute;
+	font-size: 19px;
+	left: calc(50% - 9px);
+	top: calc(50% - 10px);
+	color: #FFFFFF;
+	transition: color .25s ease-out !important;
+}
+
+.fwdu3dcar-slideshow-play-button.selected .fwdu3dcar-icon{
+	color: #111111;
+}
+
+.fwdu3dcar-slideshow-play-button.white.selected .fwdu3dcar-icon{
+	color: #FFFFFF;
+}
+
+
+/** 
+ * --------------------------------------------------------------------------------
+ *	3. MENU
+ * --------------------------------------------------------------------------------
+ */
+
+.fwdu3dcar-menu{
+	border-radius: 22px !important;
+}
+
+.fwdu3dcar-menu-selector{
+ 	font: 700 14px Roboto !important;
+ 	padding: 14px 60px 14px 24px !important;
+}
+
+.fwdu3dcar-menu-line{
+	width: calc(100% - 48px);
+	left: 24px !important;
+	top: calc(100% - 1px) !important;
+	height: 1px;
+}
+
+.fwdu3dcar-menu-icon{
+ 	left: auto !important;
+ 	right: 20px;
+}
+
+.fwdu3dcar-menu-icon.vector{
+	overflow: visible !important;
+ 	font-size: 18px;
+	width: 16px;
+	height: 16px;
+	color: #FFFFFF;
+}
+
+.fwdu3dcar-menu-icon.white.vector{
+	color: #111111
+}
+
+.fwdu3dcar-icon-menu-icon{
+	position: absolute;
+	top: -4px;
+    left: -3px;
+	font-size: 23px;
+}
+
+.fwdu3dcar-menu-button{
+  	font: 700 14px Roboto !important;
+	padding: 12px 60px 12px 24px !important;
+}
+
+.fwdu3dcar-menu-button.first-button{
+	padding-top: 21px !important;
+}
+
+.fwdu3dcar-menu-button.last-button{
+	padding-bottom: 20px !important;
+}
+
+
+/** 
+ * --------------------------------------------------------------------------------
+ *	4. CAROUSEL & LIGHTBOX VIDEO PLAYER
+ * --------------------------------------------------------------------------------
+ */
+.fwdu3dcar-rl .EVPSubtitle,
+.fwdu3dcar .EVPSubtitle{
+	font: 600 22px Roboto, Arial !important;
+	text-align:center !important;
+	color:#FFFFFF !important;
+	text-shadow: 0px 0px 1px #000000 !important;
+	line-height:28px !important;
+	margin:0 20px 20px !important;
+	padding: 0px !important;
+}
+
+.fwdu3dcar-rl .EVPSubtitle.phone,
+.fwdu3dcar .EVPSubtitle.phone{
+	font-size: 16px !important;
+	line-height: 20px !important;
+	margin: 0 10px 10px !important;
+}
+
+.fwdu3dcar-rl .EVPSubtitle.large,
+.fwdu3dcar .EVPSubtitle.large{
+	font-size: 28px !important;
+	line-height: 38px !important;
+	margin: 0 20px 20px !important;
+}
+
+.fwdu3dcar-rl .fwdevp-autoplay-text,
+.fwdu3dcar .fwdevp-autoplay-text{
+	font: 500 12px Roboto, Arial !important;
+	top: 12px !important;
+	left: 12px !important;
+	border-radius: 14px;
+	line-height: 14px !important;
+	padding: 6px 23px 6px 18px !important;
+	background-color: rgba(0, 0, 0, 0.4);
+	color: #FFFFFF;
+	transition: background-color .3s ease-out, color .3s ease-out;
+}
+
+.fwdu3dcar-rl .fwdevp-autoplay-text:hover,
+.fwdu3dcar .fwdevp-autoplay-text:hover{
+	color: #000;
+	background-color: rgba(255, 255, 255, 1);
+}
+
+
+.fwdu3dcar-rl .fwdevp-autoplay-text:hover svg path,
+.fwdu3dcar .fwdevp-autoplay-text:hover svg path{
+	fill: #111;
+}
+
+.fwdu3dcar-rl .fwdevp-time,
+.fwdu3dcar-rl .fwdevp-qaulity-button,
+.fwdu3dcar .fwdevp-time,
+.fwdu3dcar .fwdevp-qaulity-button{
+	font: 400 13px Roboto, Arial !important;
+}
+
+.fwdu3dcar-rl .fwdevp-autoplay-text svg,
+.fwdu3dcar .fwdevp-autoplay-text svg{
+    transform: translate(6px, 2px);
+}
+
+.fwdu3dcar-rl .fwdevp-autoplay-text svg path,
+.fwdu3dcar .fwdevp-autoplay-text svg path{
+	transition: all .3s ease-out;
+	fill: #FFFFFF;
+}
+
+.fwdu3dcar-rl .EVP-tooltip-text,
+.fwdu3dcar .EVP-tooltip-text{
+	font: 400 12px Roboto, Arial !important;
+	padding: 5px 8px 5px !important;
+}
+
+.fwdu3dcar-rl .fwdevp-thubnails-preview-text,
+.fwdu3dcar .fwdevp-thubnails-preview-text{
+	font: 400 13px Roboto, Arial !important;
+	padding: 5px 8px 4px !important;
+}
+
+.fwdu3dcar-rl .fwdevp-skip,
+.fwdu3dcar-rl .fwdevp-ads,
+.fwdu3dcar .fwdevp-skip,
+.fwdu3dcar .fwdevp-ads{
+	font-family: Roboto, Arial !important;
+}
+
+.fwdu3dcar-rl .fwdevp-password-title,
+.fwdu3dcar-rl .fwdevp-password-label,
+.fwdu3dcar-rl .fwdevp-password-input,
+.fwdu3dcar .fwdevp-password-title,
+.fwdu3dcar .fwdevp-password-label,
+.fwdu3dcar .fwdevp-password-input{
+	font-family: Roboto, Arial !important;
+	height: auto !important;
+}
+
+
+/* Video player vector skin. */
+.fwdu3dcar .EVPMainButtonsNormalState,
+.fwdu3dcar-rl .EVPMainButtonsNormalState{
+	overflow: visible !important;
+	font-size: 26px !important;
+	color:#999 !important;
+}
+
+.fwdu3dcar .EVPMainButtonsSelectedState,	
+.fwdu3dcar-rl .EVPMainButtonsSelectedState{	
+	overflow: visible !important;
+	font-size:26px !important;
+	color:#FFF !important;
+}
+
+.fwdu3dcar .EVPMainButtonsNormalState .fwdu3dcar-icon-play,
+.fwdu3dcar .EVPMainButtonsSelectedState .fwdu3dcar-icon-play,
+.fwdu3dcar .EVPMainButtonsNormalState .fwdu3dcar-icon-pause,
+.fwdu3dcar .EVPMainButtonsSelectedState .fwdu3dcar-icon-pause,
+.fwdu3dcar-rl .EVPMainButtonsNormalState .fwdu3dcar-icon-play,
+.fwdu3dcar-rl .EVPMainButtonsSelectedState .fwdu3dcar-icon-play,
+.fwdu3dcar-rl .EVPMainButtonsNormalState .fwdu3dcar-icon-pause,
+.fwdu3dcar-rl .EVPMainButtonsSelectedState .fwdu3dcar-icon-pause{
+	position: relative;
+	left: 0;
+	top: 1px;
+}
+
+.fwdu3dcar .EVPMainButtonsNormalState .fwdu3dcar-icon-sound,
+.fwdu3dcar .EVPMainButtonsSelectedState .fwdu3dcar-icon-sound,
+.fwdu3dcar .EVPMainButtonsNormalState .fwdu3dcar-icon-sound-off,
+.fwdu3dcar .EVPMainButtonsSelectedState .fwdu3dcar-icon-sound-off,
+.fwdu3dcar-rl .EVPMainButtonsNormalState .fwdu3dcar-icon-sound,
+.fwdu3dcar-rl .EVPMainButtonsSelectedState .fwdu3dcar-icon-sound,
+.fwdu3dcar-rl .EVPMainButtonsNormalState .fwdu3dcar-icon-sound-off,
+.fwdu3dcar-rl .EVPMainButtonsSelectedState .fwdu3dcar-icon-sound-off{
+	position: relative;
+	left: 0;
+	top: 2px;
+}
+
+.fwdu3dcar .EVPMainButtonsNormalState .fwdu3dcar-icon-cast,
+.fwdu3dcar .EVPMainButtonsSelectedState .fwdu3dcar-icon-cast,
+.fwdu3dcar .EVPMainButtonsNormalState .fwdu3dcar-icon-fullscreen,
+.fwdu3dcar .EVPMainButtonsSelectedState .fwdu3dcar-icon-fullscreen,
+.fwdu3dcar .EVPMainButtonsNormalState .fwdu3dcar-icon-sound-normalscreen,
+.fwdu3dcar .EVPMainButtonsSelectedState .fwdu3dcar-icon-sound-normalscreen,
+.fwdu3dcar-rl .EVPMainButtonsNormalState .fwdu3dcar-icon-cast,
+.fwdu3dcar-rl .EVPMainButtonsSelectedState .fwdu3dcar-icon-cast,
+.fwdu3dcar-rl .EVPMainButtonsNormalState .fwdu3dcar-icon-fullscreen,
+.fwdu3dcar-rl .EVPMainButtonsSelectedState .fwdu3dcar-icon-fullscreen,
+.fwdu3dcar-rl .EVPMainButtonsNormalState .fwdu3dcar-icon-sound-normalscreen,
+.fwdu3dcar-rl .EVPMainButtonsSelectedState .fwdu3dcar-icon-sound-normalscreen{
+	position: relative;
+	top: 1px;
+}
+
+.fwdu3dcar .table-fwdevp-button,
+.fwdu3dcar-rl .table-fwdevp-button{ 
+	display: table;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
+.fwdu3dcar .EVPMainButtonsNormalState .fwdu3dcar-icon-fullscreen,
+.fwdu3dcar .EVPMainButtonsSelectedState .fwdu3dcar-icon-fullscreen{
+	left: 0;
+}
+
+.fwdu3dcar .table-cell-fwdevp-button,
+.fwdu3dcar-rl .table-cell-fwdevp-button{
+	position: static !important;
+	display: table-cell;
+	width: 100%;
+	height: 100%;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.fwdu3dcar .EVPLargePlayButtonNormalState,
+.fwdu3dcar-rl .EVPLargePlayButtonNormalState{
+	position: absolute;
+	font-size: 36px;
+	width: 64px;
+	height: 64px;
+	cursor: pointer;
+	background-color: rgba(0,0,0,.4);
+	color:#BBB9BA;
+}
+
+.fwdu3dcar .EVPLargePlayButtonNormalState{
+	background-color: rgba(0,0,0,.4) !important;
+	transition: all .25s ease-out !important;
+}
+
+.fwdu3dcar .EVPLargePlayButtonNormalState.selected{
+	background-color: rgba(0,0,0,.6) !important;
+	color: #FFF
+}
+
+.fwdu3dcar .EVPLargePlayButtonNormalState .table-cell-fwdevp-button,
+.fwdu3dcar-rl .EVPLargePlayButtonNormalState .table-cell-fwdevp-button,
+.fwdu3dcar .EVPLargePlayButtonSelectedState .table-cell-fwdevp-button,
+.fwdu3dcar-rl .EVPLargePlayButtonSelectedState .table-cell-fwdevp-button{
+	padding: 1px 0 0 !important;
+}
+
+.fwdu3dcar-rl .EVPLargePlayButtonSelectedState{
+	position: absolute;
+	font-size: 36px;
+	width: 64px;
+	height: 64px;
+	cursor: pointer;
+	background-color: rgba(0,0,0,.6);
+	color: #FFF;
+}
+
+.fwdu3dcar .EVPLargePlayButtonSelectedState .table-cell-fwdevp-button,
+.fwdu3dcar-rl .EVPLargePlayButtonSelectedState .table-cell-fwdevp-button{
+	padding:2px 0 0;
+}
+
+
+/** 
+ * --------------------------------------------------------------------------------
+ *	5. LIGHTBOX
+ * --------------------------------------------------------------------------------
+ */
+
+ /* Counter. */
+.fwdu3dcar-rl-counter .text{
+	font: 400 14px Roboto, Arial;
+	color: #B9B9B9;
+	padding: 9px 9px !important;
+	background-color: rgba(0,0,0,.4) !important;
+}
+
+.fwdu3dcar-rl-counter.in .text{
+	text-align: center;
+	padding: 9px 8px !important;
+	transform-origin: top left;
+	transform: rotate(90deg) !important;
+	background-color:transparent !important;
+}
+
+ /* Caption. */
+.fwdu3dcar-rl-caption{
+	text-align: center;
+}
+
+.fwdu3dcar-rl-caption .fwdrl-title{
+	font: 700 18px Roboto, Arial;
+	line-height: 21px;
+	margin: 21px 20px 0;
+	color: #FFFFFF;
+}
+
+.fwdu3dcar-rl-caption .fwdrl-desc{
+	font: 400 14px Roboto, Arial;
+	font-style: italic;
+	line-height: 19px;
+	margin: 5px 20px 0;
+	color: #E9E9E9;
+}
+
+.fwdu3dcar-rl-caption .fwdrl-desc strong{
+	color: #FFFFFF !important;
+}
+
+.fwdu3dcar-rl-caption .fwdrl-desc a{
+	text-decoration: none;
+    background-image: linear-gradient(#E9E9E9 calc(100% - 2px), #E9E9E9 1px);
+    background-position: 0 calc(100% + 1px);
+    background-repeat: no-repeat;
+    background-size: 0% 1px;
+    transition: background-size 0.6s cubic-bezier(0.215, 0.61, 0.355, 1), color 0.3s ease-out, background 0.3s ease-out, border-color 0.3s ease-out;
+  	border-bottom: 1px solid rgba(233, 233, 233, 0.4);
+    color: #E9E9E9;
+}
+
+.fwdu3dcar-rl-caption .fwdrl-desc a:hover{
+    background-size: 100% 1px;
+    color: #FFFFFF;
+}
+
+
+/* Caption bottom out. */
+.fwdu3dcar-rl-caption.out .fwdrl-title{
+	margin: 21px 0 0;
+}
+
+.fwdu3dcar-rl-caption.out .fwdrl-desc{
+	margin: 5px 0 0;
+}
+
+@media screen and (max-width: 600px){
+	.fwdu3dcar-rl-caption.out .fwdrl-title{
+		margin: 21px 10px 0;
+	}
+
+	.fwdu3dcar-rl-caption.out .fwdrl-desc{
+		margin: 5px 10px 0;
+	}
+}
+
+
+/* Caption top/bottom in. */
+.fwdu3dcar-rl-caption.bottomin .background,
+.fwdu3dcar-rl-caption.topin .background{
+	background: linear-gradient(180deg, rgba(0, 0, 0, 0) 8.85%, rgba(0, 0, 0, 0.171875) 38.54%, rgba(0, 0, 0, 0.510026) 68.75%, #000000 100%);
+	opacity: 0.6;
+}
+
+.fwdu3dcar-rl-caption.topin .background{
+	transform: rotate(180deg);
+}
+
+.fwdu3dcar-rl-caption.bottomin .fwdrl-title{
+	margin-top: 50px;
+}
+
+.fwdu3dcar-rl-caption.bottomin .fwdrl-desc{
+	margin-bottom: 28px;
+}
+
+.fwdu3dcar-rl-caption.bottomin.small-screen .fwdrl-title{
+	margin: 50px 10px 0;
+}
+
+.fwdu3dcar-rl-caption.bottomin.small-screen .fwdrl-desc{
+	margin: 5px 10px 15px;
+}
+
+.fwdu3dcar-rl-caption.topin .fwdrl-title{
+	margin-top: 29px;
+}
+
+.fwdu3dcar-rl-caption.topin .fwdrl-desc{
+	margin-bottom: 50px;
+}
+
+.fwdu3dcar-rl-caption.topin.small-screen .fwdrl-title{
+	margin: 15px 10px 0;
+}
+
+.fwdu3dcar-rl-caption.topin.small-screen .fwdrl-desc{
+	margin: 5px 10px 50px;
+}
+
+
+/* Share buttons. */
+.fwdu3dcar-rl-share{
+	width: 164px;
+	border-radius: 2px;
+	/* This is set by default in the settings, uncomment it to use it. */
+	/*background-color: #FFFFFF !important;*/ 
+}
+
+.fwdu3dcar-rl-share .fwdu3dcar-rl-pointer{
+	/* This is set by default in the settings, uncomment it to use it. */
+	/*background-color: #FFFFFF !important;*/
+}
+
+.fwdu3dcar-rl-share .fwdu3dcar-rl-text{
+	font: 400 14px Roboto, Arial;
+	text-align: center;
+	border-bottom: 1px solid #E3E3E3 !important;
+	padding: 13px 0 10px !important;
+	color: #1E1E1E;
+}
+
+.fwdu3dcar-rl-share .fwdu3dcar-rl-buttons-holder{
+	padding: 15px 18px 2px !important;
+}
+
+.fwdu3dcar-rl-share .fwdu3dcar-rl-share-button{
+	margin: 0 16px 10px 0 !important;
+}
+
+.fwdu3dcar-rl-share .fwdu3dcar-rl-share-button:nth-child(3n){
+	margin-right: 0 !important;
+}
+
+
+/* HTML content form. */
+.fwdrl-html-content{
+	overflow: auto;
+	height: 100%;
+	text-align: center;
+	background: #FFF;
+}
+
+.fwdrl-html-content img{
+	margin: 50px auto 0 ;
+}
+
+.fwdrl-html-content h1{
+	font: 500 33px Roboto, Arial !important;
+	line-height: 39px;
+	max-width: 300px;
+	margin: 20px auto 0;
+	color: #111;
+}
+
+.fwdrl-html-content p{
+	font: 300 14px Roboto, Arial !important;
+	line-height: 24px !important;
+	margin: 16px 20px 30px;
+}
+
+.fwdrl-html-content input{
+	font: 300 14px Roboto, Arial !important;
+	width: 100%;
+	max-width: 274px;
+	border: 1px solid #FFF;
+	padding: 18px 30px;
+	background: #F5F5F5;
+}
+
+.fwdrl-html-content input:focus {
+    outline: none !important;
+    border: 1px solid #111;
+}
+
+.fwdrl-html-content h4{
+	font: 700 14px Roboto, Arial !important;
+	cursor: pointer;
+	width: 100%;
+	max-width: 274px;
+	margin: 11px auto 0;
+	padding: 18px 30px;
+	background: #570AB8;
+	color: #FFF;
+	transition: all .25s ease-out;
+}
+
+.fwdrl-html-content h4:hover{
+	background: #6B13DA;
+	color: #FFF;
+}
+
+
+/* Lightbox vector skin.*/
+.fwdu3dcar-rl-button{
+	position: relative !important;
+	width: 32px;
+	height: 32px;
+	font-size: 23px;
+	background-color:rgba(0,0,0,.4);
+	color:#B9B9B9;
+	transition: all .25s ease-out;
+}
+
+.fwdu3dcar-rl-button .fwdu3dcar-icon{
+ 	position: absolute;
+}
+
+.fwdu3dcar-rl-button.selected{
+	background-color:rgba(0,0,0,.6) ;
+	color:#FFF;
+}
+
+.fwdu3dcar-icon-close{
+	left: 4px;
+	top: 4px;
+}
+
+.fwdu3dcar-icon-play,
+.fwdu3dcar-icon-pause{
+	left: 5px;
+	top: 4px;
+}
+
+.fwdu3dcar-icon-zoomin,
+.fwdu3dcar-icon-zoomout{
+	left: 4px;
+	top: 4px;
+}
+
+.fwdu3dcar-icon-fullscreen,
+.fwdu3dcar-icon-normalscreen{
+	left: 4px;
+	top: 4px;
+}
+
+.fwdu3dcar-icon-share{
+	left: 5px;
+	top: 4px;
+}
+
+.fwdu3dcar-icon-next{
+	left: 6px;
+	top: 4px;
+}
+
+.fwdu3dcar-icon-prev{
+	left: 4px;
+	top: 4px;
+}
+
+.fwdu3dcar-rl-share-button .fwdu3dcar-rl-button{
+	background-color: transparent;
+	color: #000;
+}
+
+.fwdu3dcar-rl-share-button .fwdu3dcar-rl-button.selected{
+	background-color: transparent;
+	color: #FFF;
+}
+
+.fwdu3dcar-icon-facebook{
+	top: 4px;
+	left: 4px;
+}
+
+.fwdu3dcar-rl-button.facebook.selected{
+	background-color: #1877F2;
+}
+
+.fwdu3dcar-icon-twitter{
+	top: 4px;
+	left: 5px;
+}
+
+.fwdu3dcar-rl-button.twitter.selected{
+	background-color: #1DA1F3;
+}
+
+.fwdu3dcar-icon-linkedin{
+	top: 4px;
+	left: 5px;
+}
+
+.fwdu3dcar-rl-button.linkedin.selected{
+	background-color: #0A66C2;
+}
+
+.fwdu3dcar-icon-tumblr{
+	top: 4px;
+	left: 4px;
+}
+
+.fwdu3dcar-rl-button.tumblr.selected{
+	background-color: #FF8A00;
+}
+
+.fwdu3dcar-icon-pinterest{
+	top: 4px;
+	left: 4px;
+}
+
+.fwdu3dcar-rl-button.pinterest.selected{
+	background-color: #FF8A00;
+}
+
+.fwdu3dcar-icon-reddit{
+	top: 4px;
+	left: 4px;
+}
+
+.fwdu3dcar-rl-button.reddit.selected{
+	background-color: #F74300;
+}
+
+.fwdu3dcar-icon-buffer{
+	top: 4px;
+	left: 4px;
+}
+
+.fwdu3dcar-rl-button.buffer.selected{
+	background-color: #2C4BFF;
+}
+
+.fwdu3dcar-icon-digg{
+	top: 4px;
+	left: 4px;
+}
+
+.fwdu3dcar-rl-button.digg.selected{
+	background-color: #2066A3;
+}
+
+.fwdu3dcar-icon-blogger{
+	top: 4px;
+	left: 4px;
+}
+
+.fwdu3dcar-rl-button.blogger.selected{
+	background-color: #F74300;
+}
+
+
+/** 
+ * --------------------------------------------------------------------------------
+ *	6. VECTOR FONT - used for the vector skin.
+ * --------------------------------------------------------------------------------
+ */
+
+ @font-face {
+  font-family: 'fwdu3dcar';
+  src:  url('fonts/fwdu3dcar.eot@kx63ik');
+  src:  url('fonts/fwdu3dcar.eot@kx63ik') format('\embedded-opentype'),
+    url('fonts/fwdu3dcar.ttf@kx63ik') format('truetype'),
+    url('fonts/fwdu3dcar.woff@kx63ik') format('woff'),
+    url('fonts/fwdu3dcar.svg@kx63ik') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+.fwdu3dcar-icon,
+[class^='fwdu3dcar-icon-']:before,
+[class*=' fwdu3dcar-icon-']:before {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'fwdu3dcar' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.fwdu3dcar-icon-10:before {
+  content: '\e900';
+}
+.fwdu3dcar-icon-blogger:before {
+  content: '\e901';
+}
+.fwdu3dcar-icon-buffer:before {
+  content: '\e902';
+}
+.fwdu3dcar-icon-cast:before {
+  content: '\e903';
+}
+.fwdu3dcar-icon-CC:before {
+  content: '\e904';
+}
+.fwdu3dcar-icon-CC-off:before {
+  content: '\e905';
+}
+.fwdu3dcar-icon-close:before {
+  content: '\e906';
+}
+.fwdu3dcar-icon-digg:before {
+  content: '\e907';
+}
+.fwdu3dcar-icon-facebook:before {
+  content: '\e908';
+}
+.fwdu3dcar-icon-fullscreen:before {
+  content: '\e909';
+}
+.fwdu3dcar-icon-linkedin:before {
+  content: '\e90a';
+}
+.fwdu3dcar-icon-menu-icon:before {
+  content: '\e90b';
+}
+.fwdu3dcar-icon-next:before {
+  content: '\e90c';
+}
+.fwdu3dcar-icon-normalscreen:before {
+  content: '\e90d';
+}
+.fwdu3dcar-icon-pause:before {
+  content: '\e90e';
+}
+.fwdu3dcar-icon-pinterest:before {
+  content: '\e90f';
+}
+.fwdu3dcar-icon-play:before {
+  content: '\e910';
+}
+.fwdu3dcar-icon-play-fill:before {
+  content: '\e911';
+}
+.fwdu3dcar-icon-prev:before {
+  content: '\e912';
+}
+.fwdu3dcar-icon-reddit:before {
+  content: '\e913';
+}
+.fwdu3dcar-icon-settings:before {
+  content: '\e914';
+}
+.fwdu3dcar-icon-share:before {
+  content: '\e915';
+}
+.fwdu3dcar-icon-sound:before {
+  content: '\e916';
+}
+.fwdu3dcar-icon-sound-off:before {
+  content: '\e917';
+}
+.fwdu3dcar-icon-tumblr:before {
+  content: '\e918';
+}
+.fwdu3dcar-icon-twitter:before {
+  content: '\e919';
+}
+.fwdu3dcar-icon-watch-later:before {
+  content: '\e91a';
+}
+.fwdu3dcar-icon-zoomin:before {
+  content: '\e91b';
+}
+.fwdu3dcar-icon-zoomout:before {
+  content: '\e91c';
+}
+
+.fwdu3dcar-gallery{
+	display: none !important;
+
+}
