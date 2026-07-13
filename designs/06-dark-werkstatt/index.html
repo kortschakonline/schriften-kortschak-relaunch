@@ -1,0 +1,2160 @@
+<!DOCTYPE html>
+<html lang="de-AT" class="no-js">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kortschak Schriften GmbH | Werbetechnik &amp; Sichtbarkeit in Trofaiach</title>
+<meta name="description" content="Werbeagentur &amp; Werbetechnik in Trofaiach, Steiermark. Fahrzeugbeschriftung, Car Wrapping, Schilder, Textildruck &amp; Webdesign seit 1958. Kreation. Klarheit. Fokus.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="https://www.schriften-kortschak.at/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230d0d0b'/%3E%3Ctext x='50%25' y='52%25' text-anchor='middle' dominant-baseline='middle' font-family='Arial Black,Arial,sans-serif' font-weight='900' font-size='48' fill='%23FF1C20'%3EK%3C/text%3E%3C/svg%3E">
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;800;900&family=Inter+Tight:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --brand: #FF1C20;
+    --brand-hover: #CC1418;
+    --black: #09090a;
+    --white: #ffffff;
+    --bg: #09090a; /* base cinematic black */
+    --surface: #121214; /* dark charcoal */
+    --surface-card: #18181b; /* card surface */
+    --border: rgba(255, 255, 255, 0.08); /* faint white border */
+    --border-glow: rgba(255, 28, 32, 0.25);
+    
+    --fg: #f3f4f6;
+    --muted: #9ca3af;
+    
+    --display: 'Archivo', system-ui, -apple-system, sans-serif;
+    --body: 'Inter Tight', system-ui, -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+    
+    --gutter: clamp(20px, 5vw, 64px);
+    --maxw: 1440px;
+    --header-height: 90px;
+    --header-height-shrink: 60px;
+  }
+
+  /* Reset & Base */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  
+  body {
+    font-family: var(--body);
+    background-color: var(--bg);
+    color: var(--fg);
+    line-height: 1.6;
+    font-size: clamp(16px, 1.1vw, 18px);
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  
+  /* Native Scroll-driven animation for scrollytelling background color shift */
+  @supports ((animation-timeline: scroll()) and (animation-range: 0% 100%)) {
+    @keyframes bg-color-shift {
+      0% { background-color: #09090a; }
+      35% { background-color: #1a0506; } /* shift to deep red-black near about/team section */
+      70% { background-color: #0c0b0e; } /* shift to deep dark purple-gray near specs */
+      100% { background-color: #09090a; }
+    }
+    body {
+      animation: bg-color-shift auto linear both;
+      animation-timeline: scroll(block root);
+    }
+  }
+
+  img { display: block; max-width: 100%; height: auto; }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; background: none; border: none; }
+  ::selection { background: var(--brand); color: var(--white); }
+
+  /* Focus & Accessibility */
+  :focus-visible {
+    outline: 3px solid var(--brand);
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+  .skip-link {
+    position: absolute;
+    left: var(--gutter);
+    top: -120px;
+    z-index: 2000;
+    background: var(--brand);
+    color: var(--white);
+    padding: 12px 24px;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: top 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .skip-link:focus { top: 15px; }
+
+  /* Layout wrappers */
+  .wrap {
+    max-width: var(--maxw);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    width: 100%;
+  }
+
+  /* Type elements */
+  h1, h2, h3, h4 {
+    font-family: var(--display);
+    text-transform: uppercase;
+    line-height: 0.92;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+  }
+
+  /* Section Header styling */
+  .sec-header {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding-block: clamp(60px, 8vw, 100px) 24px;
+  }
+  @media (min-width: 768px) {
+    .sec-header {
+      grid-template-columns: 0.8fr 1.2fr;
+      align-items: baseline;
+      gap: 3rem;
+    }
+  }
+  .sec-title {
+    font-size: clamp(2.2rem, 5.5vw, 4.4rem);
+    text-shadow: 0 0 40px rgba(255, 28, 32, 0.15);
+  }
+  .sec-intro {
+    color: var(--muted);
+    font-size: clamp(1rem, 1.4vw, 1.25rem);
+    max-width: 45ch;
+    font-weight: 300;
+  }
+
+  /* Eyebrows */
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brand);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 0.75rem;
+  }
+  .eyebrow::before {
+    content: '';
+    width: 16px;
+    height: 1px;
+    background-color: var(--brand);
+    display: inline-block;
+  }
+
+  /* Buttons with subtle neon shadow */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--mono);
+    font-weight: 500;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 14px 28px;
+    border-radius: 99px; /* Pill layout */
+    border: 2px solid var(--white);
+    transition: background 0.25s, color 0.25s, transform 0.2s, box-shadow 0.25s;
+    background-color: transparent;
+    color: var(--white);
+  }
+  .btn--brand {
+    background-color: var(--brand);
+    border-color: var(--brand);
+    color: var(--white);
+    box-shadow: 0 0 16px rgba(255, 28, 32, 0.3);
+  }
+  .btn--brand:hover {
+    background-color: var(--white);
+    border-color: var(--white);
+    color: var(--black);
+    transform: translateY(-2px);
+    box-shadow: 0 0 24px rgba(255, 255, 255, 0.4);
+  }
+  .btn--ghost {
+    border-color: var(--border);
+  }
+  .btn--ghost:hover {
+    background-color: var(--white);
+    border-color: var(--white);
+    color: var(--black);
+    transform: translateY(-2px);
+  }
+  .btn .arr {
+    transition: transform 0.2s ease;
+  }
+  .btn:hover .arr {
+    transform: translateX(5px);
+  }
+
+  /* CSS Masking: Repeating stripe texture for technical "Werkstatt" look */
+  .texture-bg {
+    position: relative;
+  }
+  .texture-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    background: linear-gradient(rgba(255, 28, 32, 0.015), transparent);
+    
+    /* Cross-browser CSS Masking textures using geometric gradients as per guide */
+    -webkit-mask-image: linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%),
+                        linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%);
+    -webkit-mask-size: 8px 8px;
+    -webkit-mask-position: 0 0, 4px 4px;
+    
+    mask-image: linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%),
+                linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%);
+    mask-size: 8px 8px;
+    mask-position: 0 0, 4px 4px;
+  }
+
+  /* Film Grain Overlay */
+  .grain {
+    position: fixed;
+    inset: 0;
+    z-index: 1500;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+    opacity: 0.12;
+    will-change: transform;
+    animation: grain-animation 8s steps(6) infinite;
+  }
+  @keyframes grain-animation {
+    0% { transform: translate(0, 0); }
+    10% { transform: translate(-5%, -5%); }
+    20% { transform: translate(-10%, 5%); }
+    30% { transform: translate(5%, -10%); }
+    40% { transform: translate(-5%, 15%); }
+    50% { transform: translate(-15%, 5%); }
+    60% { transform: translate(15%, -5%); }
+    70% { transform: translate(5%, 15%); }
+    80% { transform: translate(-10%, 10%); }
+    90% { transform: translate(10%, -5%); }
+    100% { transform: translate(0, 0); }
+  }
+
+  /* ===== HEADER & NAVIGATION ===== */
+  .header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--header-height);
+    background-color: rgba(9, 9, 10, 0.75);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    z-index: 1000;
+    border-bottom: 1px solid var(--border);
+    transition: height 0.3s ease, background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+  }
+  
+  @supports ((animation-timeline: scroll()) and (animation-range: 0% 100%)) {
+    @keyframes shrink-header {
+      to {
+        height: var(--header-height-shrink);
+        background-color: rgba(9, 9, 10, 0.92);
+        border-bottom-color: var(--brand);
+      }
+    }
+    .header {
+      animation: shrink-header auto linear both;
+      animation-timeline: scroll(block root);
+      animation-range: 0px 120px;
+    }
+  }
+
+  .header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .brand {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .brand__logo {
+    font-family: var(--display);
+    font-size: 1.4rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.04em;
+    color: var(--white);
+  }
+  .brand__logo span { color: var(--brand); }
+  .brand__sub {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+  }
+
+  .nav-desktop {
+    display: none;
+  }
+  @media (min-width: 1024px) {
+    .nav-desktop {
+      display: flex;
+      align-items: center;
+      gap: clamp(12px, 2vw, 24px);
+    }
+    .nav-desktop a {
+      font-family: var(--mono);
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--fg);
+      padding: 6px 12px;
+      transition: color 0.2s, background-color 0.2s;
+    }
+    .nav-desktop a:hover {
+      color: var(--brand);
+      text-shadow: 0 0 10px rgba(255, 28, 32, 0.6);
+    }
+  }
+
+  .header__actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .status-dot {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+  .status-dot__circle {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: var(--brand);
+    position: relative;
+    box-shadow: 0 0 8px var(--brand);
+  }
+  .status-dot__circle::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border: 1px solid var(--brand);
+    border-radius: 50%;
+    animation: pulse 1.8s ease-out infinite;
+  }
+  @keyframes pulse {
+    0% { transform: scale(0.8); opacity: 0.8; }
+    100% { transform: scale(2.2); opacity: 0; }
+  }
+
+  /* Hamburger Menu Button */
+  .burger {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 24px;
+    height: 16px;
+    z-index: 1001;
+  }
+  @media (min-width: 1024px) {
+    .burger { display: none; }
+  }
+  .burger span {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background-color: var(--white);
+    transition: transform 0.25s, opacity 0.25s;
+  }
+  .burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+  .burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* Mobile menu panel */
+  .mobile-menu {
+    position: fixed;
+    inset: 0;
+    background-color: var(--bg);
+    z-index: 999;
+    padding: 120px var(--gutter) 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-20px);
+    transition: opacity 0.3s, transform 0.3s;
+  }
+  .mobile-menu[data-open="true"] {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+  .mobile-menu ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .mobile-menu a {
+    font-family: var(--display);
+    font-size: 2.2rem;
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .mobile-menu a:hover {
+    color: var(--brand);
+  }
+  .mobile-menu__footer {
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  /* ===== MAIN CONTAINER AND MARGIN OFFSET FOR FIXED HEADER ===== */
+  main {
+    margin-top: var(--header-height);
+  }
+
+  /* ===== HERO SECTION (CINEMATIC) ===== */
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr;
+    border-bottom: 1px solid var(--border);
+    background-color: var(--bg);
+    position: relative;
+    overflow: hidden;
+    min-height: calc(100vh - var(--header-height));
+  }
+  @media (min-width: 992px) {
+    .hero {
+      grid-template-columns: 1.1fr 0.9fr;
+    }
+  }
+
+  .hero__content {
+    padding: clamp(40px, 8vw, 100px) var(--gutter);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero h1 {
+    font-size: clamp(3.2rem, 8vw, 7.5rem);
+    line-height: 0.85;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+  }
+  .hero h1 span {
+    display: block;
+  }
+  .hero h1 .glow-text {
+    color: var(--brand);
+    text-shadow: 0 0 40px rgba(255, 28, 32, 0.4);
+  }
+
+  .hero__lead {
+    font-size: clamp(1.1rem, 1.6vw, 1.4rem);
+    color: var(--muted);
+    font-weight: 300;
+    max-width: 38ch;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 3rem;
+  }
+
+  .hero__metadata {
+    border-top: 1px solid var(--border);
+    padding-top: 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+  .hero__metadata strong {
+    color: var(--white);
+    display: block;
+    font-size: 0.72rem;
+    margin-bottom: 4px;
+  }
+
+  .hero__media {
+    position: relative;
+    min-height: 400px;
+    background-color: var(--surface);
+    overflow: hidden;
+  }
+  .hero__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(0.5) contrast(1.1) brightness(0.7);
+    transition: transform 12s ease;
+  }
+  .hero:hover .hero__image {
+    transform: scale(1.08);
+  }
+  
+  .hero__gradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, var(--bg) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+  @media (max-width: 991px) {
+    .hero__gradient {
+      background: linear-gradient(to top, var(--bg) 0%, transparent 100%);
+    }
+  }
+
+  .hero__badge {
+    position: absolute;
+    bottom: 24px;
+    right: 24px;
+    background-color: var(--brand);
+    color: var(--white);
+    padding: 20px;
+    z-index: 2;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  }
+  .hero__badge-year {
+    font-family: var(--display);
+    font-size: 2rem;
+    line-height: 1;
+    font-weight: 900;
+  }
+  .hero__badge-label {
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-top: 6px;
+    color: #e0e0e0;
+  }
+
+  /* ===== MARQUEE (TICKER) ===== */
+  .marquee {
+    background-color: var(--black);
+    color: var(--fg);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+    padding-block: 18px;
+    position: relative;
+    z-index: 2;
+  }
+  .marquee__track {
+    display: flex;
+    width: max-content;
+    animation: marquee-scroll 32s linear infinite;
+  }
+  .marquee__group {
+    display: flex;
+    flex-shrink: 0;
+  }
+  .marquee__item {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: clamp(1.2rem, 2.5vw, 1.85rem);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding-inline: clamp(20px, 3vw, 48px);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+  }
+  .marquee__item::after {
+    content: '★';
+    margin-left: clamp(20px, 3vw, 48px);
+    color: var(--brand);
+    text-shadow: 0 0 8px var(--brand);
+  }
+  @keyframes marquee-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ===== SERVICES GRID (LEISTUNGEN - CARD HOVER REVEAL) ===== */
+  .services-section {
+    padding-bottom: clamp(60px, 8vw, 120px);
+  }
+  
+  .services-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  @media (min-width: 768px) {
+    .services-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1200px) {
+    .services-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .service-card {
+    background-color: var(--surface-card);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    min-height: 440px;
+    position: relative;
+    overflow: hidden;
+    padding: 32px;
+    justify-content: space-between;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  }
+  
+  .service-card:hover {
+    border-color: var(--brand);
+    box-shadow: 0 10px 30px rgba(255, 28, 32, 0.12);
+    transform: translateY(-4px);
+  }
+  
+  .service-card__bg-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.18) grayscale(0.8);
+    transition: filter 0.4s ease, transform 0.4s ease;
+    z-index: 0;
+  }
+  .service-card:hover .service-card__bg-image {
+    filter: brightness(0.3) grayscale(0.2);
+    transform: scale(1.05);
+  }
+
+  .service-card__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+  }
+  .service-card__num {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--brand);
+    font-weight: 700;
+  }
+  .service-card__icon {
+    font-size: 1.5rem;
+    color: var(--muted);
+    transition: color 0.3s;
+  }
+  .service-card:hover .service-card__icon {
+    color: var(--brand);
+  }
+
+  .service-card__body {
+    margin-top: auto;
+    position: relative;
+    z-index: 2;
+  }
+  .service-card__title {
+    font-size: clamp(1.4rem, 2vw, 1.85rem);
+    margin-bottom: 12px;
+    font-weight: 800;
+    color: var(--white);
+    transition: color 0.3s;
+  }
+  .service-card:hover .service-card__title {
+    color: var(--white);
+  }
+  
+  /* Details reveal effect */
+  .service-card__desc {
+    font-size: 0.95rem;
+    color: var(--muted);
+    font-weight: 300;
+    max-width: 32ch;
+    opacity: 0.85;
+    transition: color 0.3s;
+  }
+  .service-card:hover .service-card__desc {
+    color: #e5e7eb;
+  }
+
+  .service-card__footer {
+    margin-top: 24px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--brand);
+    font-weight: 600;
+    position: relative;
+    z-index: 2;
+  }
+  .service-card__arr {
+    transition: transform 0.2s ease;
+  }
+  .service-card:hover .service-card__arr {
+    transform: translateX(4px);
+  }
+
+  /* Featured Neon Card Highlight */
+  .service-card--featured {
+    border-color: rgba(255, 28, 32, 0.4);
+    box-shadow: 0 0 20px rgba(255, 28, 32, 0.1);
+  }
+  .service-card--featured::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 40px 40px 0;
+    border-color: transparent var(--brand) transparent transparent;
+    z-index: 2;
+  }
+
+  /* ===== UNTERNEHMEN (ABOUT SECTION WITH GRID TEXTURE) ===== */
+  .about-section {
+    padding-block: clamp(60px, 8vw, 120px);
+    background-color: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(32px, 6vw, 80px);
+    align-items: center;
+    position: relative;
+    z-index: 2;
+  }
+  @media (min-width: 992px) {
+    .about-grid {
+      grid-template-columns: 1.1fr 0.9fr;
+    }
+  }
+
+  .about__text h2 {
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    line-height: 0.9;
+    margin-bottom: 1.5rem;
+    color: var(--white);
+  }
+  .about__text h2 span {
+    color: var(--brand);
+    text-shadow: 0 0 20px rgba(255, 28, 32, 0.3);
+  }
+  .about__lead {
+    font-size: clamp(1.1rem, 1.5vw, 1.35rem);
+    font-weight: 300;
+    color: var(--fg);
+    margin-bottom: 2rem;
+    max-width: 44ch;
+  }
+
+  .about__stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    border-top: 1px solid var(--border);
+    padding-top: 2rem;
+  }
+  .stat-block__num {
+    font-family: var(--display);
+    font-size: clamp(2.2rem, 4vw, 3.8rem);
+    font-weight: 900;
+    line-height: 1;
+    color: var(--brand);
+    text-shadow: 0 0 10px rgba(255,28,32,0.2);
+  }
+  .stat-block__lbl {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+
+  .about__media {
+    border: 1px solid var(--border);
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  }
+  .about__img {
+    width: 100%;
+    height: 480px;
+    object-fit: cover;
+    filter: grayscale(0.3) contrast(1.1);
+  }
+
+  /* ===== TEAM SECTION ===== */
+  .team-section {
+    padding-block: clamp(60px, 8vw, 120px);
+  }
+  .team-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(32px, 5vw, 64px);
+    align-items: center;
+  }
+  @media (min-width: 992px) {
+    .team-grid {
+      grid-template-columns: 0.9fr 1.1fr;
+    }
+  }
+
+  .team__media {
+    position: relative;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  }
+  .team__img {
+    width: 100%;
+    height: 520px;
+    object-fit: cover;
+    filter: grayscale(0.2) contrast(1.05);
+  }
+  .team__badge {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    background-color: var(--brand);
+    color: var(--white);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    padding: 10px 18px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    box-shadow: 0 4px 12px rgba(255, 28, 32, 0.4);
+  }
+
+  .team__info {
+    padding-left: 0;
+  }
+  @media (min-width: 992px) {
+    .team__info { padding-left: 40px; }
+  }
+  .team__quote {
+    font-size: clamp(1.25rem, 2vw, 1.85rem);
+    line-height: 1.35;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    margin-bottom: 2rem;
+    color: var(--white);
+  }
+  .team__quote::before {
+    content: '„';
+    color: var(--brand);
+  }
+  .team__quote::after {
+    content: '“';
+    color: var(--brand);
+  }
+  .team__name {
+    font-family: var(--display);
+    font-size: 1.5rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--white);
+  }
+  .team__role {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--brand);
+    letter-spacing: 0.1em;
+    margin-bottom: 2rem;
+  }
+  
+  .pill-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .pill {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    background-color: var(--surface-card);
+    color: var(--fg);
+    letter-spacing: 0.05em;
+  }
+
+  /* ===== REFERENZEN ===== */
+  .refs-section {
+    padding-block: clamp(60px, 8vw, 120px);
+  }
+  .refs-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  @media (min-width: 768px) {
+    .refs-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .ref-card {
+    background-color: var(--surface-card);
+    border: 1px solid var(--border);
+    padding: 36px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 300px;
+    transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+  }
+  .ref-card:hover {
+    border-color: var(--brand);
+    box-shadow: 0 10px 30px rgba(255, 28, 32, 0.08);
+    transform: translateY(-4px);
+  }
+  .ref-card__logo {
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .ref-card__logo img {
+    max-height: 36px;
+    width: auto;
+    filter: grayscale(1) brightness(0.8);
+    opacity: 0.7;
+    transition: filter 0.2s, opacity 0.2s;
+  }
+  .ref-card:hover .ref-card__logo img {
+    filter: grayscale(0) brightness(1.2);
+    opacity: 1;
+  }
+  .ref-card__text {
+    font-size: 1rem;
+    font-style: italic;
+    color: var(--fg);
+    margin-bottom: 24px;
+    line-height: 1.5;
+  }
+  .ref-card__text::before { content: '»'; color: var(--brand); margin-right: 4px; }
+  .ref-card__text::after { content: '«'; color: var(--brand); margin-left: 4px; }
+  .ref-card__author {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  /* ===== TECHNISCHE AUSSTATTUNG (NEON BORDERS) ===== */
+  .equip-section {
+    padding-block: clamp(60px, 8vw, 120px);
+    background-color: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .equip-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    position: relative;
+    z-index: 2;
+  }
+  @media (min-width: 768px) {
+    .equip-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 1200px) {
+    .equip-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+  .equip-card {
+    background-color: var(--surface-card);
+    border: 1px solid var(--border);
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.3s;
+  }
+  .equip-card:hover {
+    border-color: var(--brand);
+  }
+  .equip-card__title {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    font-weight: 700;
+    color: var(--white);
+  }
+  .equip-card__desc {
+    font-size: 0.88rem;
+    color: var(--muted);
+    font-weight: 300;
+    margin-bottom: 24px;
+  }
+  .equip-card__spec {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    color: var(--brand);
+    letter-spacing: 0.08em;
+    text-shadow: 0 0 8px rgba(255,28,32,0.3);
+  }
+
+  /* ===== STUNDENSÄTZE ===== */
+  .rates-section {
+    padding-block: clamp(60px, 8vw, 120px);
+  }
+  .rates-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  @media (min-width: 768px) {
+    .rates-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  .rate-card {
+    background-color: var(--surface-card);
+    border: 1px solid var(--border);
+    padding: clamp(28px, 4vw, 44px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 340px;
+    transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+  }
+  .rate-card:hover {
+    border-color: var(--brand);
+    transform: translateY(-4px);
+  }
+  
+  .rate-card--featured {
+    border-color: var(--brand);
+    box-shadow: 0 0 24px rgba(255, 28, 32, 0.15);
+  }
+  
+  .rate-card__num {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--brand);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 10px;
+  }
+  .rate-card__name {
+    font-size: clamp(1.3rem, 1.8vw, 1.65rem);
+    font-weight: 800;
+    margin-bottom: 12px;
+    color: var(--white);
+  }
+  .rate-card__desc {
+    font-size: 0.9rem;
+    color: var(--muted);
+    font-weight: 300;
+    margin-bottom: 30px;
+    max-width: 25ch;
+  }
+  .rate-card__price {
+    font-family: var(--display);
+    font-size: clamp(2.8rem, 4vw, 4rem);
+    font-weight: 900;
+    line-height: 1;
+    display: flex;
+    align-items: flex-start;
+    color: var(--white);
+  }
+  .rate-card__price small {
+    font-family: var(--mono);
+    font-size: 0.3em;
+    font-weight: 500;
+    margin-left: 6px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--brand);
+  }
+
+  /* ===== FAQ ACCORDION ===== */
+  .faq-section {
+    padding-block: clamp(60px, 8vw, 120px);
+    background-color: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .faq-list {
+    max-width: 800px;
+    margin-inline: auto;
+    border-top: 1px solid var(--border);
+    position: relative;
+    z-index: 2;
+  }
+  .faq-item {
+    border-bottom: 1px solid var(--border);
+  }
+  .faq-item summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 0;
+    font-family: var(--display);
+    font-size: clamp(1.05rem, 1.5vw, 1.35rem);
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--white);
+    user-select: none;
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary::after {
+    content: '▲';
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--brand);
+    transition: transform 0.3s;
+    transform: rotate(180deg);
+  }
+  .faq-item[open] summary::after {
+    transform: rotate(0deg);
+  }
+  .faq-item summary:hover {
+    color: var(--brand);
+  }
+  .faq-answer {
+    padding-bottom: 24px;
+    color: var(--muted);
+    font-weight: 300;
+    font-size: 0.95rem;
+    max-width: 65ch;
+    line-height: 1.55;
+  }
+
+  /* ===== KONTAKT (GLOWING DARK INPUTS) ===== */
+  .contact-section {
+    padding-block: clamp(60px, 8vw, 120px);
+  }
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(32px, 6vw, 80px);
+  }
+  @media (min-width: 992px) {
+    .contact-grid { grid-template-columns: 1fr 1.1fr; }
+  }
+  .contact-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .contact-info__title {
+    font-size: clamp(2rem, 4.5vw, 3.5rem);
+    line-height: 0.9;
+    margin-bottom: 2rem;
+    color: var(--white);
+  }
+  .contact-info__title span {
+    color: var(--brand);
+    text-shadow: 0 0 20px rgba(255, 28, 32, 0.3);
+  }
+  
+  .contact-rows {
+    border-top: 1px solid var(--border);
+  }
+  .contact-row {
+    display: grid;
+    grid-template-columns: 0.6fr 1.4fr;
+    padding-block: 20px;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+  }
+  .contact-row__label {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+  .contact-row__value {
+    font-size: 1.15rem;
+    font-weight: 500;
+    color: var(--white);
+  }
+  .contact-row__value a:hover { color: var(--brand); }
+
+  .contact-form {
+    background-color: var(--surface-card);
+    border: 1px solid var(--border);
+    padding: clamp(24px, 4vw, 48px);
+    display: grid;
+    gap: 20px;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.4);
+  }
+  .form-group {
+    display: grid;
+    gap: 6px;
+  }
+  .form-group label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--white);
+  }
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    font-family: var(--body);
+    font-size: 0.95rem;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    background-color: var(--bg);
+    color: var(--fg);
+    border-radius: 0;
+    width: 100%;
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+  }
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: var(--brand);
+    background-color: var(--bg);
+    box-shadow: 0 0 12px rgba(255, 28, 32, 0.2);
+  }
+  .form-group select option {
+    background-color: var(--surface-card);
+    color: var(--fg);
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  @media (min-width: 576px) {
+    .form-row { grid-template-columns: 1fr 1fr; }
+  }
+  
+  .form-checkbox {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 0.8rem;
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .form-checkbox input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--brand);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .form-checkbox a {
+    color: var(--fg);
+    text-decoration: underline;
+  }
+  .form-checkbox a:hover { color: var(--brand); }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    background-color: var(--black);
+    color: var(--white);
+    padding-top: clamp(60px, 8vw, 100px);
+    padding-bottom: 40px;
+    border-top: 2px solid var(--brand);
+    position: relative;
+    z-index: 2;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(32px, 5vw, 64px);
+    margin-bottom: clamp(48px, 6vw, 80px);
+  }
+  @media (min-width: 768px) {
+    .footer-grid { grid-template-columns: 1.2fr 0.8fr 0.8fr 0.8fr; }
+  }
+  .footer-column h3 {
+    margin-bottom: 24px;
+    font-size: 1.1rem;
+    color: var(--brand);
+    letter-spacing: 0.05em;
+  }
+  .footer-column p {
+    color: var(--muted);
+    font-weight: 300;
+    font-size: 0.9rem;
+    max-width: 25ch;
+  }
+  .footer-column ul {
+    list-style: none;
+    display: grid;
+    gap: 10px;
+  }
+  .footer-column a {
+    color: var(--muted);
+    font-size: 0.88rem;
+    transition: color 0.2s;
+  }
+  .footer-column a:hover {
+    color: var(--brand);
+  }
+
+  .footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #4b5563;
+  }
+  .footer-bottom a {
+    color: #4b5563;
+    transition: color 0.2s;
+  }
+  .footer-bottom a:hover {
+    color: var(--brand);
+  }
+
+  /* ===== REVEALS & ANIMATIONS ===== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .reveal.in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Native CSS Scroll-driven animations for entrance effects */
+  @supports ((animation-timeline: view()) and (animation-range: entry)) {
+    @keyframes reveal-up {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .scroll-reveal {
+      animation: reveal-up auto linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 30%;
+    }
+    
+    /* Disable simple reveal when native is available */
+    .reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation: none !important;
+      transition: none !important;
+      scroll-behavior: auto !important;
+    }
+    .grain { display: none; }
+    .reveal { opacity: 1 !important; transform: none !important; }
+    .scroll-reveal { animation: none !important; opacity: 1 !important; transform: none !important; }
+    .header { animation: none !important; height: var(--header-height-shrink) !important; }
+    body { animation: none !important; background-color: var(--bg) !important; }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#main-content">Zum Hauptinhalt springen</a>
+
+<!-- Film Grain Overlay -->
+<div class="grain" aria-hidden="true"></div>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="wrap header__inner">
+    <a class="brand" href="#main-content" aria-label="Kortschak Schriften GmbH - Startseite">
+      <span class="brand__logo"><span>K</span>ORTSCHAK</span>
+      <span class="brand__sub">Werbeagentur</span>
+    </a>
+    
+    <nav class="nav-desktop" aria-label="Hauptnavigation">
+      <a href="#leistungen">Leistungen</a>
+      <a href="#unternehmen">Unternehmen</a>
+      <a href="#team">Team</a>
+      <a href="#ausstattung">Ausstattung</a>
+      <a href="#stundensaetze">Stundensätze</a>
+      <a href="#faq">FAQ</a>
+      <a href="#kontakt">Kontakt</a>
+    </nav>
+
+    <div class="header__actions">
+      <span class="status-dot">
+        <span class="status-dot__circle" aria-hidden="true"></span>
+        Trofaiach · Live
+      </span>
+      <a class="btn btn--brand nav-desktop" href="#kontakt">Anfrage senden <span class="arr" aria-hidden="true">→</span></a>
+      
+      <button class="burger" id="menu-burger" aria-label="Menü öffnen" aria-expanded="false" aria-controls="mobile-nav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile Navigation Panel -->
+<nav class="mobile-menu" id="mobile-nav" aria-label="Mobile Navigation" data-open="false">
+  <ul>
+    <li><a href="#leistungen">Leistungen</a></li>
+    <li><a href="#unternehmen">Über uns</a></li>
+    <li><a href="#team">Unser Team</a></li>
+    <li><a href="#ausstattung">Maschinenpark</a></li>
+    <li><a href="#stundensaetze">Tarife</a></li>
+    <li><a href="#kontakt">Kontakt</a></li>
+  </ul>
+  <div class="mobile-menu__footer">
+    <p>Kortschak Schriften GmbH</p>
+    <p>Bahnhofstraße 6, 8793 Trofaiach</p>
+  </div>
+</nav>
+
+<main id="main-content">
+  
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-heading">
+    <div class="hero__content">
+      <p class="hero__metadata">
+        <span>— Trofaiach</span>
+        <span>Steiermark</span>
+        <span>Est. 1958</span>
+      </p>
+      <h1 id="hero-heading">
+        <span>Kreation.</span>
+        <span>Klarheit.</span>
+        <span class="glow-text">Fokus.</span>
+      </h1>
+      <p class="hero__lead">Werbeagentur und Meisterbetrieb für Werbetechnik, Beschriftung und Premium-Sichtbarkeit.</p>
+      
+      <div class="hero__ctas">
+        <a class="btn btn--brand" href="#kontakt">Angebot anfordern <span class="arr" aria-hidden="true">→</span></a>
+        <a class="btn btn--ghost" href="#leistungen">Leistungen entdecken</a>
+      </div>
+
+      <div class="hero__metadata">
+        <div><strong>68 Jahre</strong>Erfahrung</div>
+        <div><strong>12 Köpfe</strong>Im Team</div>
+        <div><strong>Meister</strong>Betrieb</div>
+      </div>
+    </div>
+    
+    <div class="hero__media">
+      <div class="hero__gradient"></div>
+      <img class="hero__image" src="assets/img/Headerbild_Car_Wrapping-1920x600-2.jpg" alt="Nahaufnahme einer Fahrzeugfolierung in der Werkstatt">
+      <div class="hero__badge">
+        <div class="hero__badge-year">1958</div>
+        <div class="hero__badge-label">Werbetechnik &amp; Beschriftung aus Trofaiach</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TICKER (MARQUEE) -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track">
+      <div class="marquee__group">
+        <span class="marquee__item">Fahrzeugbeschriftung</span>
+        <span class="marquee__item">Car Wrapping</span>
+        <span class="marquee__item">Folierung</span>
+        <span class="marquee__item">Werbeschilder</span>
+        <span class="marquee__item">Textildruck</span>
+        <span class="marquee__item">Großauflagen</span>
+        <span class="marquee__item">Grafikdesign</span>
+        <span class="marquee__item">Online-Marketing</span>
+        <span class="marquee__item">Montage</span>
+      </div>
+      <div class="marquee__group">
+        <span class="marquee__item">Fahrzeugbeschriftung</span>
+        <span class="marquee__item">Car Wrapping</span>
+        <span class="marquee__item">Folierung</span>
+        <span class="marquee__item">Werbeschilder</span>
+        <span class="marquee__item">Textildruck</span>
+        <span class="marquee__item">Großauflagen</span>
+        <span class="marquee__item">Grafikdesign</span>
+        <span class="marquee__item">Online-Marketing</span>
+        <span class="marquee__item">Montage</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SERVICES SECTION (LEISTUNGEN - HOVER CARD REVEAL) -->
+  <section class="services-section wrap" id="leistungen" aria-labelledby="services-heading">
+    <div class="sec-header reveal scroll-reveal">
+      <div>
+        <span class="eyebrow">Portfolio</span>
+        <h2 id="services-heading" class="sec-title">Unsere<br>Leistungen</h2>
+      </div>
+      <p class="sec-intro">Vom präzisen Car Wrapping über ausdrucksstarke Werbeschilder bis hin zum modernen Webdesign — wir machen Ihre Marke in der Region und darüber hinaus unübersehbar.</p>
+    </div>
+
+    <div class="services-grid reveal scroll-reveal">
+      <!-- 01 Fahrzeugbeschriftung -->
+      <a class="service-card" href="#kontakt">
+        <img class="service-card__bg-image" src="assets/img/Kortschak_Bildergallerie_Fahrzeugbeschriftung-1280x663.jpg" alt="">
+        <div class="service-card__top">
+          <span class="service-card__num">01</span>
+          <span class="service-card__icon" aria-hidden="true">🛞</span>
+        </div>
+        <div class="service-card__body">
+          <h3 class="service-card__title">Fahrzeug-beschriftung</h3>
+          <p class="service-card__desc">Ihre mobile Werbefläche, die auch dann für Sie wirkt, wenn Sie nicht unterwegs sind.</p>
+        </div>
+        <span class="service-card__footer">Details ansehen <span class="service-card__arr" aria-hidden="true">→</span></span>
+      </a>
+
+      <!-- 02 Car Wrapping (Featured) -->
+      <a class="service-card service-card--featured" href="#kontakt">
+        <img class="service-card__bg-image" src="assets/img/Car_Wrapping-Gallery-4.jpg" alt="">
+        <div class="service-card__top">
+          <span class="service-card__num">02</span>
+          <span class="service-card__icon" aria-hidden="true">✂️</span>
+        </div>
+        <div class="service-card__body">
+          <h3 class="service-card__title">Car Wrapping</h3>
+          <p class="service-card__desc">Vollfolierung in matt, glänzend, Brushed- oder Carbon-Style — Ihr Fahrzeug als Unikat.</p>
+        </div>
+        <span class="service-card__footer">Details ansehen <span class="service-card__arr" aria-hidden="true">→</span></span>
+      </a>
+
+      <!-- 03 Sonnen- & Steinschlagschutz -->
+      <a class="service-card" href="#kontakt">
+        <img class="service-card__bg-image" src="assets/img/Kortschak_Bildergallerie_Aussenbeschr-1280x663.jpg" alt="">
+        <div class="service-card__top">
+          <span class="service-card__num">03</span>
+          <span class="service-card__icon" aria-hidden="true">☀️</span>
+        </div>
+        <div class="service-card__body">
+          <h3 class="service-card__title">Sonnen- &amp; Schutzfolien</h3>
+          <p class="service-card__desc">Spezialtönungen und Lackschutzfolien für Komfort, Sicherheit und Werterhalt.</p>
+        </div>
+        <span class="service-card__footer">Details ansehen <span class="service-card__arr" aria-hidden="true">→</span></span>
+      </a>
+
+      <!-- 04 Außen- & Innenbeschriftungen -->
+      <a class="service-card" href="#kontakt">
+        <img class="service-card__bg-image" src="assets/img/Kortschak_Bildergallerie_Innenbeschr-1280x663.jpg" alt="">
+        <div class="service-card__top">
+          <span class="service-card__num">04</span>
+          <span class="service-card__icon" aria-hidden="true">🏢</span>
+        </div>
+        <div class="service-card__body">
+          <h3 class="service-card__title">Innen- &amp; Außenwerbung</h3>
+          <p class="service-card__desc">Professionelle Beschilderungen, Glasfolierungen und Leitsysteme für Ihren Standort.</p>
+        </div>
+        <span class="service-card__footer">Details ansehen <span class="service-card__arr" aria-hidden="true">→</span></span>
+      </a>
+
+      <!-- 05 Aufkleber & Großauflagen -->
+      <a class="service-card" href="#kontakt">
+        <img class="service-card__bg-image" src="assets/img/Kortschak_Bildergallerie_Schilder_innen_aussen-1280x567.jpg" alt="">
+        <div class="service-card__top">
+          <span class="service-card__num">05</span>
+          <span class="service-card__icon" aria-hidden="true">🏷️</span>
+        </div>
+        <div class="service-card__body">
+          <h3 class="service-card__title">Aufkleber &amp; Großauflagen</h3>
+          <p class="service-card__desc">Vom präzisen Einzelstück bis zur industriellen Großserie – auf verschiedensten Materialien.</p>
+        </div>
+        <span class="service-card__footer">Details ansehen <span class="service-card__arr" aria-hidden="true">→</span></span>
+      </a>
+
+      <!-- 06 Textildruck -->
+      <a class="service-card" href="#kontakt">
+        <img class="service-card__bg-image" src="assets/img/Textil_Shirt_DSF1753_800x800p.jpg" alt="">
+        <div class="service-card__top">
+          <span class="service-card__num">06</span>
+          <span class="service-card__icon" aria-hidden="true">👕</span>
+        </div>
+        <div class="service-card__body">
+          <h3 class="service-card__title">Textildruck &amp; Kleidung</h3>
+          <p class="service-card__desc">Personalisierte Corporate Fashion mit modernster Tinte — brillant und waschbeständig.</p>
+        </div>
+        <span class="service-card__footer">Details ansehen <span class="service-card__arr" aria-hidden="true">→</span></span>
+      </a>
+
+      <!-- 07 Grafik & CD -->
+      <a class="service-card" href="#kontakt">
+        <img class="service-card__bg-image" src="assets/img/Kortschak_Drucksorten_u_Grafikdesign_vollbreites_Bild-1280x400.jpg" alt="">
+        <div class="service-card__top">
+          <span class="service-card__num">07</span>
+          <span class="service-card__icon" aria-hidden="true">🎨</span>
+        </div>
+        <div class="service-card__body">
+          <h3 class="service-card__title">Grafikdesign &amp; CD</h3>
+          <p class="service-card__desc">Logoentwicklung, Geschäftsausstattung und Corporate Design mit rotem Faden.</p>
+        </div>
+        <span class="service-card__footer">Details ansehen <span class="service-card__arr" aria-hidden="true">→</span></span>
+      </a>
+
+      <!-- 08 Online Marketing -->
+      <a class="service-card" href="#kontakt">
+        <img class="service-card__bg-image" src="assets/img/Kortschak_technische_Ausstatt_vollbreites_Bild-1280x400.jpg" alt="">
+        <div class="service-card__top">
+          <span class="service-card__num">08</span>
+          <span class="service-card__icon" aria-hidden="true">📈</span>
+        </div>
+        <div class="service-card__body">
+          <h3 class="service-card__title">Online-Marketing</h3>
+          <p class="service-card__desc">Regionale Sichtbarkeit durch SEO, Google Ads, Social Media und KI-gestütztes Recruiting.</p>
+        </div>
+        <span class="service-card__footer">Details ansehen <span class="service-card__arr" aria-hidden="true">→</span></span>
+      </a>
+
+      <!-- 09 Webdesign -->
+      <a class="service-card" href="#kontakt">
+        <img class="service-card__bg-image" src="assets/img/Kortschak_Firmengeschichte_vollbreites_Bild-1280x400.jpg" alt="">
+        <div class="service-card__top">
+          <span class="service-card__num">09</span>
+          <span class="service-card__icon" aria-hidden="true">💻</span>
+        </div>
+        <div class="service-card__body">
+          <h3 class="service-card__title">Webdesign &amp; Hosting</h3>
+          <p class="service-card__desc">Moderne, barrierefreie und pfeilschnelle Websites inklusive lokalem Hosting.</p>
+        </div>
+        <span class="service-card__footer">Details ansehen <span class="service-card__arr" aria-hidden="true">→</span></span>
+      </a>
+    </div>
+  </section>
+
+  <!-- UNTERNEHMEN (ABOUT - WITH TEXTURE MASK) -->
+  <section class="about-section texture-bg" id="unternehmen" aria-labelledby="about-heading">
+    <div class="wrap about-grid">
+      <div class="about__text reveal scroll-reveal">
+        <span class="eyebrow">Unternehmen</span>
+        <h2 id="about-heading">Werbetechnik<br>Seit <span>1958.</span></h2>
+        <p class="about__lead">Was vor fast sieben Jahrzehnten als klassischer Schriftenmaler-Meisterbetrieb begann, ist heute eine moderne Full-Service-Werbeagentur in Trofaiach.</p>
+        <p style="color: var(--muted); margin-bottom: 2rem; font-weight: 300;">Mit hauseigener Grafikabteilung, modernstem Maschinenpark und unserem eigenen Montage-Team begleiten wir Ihr Projekt von der ersten Idee bis zur fertigen Montage — termintreu, regional und in meisterhafter Qualität.</p>
+        
+        <div class="about__stats">
+          <div class="stat-block">
+            <div class="stat-block__num">68</div>
+            <div class="stat-block__lbl">Jahre Marktpräsenz</div>
+          </div>
+          <div class="stat-block">
+            <div class="stat-block__num">12</div>
+            <div class="stat-block__lbl">Fachkräfte im Team</div>
+          </div>
+          <div class="stat-block">
+            <div class="stat-block__num">1×</div>
+            <div class="stat-block__lbl">Alles aus einer Hand</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="about__media reveal scroll-reveal">
+        <img class="about__img" src="assets/img/Kortschak_Firmengeschichte_vollbreites_Bild-1280x400.jpg" alt="Einblick in die historische Werkstatt der Familie Kortschak">
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM SECTION -->
+  <section class="team-section wrap" id="team" aria-labelledby="team-heading">
+    <div class="team-grid">
+      <div class="team__media reveal scroll-reveal">
+        <img class="team__img" src="assets/img/Overlaybild_Video_Anja_Brandl-1080x610px.webp" alt="Anja Brandl, Geschäftsführerin Kortschak Schriften GmbH">
+        <span class="team__badge">Geschäftsführung</span>
+      </div>
+      
+      <div class="team__info reveal scroll-reveal">
+        <span class="eyebrow">Haltung</span>
+        <h2 id="team-heading" style="font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 1.5rem; color: var(--white);">Geführt mit Hand<br>und Herzblut</h2>
+        <blockquote class="team__quote">Wir verbinden traditionelles Handwerk mit modernster Digitaltechnik. Unser 12-köpfiges Team in Trofaiach arbeitet täglich daran, Marken aus der Steiermark unübersehbar zu machen.</blockquote>
+        <p class="team__name">Anja Brandl, B.A.</p>
+        <p class="team__role">Geschäftsführerin &amp; Inhaberin</p>
+        
+        <div class="pill-container">
+          <span class="pill">Kundenberatung</span>
+          <span class="pill">Werbetechnik &amp; Folierung</span>
+          <span class="pill">Grafik &amp; Social Media</span>
+          <span class="pill">Montage-Team</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REFERENZEN -->
+  <section class="refs-section wrap" id="referenzen" aria-labelledby="refs-heading">
+    <div class="sec-header reveal scroll-reveal">
+      <div>
+        <span class="eyebrow">Feedback</span>
+        <h2 id="refs-heading" class="sec-title">Vertrauen in<br>der Steiermark</h2>
+      </div>
+      <p class="sec-intro">Die Zufriedenheit unserer Partner ist unser wichtigster Qualitätsnachweis. Hier sind einige Stimmen aus der Region.</p>
+    </div>
+
+    <div class="refs-grid reveal scroll-reveal">
+      <div class="ref-card">
+        <div class="ref-card__logo">
+          <img src="assets/img/Stadtwerke_Trofaiach-Logo-300x100px.webp" alt="Logo Stadtwerke Trofaiach">
+        </div>
+        <p class="ref-card__text">Seit vielen Jahren unser verlässlicher Partner für die gesamte Fahrzeugflotte und Außenwerbung. Schnell, kompetent und direkt vor Ort.</p>
+        <p class="ref-card__author">Stadtwerke Trofaiach</p>
+      </div>
+
+      <div class="ref-card">
+        <div class="ref-card__logo">
+          <img src="assets/img/OESTU_Stettin-Logo-300x100px.webp" alt="Logo ÖSTU Stettin">
+        </div>
+        <p class="ref-card__text">Für unsere Großbaustellen benötigen wir extrem robuste Beschilderungen und Banner in kürzester Zeit. Kortschak liefert immer verlässlich.</p>
+        <p class="ref-card__author">ÖSTU-STETTIN Hoch- und Tiefbau</p>
+      </div>
+
+      <div class="ref-card">
+        <div class="ref-card__logo">
+          <img src="assets/img/ContServe-Logo-300x100px.webp" alt="Logo IC ContServ">
+        </div>
+        <p class="ref-card__text">Hervorragendes Online-Marketing und zielgerichtetes KI-Recruiting. Wir konnten in kürzester Zeit qualifizierte Mitarbeiter gewinnen.</p>
+        <p class="ref-card__author">IC ContServe GmbH</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TECHNISCHE AUSSTATTUNG -->
+  <section class="equip-section texture-bg wrap" id="ausstattung" aria-labelledby="equip-heading">
+    <div class="sec-header reveal scroll-reveal">
+      <div>
+        <span class="eyebrow">Maschinenpark</span>
+        <h2 id="equip-heading" class="sec-title">Präzision &amp;<br>Technologie</h2>
+      </div>
+      <p class="sec-intro">Wir investieren kontinuierlich in modernste Maschinen, um höchste Farbtreue, Schnittpräzision und Materialbeständigkeit zu garantieren.</p>
+    </div>
+
+    <div class="equip-grid reveal scroll-reveal">
+      <div class="equip-card">
+        <h3 class="equip-card__title">Epson SureColor</h3>
+        <p class="equip-card__desc">10-Farben-Großformatdrucker für fotorealistische Ausdrucke und extrem hohe Farbtreue bei Fahrzeugfolierungen.</p>
+        <span class="equip-card__spec">Latexdruck // 162cm Breite</span>
+      </div>
+
+      <div class="equip-card">
+        <h3 class="equip-card__title">GCC Jaguar V</h3>
+        <p class="equip-card__desc">Hochleistungs-Schneideplotter für konturgenaue Folienschnitte mit extrem hoher Geschwindigkeit und Anpressdruck.</p>
+        <span class="equip-card__spec">Konturschnitt // Passmarken-Kamera</span>
+      </div>
+
+      <div class="equip-card">
+        <h3 class="equip-card__title">Kala Mistral 1650</h3>
+        <p class="equip-card__desc">Kalt- und Warmlaminator zur Veredelung von Drucken. Garantiert perfekten UV- und mechanischen Schutz ohne Blasen.</p>
+        <span class="equip-card__spec">Schutzlaminat // Bis 60°C Walzenhitze</span>
+      </div>
+
+      <div class="equip-card">
+        <h3 class="equip-card__title">Epson SC-F2100</h3>
+        <p class="equip-card__desc">Direktdrucker (DTG) für Textilien. Ermöglicht brillante, strapazierfähige Druckergebnisse auf Baumwolle und Mischgewebe.</p>
+        <span class="equip-card__spec">Textildruck // UltraChrome DG Tinten</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- STUNDENSÄTZE -->
+  <section class="rates-section wrap" id="stundensaetze" aria-labelledby="rates-heading">
+    <div class="sec-header reveal scroll-reveal">
+      <div>
+        <span class="eyebrow">Transparenz</span>
+        <h2 id="rates-heading" class="sec-title">Unsere Tarife<br>&amp; Stundensätze</h2>
+      </div>
+      <p class="sec-intro">Transparente Abrechnung ohne versteckte Kosten. Wir kalkulieren fair auf Basis unserer echten Arbeitsleistung.</p>
+    </div>
+
+    <div class="rates-grid reveal scroll-reveal">
+      <div class="rate-card">
+        <div>
+          <span class="rate-card__num">Tarif 01</span>
+          <h3 class="rate-card__name">Werbetechnik</h3>
+          <p class="rate-card__desc">Folierung, Beschriftung, Montagearbeiten vor Ort und mechanische Fertigung.</p>
+        </div>
+        <div class="rate-card__price">90,- <small>€ / Std<br>exkl. MwSt</small></div>
+      </div>
+
+      <div class="rate-card rate-card--featured">
+        <div>
+          <span class="rate-card__num">Tarif 02</span>
+          <h3 class="rate-card__name">Grafikdesign</h3>
+          <p class="rate-card__desc">Logoentwicklung, Layout, Druckdatenerstellung und Reinzeichnung.</p>
+        </div>
+        <div class="rate-card__price">120,- <small>€ / Std<br>exkl. MwSt</small></div>
+      </div>
+
+      <div class="rate-card">
+        <div>
+          <span class="rate-card__num">Tarif 03</span>
+          <h3 class="rate-card__name">Marketing</h3>
+          <p class="rate-card__desc">Suchmaschinenoptimierung (SEO), Google Ads Betreuung und Social Media Beratung.</p>
+        </div>
+        <div class="rate-card__price">120,- <small>€ / Std<br>exkl. MwSt</small></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ SECTION -->
+  <section class="faq-section wrap" id="faq" aria-labelledby="faq-heading">
+    <div class="sec-header reveal scroll-reveal">
+      <div>
+        <span class="eyebrow">Fragen</span>
+        <h2 id="faq-heading" class="sec-title">Häufig gestellte<br>Fragen</h2>
+      </div>
+      <p class="sec-intro">Hier finden Sie schnelle Antworten auf die wichtigsten Fragen rund um unsere Werbetechnik und Projektabläufe.</p>
+    </div>
+
+    <div class="faq-list reveal scroll-reveal">
+      <details class="faq-item">
+        <summary>Wo befindet sich die Werkstatt von Kortschak Schriften?</summary>
+        <div class="faq-answer">
+          Unsere Agentur und Werkstatt liegt in der Bahnhofstraße 6, 8793 Trofaiach (Bezirk Leoben, Obersteiermark). Hier entwerfen, drucken und montieren wir alle Werbemittel.
+        </div>
+      </details>
+      
+      <details class="faq-item">
+        <summary>Welche Folien werden für Car Wrapping verwendet?</summary>
+        <div class="faq-answer">
+          Wir verwenden ausschließlich hochwertige gegossene 3D-Verklebefolien namhafter Hersteller (wie 3M, Avery Dennison oder Orafol). Diese garantieren perfekte Verarbeitbarkeit an Sicken und Kanten sowie maximale Haltbarkeit.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Lässt sich eine Autofolierung wieder rückstandslos entfernen?</summary>
+        <div class="faq-answer">
+          Ja. Hochwertige Wrapping- und Beschriftungsfolien lassen sich auch nach mehreren Jahren unter Zufuhr von Wärme materialschonend und in der Regel rückstandslos wieder abziehen, ohne den Originallack zu beschädigen.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Bieten Sie auch die Montage vor Ort an?</summary>
+        <div class="faq-answer">
+          Ja, unser hauseigenes Montageteam bringt Werbeschilder, Leitsysteme, Schaufensterfolierungen und Fassadenbeschriftungen fachgerecht bei Ihnen vor Ort in der gesamten Steiermark an.
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- KONTAKT -->
+  <section class="contact-section wrap" id="kontakt" aria-labelledby="contact-heading">
+    <div class="contact-grid">
+      <div class="contact-info reveal scroll-reveal">
+        <div>
+          <span class="eyebrow">Kontakt</span>
+          <h2 id="contact-heading" class="contact-info__title">Lassen Sie uns<br>etwas <span>erschaffen.</span></h2>
+          <p class="sec-intro" style="margin-bottom: 2rem;">Haben Sie Fragen oder möchten Sie ein konkretes Projekt besprechen? Unser Team berät Sie gerne unverbindlich.</p>
+        </div>
+        
+        <div class="contact-rows">
+          <div class="contact-row">
+            <span class="contact-row__label">Telefon</span>
+            <span class="contact-row__value"><a href="tel:+43384767666">+43 (0) 3847 / 67 666</a></span>
+          </div>
+          <div class="contact-row">
+            <span class="contact-row__label">E-Mail</span>
+            <span class="contact-row__value"><a href="mailto:office@schriften-kortschak.at">office@schriften-kortschak.at</a></span>
+          </div>
+          <div class="contact-row">
+            <span class="contact-row__label">Adresse</span>
+            <span class="contact-row__value">Bahnhofstraße 6, 8793 Trofaiach</span>
+          </div>
+          <div class="contact-row">
+            <span class="contact-row__label">Bürozeiten</span>
+            <span class="contact-row__value">Mo – Do: 08:00 – 16:30 | Fr: 08:00 – 12:00</span>
+          </div>
+        </div>
+      </div>
+
+      <form class="contact-form reveal scroll-reveal" action="#" method="POST" id="contact-form-el">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">Name <span style="color: var(--brand);">*</span></label>
+            <input type="text" id="name" name="name" required placeholder="Ihr Name">
+          </div>
+          <div class="form-group">
+            <label for="email">E-Mail <span style="color: var(--brand);">*</span></label>
+            <input type="email" id="email" name="email" required placeholder="ihre@adresse.at">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="phone">Telefon</label>
+            <input type="tel" id="phone" name="phone" placeholder="+43 660 ...">
+          </div>
+          <div class="form-group">
+            <label for="subject">Leistung</label>
+            <select id="subject" name="subject">
+              <option value="default">— Bitte wählen —</option>
+              <option value="fahrzeug">Fahrzeugbeschriftung</option>
+              <option value="wrapping">Car Wrapping</option>
+              <option value="folien">Sonnen- &amp; Schutzfolien</option>
+              <option value="werbung">Innen- &amp; Außenwerbung</option>
+              <option value="textil">Textildruck &amp; Kleidung</option>
+              <option value="grafik">Grafikdesign &amp; CD</option>
+              <option value="marketing">Online Marketing</option>
+              <option value="web">Webdesign</option>
+              <option value="sonstiges">Sonstiges</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="message">Nachricht <span style="color: var(--brand);">*</span></label>
+          <textarea id="message" name="message" required placeholder="Beschreiben Sie Ihr Projekt..." rows="5"></textarea>
+        </div>
+
+        <label class="form-checkbox" for="privacy">
+          <input type="checkbox" id="privacy" name="privacy" required>
+          <span>Ich stimme zu, dass meine Daten zur Bearbeitung der Anfrage elektronisch verarbeitet und gespeichert werden. <span style="color: var(--brand);">*</span></span>
+        </label>
+
+        <button type="submit" class="btn btn--brand">Anfrage senden <span class="arr" aria-hidden="true">→</span></button>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-column">
+        <h3 style="color: var(--white); font-size: 1.5rem; font-weight: 900; letter-spacing: -0.04em;"><span>K</span>ORTSCHAK</h3>
+        <p style="margin-top: 12px;">Meisterbetrieb für Werbetechnik und Agentur für Sichtbarkeit. Seit 1958 in Trofaiach, Steiermark.</p>
+      </div>
+      
+      <div class="footer-column">
+        <h3>Leistungen</h3>
+        <ul>
+          <li><a href="#leistungen">Fahrzeugbeschriftung</a></li>
+          <li><a href="#leistungen">Car Wrapping</a></li>
+          <li><a href="#leistungen">Schilder &amp; Planen</a></li>
+          <li><a href="#leistungen">Textildruck</a></li>
+          <li><a href="#leistungen">Möbelfolierung</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h3>Agentur</h3>
+        <ul>
+          <li><a href="#leistungen">Grafikdesign</a></li>
+          <li><a href="#leistungen">Webdesign</a></li>
+          <li><a href="#leistungen">SEO &amp; Recruiting</a></li>
+          <li><a href="#ausstattung">Maschinenpark</a></li>
+          <li><a href="#stundensaetze">Tarife</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h3>Unternehmen</h3>
+        <ul>
+          <li><a href="#unternehmen">Über uns</a></li>
+          <li><a href="#team">Unser Team</a></li>
+          <li><a href="#referenzen">Referenzen</a></li>
+          <li><a href="#kontakt">Kontakt</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <span>© 1958–2026 Kortschak Schriften GmbH · Bahnhofstraße 6, 8793 Trofaiach · Steiermark</span>
+      <span>
+        <a href="#impressum">Impressum</a> · 
+        <a href="#datenschutz">Datenschutz</a>
+      </span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function() {
+  // Check for motion sensitivity
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Toggle mobile navigation menu
+  const burger = document.getElementById('menu-burger');
+  const nav = document.getElementById('mobile-nav');
+  
+  function setMenuOpen(open) {
+    burger.setAttribute('aria-expanded', String(open));
+    nav.setAttribute('data-open', String(open));
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+  
+  burger.addEventListener('click', function() {
+    const isOpen = burger.getAttribute('aria-expanded') === 'true';
+    setMenuOpen(!isOpen);
+  });
+  
+  nav.addEventListener('click', function(e) {
+    if (e.target.closest('a')) {
+      setMenuOpen(false);
+    }
+  });
+
+  // Close mobile menu on Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && burger.getAttribute('aria-expanded') === 'true') {
+      setMenuOpen(false);
+      burger.focus();
+    }
+  });
+
+  // Progressive enhancement fallback for scroll-driven animations
+  if (reduceMotion) {
+    // Reveal all elements immediately
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
+  } else if (!CSS.supports('(animation-timeline: view()) and (animation-range: entry)')) {
+    // Run fallback IntersectionObserver for scroll-reveal class elements
+    const revealItems = document.querySelectorAll('.reveal');
+    
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          // Once revealed, we don't need to observe it anymore
+          io.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.12,
+      rootMargin: '0px 0px -6% 0px'
+    });
+    
+    revealItems.forEach(item => io.observe(item));
+  }
+  
+  // Fallback for shrinking header
+  if (!reduceMotion && !CSS.supports('(animation-timeline: scroll()) and (animation-range: 0% 100%)')) {
+    const header = document.querySelector('.header');
+    const scrollDistance = 120;
+    
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+      const scrollPercent = Math.min(1, scrollY / scrollDistance);
+      
+      if (scrollY > 20) {
+        header.style.height = `${90 - (30 * scrollPercent)}px`;
+        header.style.backgroundColor = `rgba(9, 9, 10, ${0.75 + (0.17 * scrollPercent)})`;
+        header.style.borderBottomColor = scrollPercent >= 1 ? 'var(--brand)' : 'var(--border)';
+      } else {
+        header.style.height = '90px';
+        header.style.backgroundColor = 'rgba(9, 9, 10, 0.75)';
+        header.style.borderBottomColor = 'var(--border)';
+      }
+    }, { passive: true });
+  }
+
+  // Fallback for scrollytelling background color shift
+  if (!reduceMotion && !CSS.supports('(animation-timeline: scroll()) and (animation-range: 0% 100%)')) {
+    const scrollDistance = document.documentElement.scrollHeight - window.innerHeight;
+    
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+      const scrollPercent = scrollY / (scrollDistance || 1);
+      
+      let color = '#09090a';
+      if (scrollPercent > 0.1 && scrollPercent <= 0.45) {
+        // transition to deep red-black
+        const p = (scrollPercent - 0.1) / 0.35;
+        // interpolate #09090a to #1a0506
+        const r = Math.round(9 + (26 - 9) * p);
+        const g = Math.round(9 + (5 - 9) * p);
+        const b = Math.round(10 + (6 - 10) * p);
+        color = `rgb(${r}, ${g}, ${b})`;
+      } else if (scrollPercent > 0.45 && scrollPercent <= 0.75) {
+        // transition to deep dark purple-gray
+        const p = (scrollPercent - 0.45) / 0.3;
+        // interpolate #1a0506 to #0c0b0e
+        const r = Math.round(26 + (12 - 26) * p);
+        const g = Math.round(5 + (11 - 5) * p);
+        const b = Math.round(6 + (14 - 6) * p);
+        color = `rgb(${r}, ${g}, ${b})`;
+      } else if (scrollPercent > 0.75) {
+        // transition back to #09090a
+        const p = (scrollPercent - 0.75) / 0.25;
+        // interpolate #0c0b0e to #09090a
+        const r = Math.round(12 + (9 - 12) * p);
+        const g = Math.round(11 + (9 - 11) * p);
+        const b = Math.round(14 + (10 - 14) * p);
+        color = `rgb(${r}, ${g}, ${b})`;
+      }
+      
+      document.body.style.backgroundColor = color;
+    }, { passive: true });
+  }
+
+  // Simple form submission override
+  const contactForm = document.getElementById('contact-form-el');
+  if (contactForm) {
+    contactForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Vielen Dank! Dies ist eine Demo-Website. Ihre Anfrage wurde im echten Betrieb an office@schriften-kortschak.at gesendet.');
+      contactForm.reset();
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
