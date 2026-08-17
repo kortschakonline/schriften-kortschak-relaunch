@@ -1,0 +1,9 @@
+{
+  "asset": "bmw-g21", "version": "v02", "ext": "avif",
+  "renditions": {
+    "desktop": { "path": "desktop/", "width": 2000, "height": 1125, "frames": 240, "frameStep": 1 },
+    "mobile":  { "path": "mobile/",  "width": 960,  "height": 540,  "frames": 120, "frameStep": 2 }
+  },
+  "shadow": { "path": "shadow/", "width": 1000, "height": 563, "frames": 240, "note": "RGBA-Maske: schwarz + Alpha=Schattenstaerke; Light Mode unters Auto legen, Deckkraft frei regeln" },
+  "events": { "lightsOn": [30, 60], "approach": [30, 100], "wipeK": [72, 108], "wipeB": [150, 186], "heroPose": 240 }
+}

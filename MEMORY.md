@@ -16,6 +16,7 @@ Neubau der Website der eigenen Werbeagentur **Kortschak Schriften GmbH** (Bestan
 
 **Live-Vorschau (Demo, bewusst `noindex`):** https://view.kortschak.online
 (Startseite = finaler Entwurf „Bold Studio" + 10 Leistungs-Unterseiten)
+**Entwürfe-Übersicht:** https://view.kortschak.online/entwuerfe/ — alle Entwürfe 01–10 als Unterordner (zuletzt ergänzt: `10-apple-motion` mit scrollgesteuerter BMW-G21-Sequenz aus eigenem Blender-Rendering, Juli 2026)
 
 ---
 
@@ -66,6 +67,7 @@ schriften-kortschak/
 - **Parallele Sub-Agenten** für unabhängige Teilaufgaben (Analyse je Bereich, Entwürfe, Unterseiten) — schnell + konsistent durch gemeinsames Briefing/Vorlage. Danach immer **selbst verifiziert**.
 - **Skills**: `frontend-design` (Design), eigener **`seo-onpage`** (On-Page-SEO beim Bauen; liegt unter `~/.claude/skills/seo-onpage/` — wiederverwendbar für künftige Kundenprojekte; ergänzt das vorhandene `marketing:seo-audit`).
 - **Hostinger-MCP**: Domain-Check, Subdomain `view` anlegen, Static-Deploy — alles per API, kein FTP.
+  ⚠️ **Achtung:** `deployStaticWebsite` **ersetzt den kompletten Inhalt** des Webroots (kein additives Entpacken). Beim Online-Stellen eines einzelnen Entwurfs daher immer die **ganze Site** paketieren: Root = `04-bold-studio` + alle Entwurfs-Ordner + `entwuerfe/`-Übersicht (liegt nicht lokal — vor dem Deploy von der Live-Site holen und ergänzen).
 - **Playwright-MCP**: Seiten rendern, Screenshots, Bild-Ladekontrolle.
 - **Skripte (Python/Bash)** für Fleißarbeit: Bilder lokalisieren, Links umschreiben, alles validieren.
 - Prinzip durchgehend: **Behauptungen belegen** (Live-Status, JSON-LD-Validierung, Bild-Checks) statt „müsste passen".

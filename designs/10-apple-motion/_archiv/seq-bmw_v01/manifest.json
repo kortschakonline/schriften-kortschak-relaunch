@@ -1,0 +1,19 @@
+{
+ "asset": "bmw-g21",
+ "version": "v01",
+ "ext": "avif",
+ "renditions": {
+  "desktop": { "path": "desktop/", "width": 2000, "height": 1125, "frames": 150, "frameStep": 1 },
+  "mobile":  { "path": "mobile/",  "width": 960,  "height": 540,  "frames": 75,  "frameStep": 2 }
+ },
+ "shadow": {
+  "path": "shadow/", "width": 1000, "height": 563, "frames": 150,
+  "note": "Vollframe-Maske (schwarz + Alpha, gleiche Kamera wie das Auto). Deckungsgleich zum Auto-Frame zeichnen, NICHT als Bodenstreifen skalieren."
+ },
+ "events": {
+  "lightsOn": [40, 55],
+  "wrapWipe": [95, 135],
+  "wrapVisible": [116, 135],
+  "heroPose": 150
+ }
+}

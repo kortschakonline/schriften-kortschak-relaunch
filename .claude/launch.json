@@ -1,0 +1,16 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "design10",
+      "url": "http://localhost:8766",
+      "port": 8766
+    },
+    {
+      "name": "kortschak-website",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "/Volumes/MacUser/Projekte/kortschak-website", "start"],
+      "port": 8765
+    }
+  ]
+}
