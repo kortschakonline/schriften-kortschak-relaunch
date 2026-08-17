@@ -350,8 +350,8 @@
   .hero__video--bg{z-index:0;}
   .hero__video--fg{
     z-index:2;
-    -webkit-mask-image:url('assets/bg/view-fg.webp');
-    mask-image:url('assets/bg/view-fg.webp');
+    -webkit-mask-image:url('/assets/bg/view-fg.webp');
+    mask-image:url('/assets/bg/view-fg.webp');
     -webkit-mask-size:cover;mask-size:cover;
     -webkit-mask-position:center;mask-position:center;
     -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
@@ -419,6 +419,113 @@
   .hero__meta{
     margin-top:var(--space-3);font-size:.85rem;color:var(--text-2);letter-spacing:.01em;
   }
+
+  /* ===== HERO B — Typo-Folierung =====
+     --edge = Position der Wipe-Kante im Wort. Zwei Hintergruende auf
+     background-clip:text: oben eine Deckschicht in Tintenfarbe ab der
+     Kante, darunter der Folienverlauf Rot->Orange. Ohne .heroB--live
+     (kein JS / reduced-motion) steht das Wort fertig foliert. */
+  .heroB{
+    --p:1;
+    --edge:calc(var(--p) * 126% - 13%);
+    /* Foto-Bühne: Hero bleibt in beiden Themes ein dunkler Kinoblock,
+       Textfarben lokal fix. Unfolierte Buchstaben = Milchglas (halb-
+       transparent, Foto scheint durch) — foliert = deckender Rot-Orange-
+       Verlauf: aus „unsichtbar" wird „sichtbar". */
+    --ink:rgba(245,246,250,.34);
+    --text:#f5f6f7;--text-2:#b6bac1;
+    position:relative;background:#0b0b0d;
+  }
+  .heroB__bg{position:absolute;inset:0;overflow:hidden;}
+  .heroB__bg img{
+    width:100%;height:100%;object-fit:cover;object-position:50% 42%;
+    opacity:.55;filter:brightness(.62) saturate(.9);
+  }
+  .heroB__bg::after{
+    content:'';position:absolute;inset:0;
+    background:
+      radial-gradient(120% 90% at 50% 40%, rgba(11,11,13,0) 0%, rgba(11,11,13,.55) 82%),
+      linear-gradient(to bottom, rgba(11,11,13,.45), rgba(11,11,13,.12) 38%, rgba(11,11,13,.52) 100%);
+  }
+  /* Unterkante löst sich in den Seitengrund auf */
+  .heroB__sticky::after{
+    content:'';position:absolute;left:0;right:0;bottom:0;height:14vh;
+    background:linear-gradient(to bottom, rgba(11,11,13,0), var(--bg));
+    pointer-events:none;z-index:1;
+  }
+  .heroB__sticky{
+    position:relative;min-height:100vh;min-height:100svh;
+    display:flex;align-items:center;justify-content:center;
+    padding:96px 20px 40px;
+  }
+  .heroB__inner{text-align:center;max-width:1280px;position:relative;z-index:2;}
+  .heroB__eyebrow{margin-bottom:var(--space-3);}
+  .js .heroB__eyebrow{animation:hero-kicker-in .9s ease-out .15s both;}
+  .heroB__word{margin:0;}
+  .heroB__kicker{
+    display:block;font-weight:800;
+    font-size:clamp(.95rem,1.7vw,1.4rem);letter-spacing:.42em;text-indent:.42em;
+    color:var(--text-2);margin-bottom:.5em;
+  }
+  .heroB__big{position:relative;display:inline-block;line-height:1;}
+  /* Zwei deckungsgleiche Textebenen: unten Milchglas (Foto scheint durch
+     die Buchstaben), darüber die Folien-Ebene, per clip-path an der
+     Wipe-Kante beschnitten — echtes „unsichtbar wird sichtbar". */
+  .heroB__txt{
+    font-family:'Anton',Impact,sans-serif;font-weight:400;
+    font-size:clamp(4.4rem,16.5vw,16rem);line-height:1;letter-spacing:.01em;
+    display:inline-block;padding:.02em .04em;
+    color:transparent;
+    -webkit-background-clip:text;background-clip:text;
+  }
+  .heroB__txt--glass{
+    background-image:linear-gradient(rgba(248,249,252,.36),rgba(248,249,252,.28));
+  }
+  .heroB__txt--foil{
+    position:absolute;inset:0;
+    background-image:linear-gradient(100deg, var(--accent) 12%, var(--accent-hover) 46%, var(--accent-2) 96%);
+    clip-path:inset(-6% calc(100% - var(--edge)) -6% -3%);
+  }
+  .js .heroB__big{animation:hero-word-fade 1.1s cubic-bezier(.16,1,.3,1) .3s both;}
+  .heroB__rakel{
+    position:absolute;top:-4%;bottom:-4%;left:var(--edge);
+    width:clamp(8px,.9vw,13px);border-radius:999px;
+    background:linear-gradient(180deg,var(--accent),var(--accent-2));
+    box-shadow:0 0 26px rgba(255,28,32,.55);
+    transform:translateX(-50%) rotate(6deg);
+    opacity:0;pointer-events:none;
+  }
+  .heroB__claim{margin-top:var(--space-4);}
+  .heroB__claim .lead{max-width:52ch;margin-inline:auto;}
+  .heroB__claim .hero__actions{justify-content:center;margin-top:var(--space-3);}
+  .heroB__claim .hero__meta{margin-top:var(--space-3);}
+  .heroB__hint{
+    position:absolute;left:50%;bottom:4%;transform:translateX(-50%);z-index:2;
+    font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--text-2);opacity:0;transition:opacity .45s var(--ease);pointer-events:none;
+  }
+  .heroB__hint-arrow{display:block;text-align:center;animation:hint-bob 1.6s ease-in-out infinite;}
+  @keyframes hint-bob{0%,100%{transform:translateY(0);}50%{transform:translateY(6px);}}
+  /* Live-Modus: lange Scroll-Strecke + klebende Buehne (nur mit JS und
+     ohne reduced-motion — Klasse setzt das Skript) */
+  .heroB--live{--p:0;height:320vh;}
+  .heroB--live .heroB__sticky{position:sticky;top:0;height:100vh;overflow:hidden;}
+  /* Foto schiebt sich beim Folieren ganz leicht zurück (Apple-Push-back) */
+  .heroB--live .heroB__bg img{
+    transform:scale(calc(1.07 - var(--p) * 0.07));
+    transform-origin:50% 45%;
+  }
+  .heroB--live .heroB__rakel{
+    opacity:calc(clamp(0, (var(--p) - .03) * 16, 1) * clamp(0, (.9 - var(--p)) * 16, 1));
+  }
+  .heroB--live .heroB__claim{
+    --claimT:clamp(0, (var(--p) - .76) / .16, 1);
+    opacity:var(--claimT);
+    transform:translateY(calc((1 - var(--claimT)) * 26px));
+    pointer-events:none;
+  }
+  .heroB--live.is-done .heroB__claim{pointer-events:auto;}
+  .heroB--live .heroB__hint.is-on{opacity:1;}
 
   /* ===== Statement ===== */
   .statement{text-align:center;}
@@ -717,50 +824,36 @@
 
 <main id="main">
 
-  <!-- ===== HERO — Fullview-Szene, Riesen-Wort hinter Halle & Sprinter.
-       INTERIM, bis die finale Hero-Animation entschieden ist. Der
-       BMW-Produktmoment lebt auf /leistungen/car-wrapping/. ===== -->
-  <section class="hero" aria-labelledby="hero-title">
-    <img class="hero__bg" src="assets/bg/view-bg.webp" width="1376" height="768" alt="" aria-hidden="true" fetchpriority="high">
-    <h1 class="hero__headline" id="hero-title" aria-label="Wir machen Sie sichtbar.">
-      <!-- Verlauf in userSpaceOnUse: y1/y2 liegen exakt auf Versalhöhe und
-           Grundlinie des Wortes (82 → 373). Bei objectBoundingBox würde der
-           Verlauf auf die Font-Box inkl. Ober-/Unterlänge gerechnet — dann
-           fehlt oben das Silber. Unten läuft er auf Deckkraft 0 aus, das
-           Wort löst sich also in die Szene auf. -->
-      <!-- Koordinaten aus gemessenen Schriftmetriken, nicht geschätzt:
-           Anton hat bei 400px eine Versalhöhe von 347 (0.867 em) — deutlich
-           mehr als die üblichen ~0.73. Wort-Grundlinie 423 → Versalhöhe bei
-           76, darüber 34 Einheiten Luft bis zur Kicker-Grundlinie (42).
-           Der Verlauf läuft in userSpaceOnUse exakt von 76 (oben) bis 423
-           (Grundlinie) und endet auf Deckkraft 0 — das Wort löst sich unten
-           in die Szene auf. Bei objectBoundingBox läge er auf der Font-Box
-           inkl. Ober-/Unterlängen, dann fehlt oben das Silber. -->
-      <svg class="hero__text" viewBox="0 0 1214 450" aria-hidden="true" focusable="false">
-        <defs>
-          <linearGradient id="sichtbar-grad" gradientUnits="userSpaceOnUse" x1="0" y1="76" x2="0" y2="423">
-            <stop offset="0" stop-color="#d0d3d6"/>
-            <stop offset=".28" stop-color="#c5c2be"/>
-            <stop offset=".52" stop-color="#b8a18c"/>
-            <stop offset=".72" stop-color="#ae8a64" stop-opacity=".72"/>
-            <stop offset=".88" stop-color="#a67c52" stop-opacity=".3"/>
-            <stop offset="1" stop-color="#a3764e" stop-opacity="0"/>
-          </linearGradient>
-        </defs>
-        <text class="hero__scene-kicker" x="0" y="42" font-size="40" textLength="400" lengthAdjust="spacingAndGlyphs">WIR MACHEN SIE</text>
-        <text class="hero__scene-word" x="0" y="423" font-size="400" fill="url(#sichtbar-grad)" textLength="1214" lengthAdjust="spacingAndGlyphs">SICHTBAR</text>
-      </svg>
-    </h1>
-    <img class="hero__fg" src="assets/bg/view-fg.webp" width="1376" height="768" alt="" aria-hidden="true" fetchpriority="high">
-    <div class="hero__scrim" aria-hidden="true"></div>
-    <div class="hero__fade" aria-hidden="true"></div>
-    <div class="hero__content wrap">
-      <p class="lead reveal" data-delay="1">Werbetechnik, Grafik und Montage aus einer Hand — vom kleinsten Aufkleber bis zur Vollfolierung, vom Logo bis zur fertigen Website.</p>
-      <div class="hero__actions reveal" data-delay="2">
-        <a class="btn btn--primary" href="#leistungen">Leistungen entdecken</a>
-        <a class="btn btn--secondary" href="#kontakt">Angebot anfragen</a>
+  <!-- ===== HERO B — Typo-Folierung: das Wort wird beim Scrollen foliert.
+       Klebende 100vh-Bühne über 320vh; --p (0..1) treibt die Wipe-Kante
+       (background-clip:text, Deckschicht in Tintenfarbe läuft nach rechts
+       auf, darunter liegt der Rot-Orange-Folienverlauf). Ohne JS oder bei
+       reduced-motion: statisch, fertig foliert. Debug: #foil=0.5 -->
+  <section class="heroB" aria-labelledby="hero-title">
+    <div class="heroB__sticky">
+      <div class="heroB__bg" aria-hidden="true">
+        <img src="/assets/bg/hero-flipfolie.webp" alt="" fetchpriority="high" width="2200" height="2750">
       </div>
-      <p class="hero__meta reveal" data-delay="3">Eigene Grafik · Eigene Fertigung · Eigene Montage-Crew</p>
+      <div class="heroB__inner">
+        <p class="eyebrow heroB__eyebrow">Werbeagentur · Trofaiach · Seit 1958</p>
+        <h1 class="heroB__word" id="hero-title" aria-label="Wir machen Sie sichtbar.">
+          <span class="heroB__kicker">WIR MACHEN SIE</span>
+          <span class="heroB__big">
+            <span class="heroB__txt heroB__txt--glass" aria-hidden="true">SICHTBAR.</span>
+            <span class="heroB__txt heroB__txt--foil" aria-hidden="true">SICHTBAR.</span>
+            <span class="heroB__rakel" aria-hidden="true"></span>
+          </span>
+        </h1>
+        <div class="heroB__claim">
+          <p class="lead">Werbetechnik, Grafik und Montage aus einer Hand — vom kleinsten Aufkleber bis zur Vollfolierung, vom Logo bis zur fertigen Website.</p>
+          <div class="hero__actions">
+            <a class="btn btn--primary" href="#leistungen">Leistungen entdecken</a>
+            <a class="btn btn--secondary" href="#kontakt">Angebot anfragen</a>
+          </div>
+          <p class="hero__meta">Eigene Grafik · Eigene Fertigung · Eigene Montage-Crew</p>
+        </div>
+      </div>
+      <div class="heroB__hint" aria-hidden="true">Scrollen<span class="heroB__hint-arrow">↓</span></div>
     </div>
   </section>
 
@@ -788,7 +881,7 @@
         </div>
       </div>
       <div class="about__media reveal" data-delay="1">
-        <img src="assets/img/Overlaybild_Video_Anja_Brandl-1080x610px.webp" alt="Anja Brandl, B.A., Geschäftsführerin der Kortschak Schriften GmbH">
+        <img src="/assets/img/Overlaybild_Video_Anja_Brandl-1080x610px.webp" alt="Anja Brandl, B.A., Geschäftsführerin der Kortschak Schriften GmbH">
         <p class="about__caption">Anja Brandl, B.A. — Geschäftsführung</p>
       </div>
     </div>
@@ -805,17 +898,17 @@
         </div>
         <div class="refs">
           <figure class="glass-card reveal">
-            <span class="glass-card__logo"><img src="assets/img/Stadtwerke_Trofaiach-Logo-300x100px.webp" alt="Logo Stadtwerke Trofaiach" loading="lazy"></span>
+            <span class="glass-card__logo"><img src="/assets/img/Stadtwerke_Trofaiach-Logo-300x100px.webp" alt="Logo Stadtwerke Trofaiach" loading="lazy"></span>
             <blockquote>Unser regionaler Partner für Werbetechnik.</blockquote>
             <cite>Stadtwerke Trofaiach</cite>
           </figure>
           <figure class="glass-card reveal" data-delay="1">
-            <span class="glass-card__logo"><img src="assets/img/OESTU_Stettin-Logo-300x100px.webp" alt="Logo ÖSTU-STETTIN" loading="lazy"></span>
+            <span class="glass-card__logo"><img src="/assets/img/OESTU_Stettin-Logo-300x100px.webp" alt="Logo ÖSTU-STETTIN" loading="lazy"></span>
             <blockquote>Werbedruckspezialisten unseres Vertrauens.</blockquote>
             <cite>ÖSTU-STETTIN</cite>
           </figure>
           <figure class="glass-card reveal" data-delay="2">
-            <span class="glass-card__logo"><img src="assets/img/ContServe-Logo-300x100px.webp" alt="Logo IC ContServ" loading="lazy"></span>
+            <span class="glass-card__logo"><img src="/assets/img/ContServe-Logo-300x100px.webp" alt="Logo IC ContServ" loading="lazy"></span>
             <blockquote>Vom Konzept bis zur Montage — alles aus einer Hand.</blockquote>
             <cite>IC ContServ</cite>
           </figure>
@@ -1080,67 +1173,34 @@ if(!reduce && 'IntersectionObserver' in window){
 })();
 </script>
 
-<script>
-/* ===== Hero-Ambient-Video =====
-   Seedance-Loop (Palindrom, nahtlos) nur im Querformat, nicht bei
-   Datensparmodus oder reduzierter Bewegung. Zwei Elemente mit derselben
-   Datei: Himmel hinter dem Text, maskierter Vordergrund davor — ein
-   Sync-Wächter hält beide deckungsgleich. Schlägt Autoplay fehl,
-   bleiben einfach die statischen Bilder stehen. */
-(function(){
-  var land = matchMedia('(min-aspect-ratio: 5/4)').matches;
-  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var conn = navigator.connection || {};
-  if(!land || reduce || conn.saveData) return;
-  var hero = document.querySelector('.hero');
-  if(!hero) return;
-  function mk(cls, before){
-    var v = document.createElement('video');
-    v.className = cls;
-    v.muted = true; v.loop = true; v.playsInline = true; v.autoplay = true;
-    v.setAttribute('muted',''); v.setAttribute('playsinline','');
-    v.setAttribute('aria-hidden','true'); v.preload = 'auto';
-    v.src = 'assets/bg/view-bg-loop-web.mp4';
-    hero.insertBefore(v, before);
-    return v;
-  }
-  var vbg = mk('hero__video hero__video--bg', hero.querySelector('.hero__headline'));
-  var vfg = mk('hero__video hero__video--fg', hero.querySelector('.hero__scrim'));
-  setInterval(function(){
-    if(Math.abs(vbg.currentTime - vfg.currentTime) > 0.08) vfg.currentTime = vbg.currentTime;
-  }, 2000);
-  Promise.all([vbg.play(), vfg.play()]).catch(function(){
-    /* Autoplay (noch) blockiert — pausiert zeigen beide ihren ersten Frame
-       (= identisch mit den statischen Bildern). Bei Sichtbarkeit oder
-       erster Interaktion erneut versuchen. */
-    var retry = function(){ vbg.play(); vfg.play(); };
-    document.addEventListener('visibilitychange', retry, {once:true});
-    document.addEventListener('pointerdown', retry, {once:true});
-  });
-})();
-</script>
+
+
 
 <script>
-/* ===== Hero-Parallaxe (Variante A) =====
-   Beim Wegscrollen sinkt NUR die Wort-Ebene langsamer als die Seite —
-   das Wort verschwindet dadurch sichtbar HINTER der Halle (der maskierte
-   Vordergrund bleibt unbewegt, damit bg-Foto und fg-Freisteller
-   deckungsgleich bleiben). Faktor 0.35, nur solange der Hero im Bild ist. */
+/* ===== HERO B — Scroll-Fortschritt -> --p (Lerp-geglaettet) ===== */
 (function(){
-  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var word = document.querySelector('.hero__text');
-  if(!word) return;
-  var ticking = false;
-  function apply(){
-    ticking = false;
-    var y = window.scrollY;
-    if(y > window.innerHeight * 1.2){ return; }
-    word.style.transform = 'translateY(' + (y * 0.35).toFixed(1) + 'px)';
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var sec = document.querySelector('.heroB');
+  if(!sec || reduce) return;               /* statischer Fallback: --p bleibt 1 */
+  sec.classList.add('heroB--live');
+  var hint = sec.querySelector('.heroB__hint');
+  function target(){
+    var dbg = location.hash.match(/#foil=([\d.]+)/);
+    if(dbg) return Math.min(1, Math.max(0, parseFloat(dbg[1])));
+    var denom = sec.offsetHeight - window.innerHeight;
+    return denom > 0 ? Math.min(1, Math.max(0, -sec.getBoundingClientRect().top / denom)) : 1;
   }
-  window.addEventListener('scroll', function(){
-    if(!ticking){ ticking = true; requestAnimationFrame(apply); }
-  }, { passive: true });
-  apply();
+  var cur = target();
+  (function tick(){
+    var t = target();
+    cur += (t - cur) * 0.18;
+    if(Math.abs(t - cur) < 0.0005) cur = t;
+    sec.style.setProperty('--p', cur.toFixed(4));
+    sec.classList.toggle('is-done', cur > 0.85);
+    if(hint) hint.classList.toggle('is-on', cur < 0.04);
+    sec.dataset.p = cur.toFixed(3);        /* QA-Hook */
+    requestAnimationFrame(tick);
+  })();
 })();
 </script>
 </body>
