@@ -428,19 +428,37 @@
   .heroB{
     --p:1;
     --edge:calc(var(--p) * 126% - 13%);
-    --ink:#c9c9ce;
-    position:relative;
+    /* Foto-Bühne: Hero bleibt in beiden Themes ein dunkler Kinoblock,
+       Textfarben lokal fix. Unfolierte Buchstaben = Milchglas (halb-
+       transparent, Foto scheint durch) — foliert = deckender Rot-Orange-
+       Verlauf: aus „unsichtbar" wird „sichtbar". */
+    --ink:rgba(245,246,250,.34);
+    --text:#f5f6f7;--text-2:#b6bac1;
+    position:relative;background:#0b0b0d;
   }
-  [data-theme="dark"] .heroB{--ink:#3a3a3e;}
-  @media (prefers-color-scheme: dark){
-    :root:not([data-theme]) .heroB{--ink:#3a3a3e;}
+  .heroB__bg{position:absolute;inset:0;overflow:hidden;}
+  .heroB__bg img{
+    width:100%;height:100%;object-fit:cover;object-position:50% 42%;
+    opacity:.55;filter:brightness(.62) saturate(.9);
+  }
+  .heroB__bg::after{
+    content:'';position:absolute;inset:0;
+    background:
+      radial-gradient(120% 90% at 50% 40%, rgba(11,11,13,0) 0%, rgba(11,11,13,.55) 82%),
+      linear-gradient(to bottom, rgba(11,11,13,.45), rgba(11,11,13,.12) 38%, rgba(11,11,13,.52) 100%);
+  }
+  /* Unterkante löst sich in den Seitengrund auf */
+  .heroB__sticky::after{
+    content:'';position:absolute;left:0;right:0;bottom:0;height:14vh;
+    background:linear-gradient(to bottom, rgba(11,11,13,0), var(--bg));
+    pointer-events:none;z-index:1;
   }
   .heroB__sticky{
     position:relative;min-height:100vh;min-height:100svh;
     display:flex;align-items:center;justify-content:center;
     padding:96px 20px 40px;
   }
-  .heroB__inner{text-align:center;max-width:1280px;}
+  .heroB__inner{text-align:center;max-width:1280px;position:relative;z-index:2;}
   .heroB__eyebrow{margin-bottom:var(--space-3);}
   .js .heroB__eyebrow{animation:hero-kicker-in .9s ease-out .15s both;}
   .heroB__word{margin:0;}
@@ -450,17 +468,25 @@
     color:var(--text-2);margin-bottom:.5em;
   }
   .heroB__big{position:relative;display:inline-block;line-height:1;}
-  .heroB__foil{
+  /* Zwei deckungsgleiche Textebenen: unten Milchglas (Foto scheint durch
+     die Buchstaben), darüber die Folien-Ebene, per clip-path an der
+     Wipe-Kante beschnitten — echtes „unsichtbar wird sichtbar". */
+  .heroB__txt{
     font-family:'Anton',Impact,sans-serif;font-weight:400;
     font-size:clamp(4.4rem,16.5vw,16rem);line-height:1;letter-spacing:.01em;
     display:inline-block;padding:.02em .04em;
     color:transparent;
-    background-image:
-      linear-gradient(90deg, rgba(0,0,0,0) calc(var(--edge) - 1%), var(--ink) calc(var(--edge) + .5%)),
-      linear-gradient(100deg, var(--accent) 12%, var(--accent-hover) 46%, var(--accent-2) 96%);
     -webkit-background-clip:text;background-clip:text;
   }
-  .js .heroB__foil{animation:hero-word-fade 1.1s cubic-bezier(.16,1,.3,1) .3s both;}
+  .heroB__txt--glass{
+    background-image:linear-gradient(rgba(248,249,252,.36),rgba(248,249,252,.28));
+  }
+  .heroB__txt--foil{
+    position:absolute;inset:0;
+    background-image:linear-gradient(100deg, var(--accent) 12%, var(--accent-hover) 46%, var(--accent-2) 96%);
+    clip-path:inset(-6% calc(100% - var(--edge)) -6% -3%);
+  }
+  .js .heroB__big{animation:hero-word-fade 1.1s cubic-bezier(.16,1,.3,1) .3s both;}
   .heroB__rakel{
     position:absolute;top:-4%;bottom:-4%;left:var(--edge);
     width:clamp(8px,.9vw,13px);border-radius:999px;
@@ -474,7 +500,7 @@
   .heroB__claim .hero__actions{justify-content:center;margin-top:var(--space-3);}
   .heroB__claim .hero__meta{margin-top:var(--space-3);}
   .heroB__hint{
-    position:absolute;left:50%;bottom:4%;transform:translateX(-50%);
+    position:absolute;left:50%;bottom:4%;transform:translateX(-50%);z-index:2;
     font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;
     color:var(--text-2);opacity:0;transition:opacity .45s var(--ease);pointer-events:none;
   }
@@ -484,6 +510,11 @@
      ohne reduced-motion — Klasse setzt das Skript) */
   .heroB--live{--p:0;height:320vh;}
   .heroB--live .heroB__sticky{position:sticky;top:0;height:100vh;overflow:hidden;}
+  /* Foto schiebt sich beim Folieren ganz leicht zurück (Apple-Push-back) */
+  .heroB--live .heroB__bg img{
+    transform:scale(calc(1.07 - var(--p) * 0.07));
+    transform-origin:50% 45%;
+  }
   .heroB--live .heroB__rakel{
     opacity:calc(clamp(0, (var(--p) - .03) * 16, 1) * clamp(0, (.9 - var(--p)) * 16, 1));
   }
@@ -800,12 +831,16 @@
        reduced-motion: statisch, fertig foliert. Debug: #foil=0.5 -->
   <section class="heroB" aria-labelledby="hero-title">
     <div class="heroB__sticky">
+      <div class="heroB__bg" aria-hidden="true">
+        <img src="/assets/bg/hero-folienlager.webp" alt="" fetchpriority="high" width="2200" height="1467">
+      </div>
       <div class="heroB__inner">
         <p class="eyebrow heroB__eyebrow">Werbeagentur · Trofaiach · Seit 1958</p>
         <h1 class="heroB__word" id="hero-title" aria-label="Wir machen Sie sichtbar.">
           <span class="heroB__kicker">WIR MACHEN SIE</span>
           <span class="heroB__big">
-            <span class="heroB__foil" aria-hidden="true">SICHTBAR.</span>
+            <span class="heroB__txt heroB__txt--glass" aria-hidden="true">SICHTBAR.</span>
+            <span class="heroB__txt heroB__txt--foil" aria-hidden="true">SICHTBAR.</span>
             <span class="heroB__rakel" aria-hidden="true"></span>
           </span>
         </h1>

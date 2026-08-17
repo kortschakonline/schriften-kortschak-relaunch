@@ -5,3 +5,6 @@ designs/.playwright-mcp/
 *.log
 .idea/
 .vscode/
+
+# Foto-Originale von Lama (441 MB, ZIP >100MB wuerde GitHub-Push sprengen) — nur Web-Derivate in assets/bg/ werden versioniert
+designs/10-apple-motion/assets/Fotos-Lama/
