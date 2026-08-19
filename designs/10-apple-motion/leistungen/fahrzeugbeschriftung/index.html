@@ -936,5 +936,49 @@ if(reduce || !('IntersectionObserver' in window)){
 })();
 </script>
 
+<script>
+/* ===== Sanfter Anker-Scroll =====
+   Der native scroll-behavior:smooth ruckelt auf den langen Seiten (Sticky-
+   Buehnen + Backdrop-Blur). Darum: eigene Ease-in-out-Kurve mit Dauer nach
+   Distanz, abbrechbar durch Nutzer-Scroll. Bei reduced-motion: Sprung. */
+(function(){
+  'use strict';
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce) return;
+  document.documentElement.style.scrollBehavior = 'auto';
+  var raf = null;
+  function stopp(){ if(raf){ cancelAnimationFrame(raf); raf = null; } }
+  window.addEventListener('wheel', stopp, { passive: true });
+  window.addEventListener('touchstart', stopp, { passive: true });
+  window.addEventListener('keydown', function(e){
+    if(['ArrowUp','ArrowDown','PageUp','PageDown','Home','End',' '].indexOf(e.key) > -1) stopp();
+  });
+  function gleiten(ziel){
+    var start = window.scrollY, dist = ziel - start;
+    if(Math.abs(dist) < 2){ window.scrollTo(0, ziel); return; }
+    var dauer = Math.min(1100, 450 + Math.abs(dist) * 0.12), t0 = null;
+    stopp();
+    function schritt(ts){
+      if(t0 === null) t0 = ts;
+      var t = Math.min((ts - t0) / dauer, 1);
+      var e = t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2;
+      window.scrollTo(0, start + dist * e);
+      if(t < 1){ raf = requestAnimationFrame(schritt); } else { raf = null; }
+    }
+    raf = requestAnimationFrame(schritt);
+  }
+  document.addEventListener('click', function(ev){
+    var a = ev.target.closest('a[href^="#"]');
+    if(!a || a.classList.contains('skip-link')) return;
+    var id = a.getAttribute('href').slice(1);
+    var el = id ? document.getElementById(id) : null;
+    if(!el) return;
+    ev.preventDefault();
+    try { history.pushState(null, '', '#' + id); } catch(e){}
+    var oben = el.getBoundingClientRect().top + window.scrollY - 64;
+    gleiten(Math.max(0, Math.min(oben, document.documentElement.scrollHeight - window.innerHeight)));
+  });
+})();
+</script>
 </body>
 </html>

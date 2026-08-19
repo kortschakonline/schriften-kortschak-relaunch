@@ -386,6 +386,10 @@
     max-width:calc(100vw - 40px);
   }
   .stage__intro .hero__eyebrow{margin-bottom:0;}
+  /* Zweizeilige Headline: „Car Wrapping." größer im Verlauf,
+     „Folieren statt lackieren." darunter in Weiß */
+  .hero__hl-main{font-size:1.18em;}
+  .hero__hl-sub{font-size:.62em;font-weight:800;color:#f5f6f7;}
   @keyframes hero-kicker-in{from{opacity:0;}to{opacity:1;}}
   @keyframes hero-word-fade{from{opacity:0;transform:translateY(60px);}to{opacity:1;transform:none;}}
   .js .hero__eyebrow{animation:hero-kicker-in .9s ease-out .15s both;}
@@ -546,6 +550,34 @@
   .cta-panel .btn--primary{background:#fff;color:#CC1418;}
   .cta-panel .btn--primary:hover{background:rgba(255,255,255,.9);box-shadow:0 8px 24px rgba(0,0,0,.2);}
   .cta-panel .btn--secondary{color:#fff;box-shadow:inset 0 0 0 2px #fff;}
+
+  /* ===== 3D-Kachel: BMW-Render (Blender) über dem Kontakt-Panel ===== */
+  .cta3d{
+    position:relative;overflow:hidden;display:flex;align-items:center;
+    min-height:clamp(320px,36vw,440px);
+    border-radius:var(--radius-lg);box-shadow:var(--shadow-md);
+    background:#08080a;color:#fff;
+    margin-bottom:clamp(14px,1.8vw,24px);
+  }
+  .cta3d__bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:78% 42%;}
+  .cta3d::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(90deg,rgba(6,6,7,.9) 0%,rgba(6,6,7,.62) 44%,rgba(6,6,7,.04) 100%);
+  }
+  .cta3d__body{
+    position:relative;z-index:1;
+    padding:clamp(1.5rem,3.5vw,3rem);max-width:34rem;display:grid;gap:.6rem;
+  }
+  .cta3d__body .eyebrow{color:rgba(255,255,255,.85);margin-bottom:0;}
+  .cta3d__body h3{font-size:clamp(1.7rem,2.8vw,2.6rem);font-weight:800;letter-spacing:-.02em;line-height:1.1;}
+  .cta3d__body p{color:rgba(255,255,255,.85);}
+  .cta3d .btn{justify-self:start;margin-top:.5rem;}
+  @media (max-width:640px){
+    .cta3d{min-height:0;}
+    .cta3d::after{background:linear-gradient(to top,rgba(6,6,7,.92) 30%,rgba(6,6,7,.45) 70%,rgba(6,6,7,.1) 100%);}
+    .cta3d__bg{position:absolute;}
+    .cta3d__body{padding-top:clamp(9rem,50vw,14rem);}
+  }
   .cta-panel .btn--secondary:hover{background:#fff;color:#CC1418;}
 
   /* ===== Footer ===== */
@@ -768,7 +800,7 @@
     <div class="stage__sticky">
       <div class="stage__intro">
         <p class="eyebrow hero__eyebrow">Autofolierung · Trofaiach · Seit 1958</p>
-        <h1 class="hero__headline display" id="hero-title">Car Wrapping. <span class="gradient-text">Folieren statt lackieren.</span></h1>
+        <h1 class="hero__headline display" id="hero-title"><span class="gradient-text hero__hl-main">Car Wrapping.</span><br><span class="hero__hl-sub">Folieren statt lackieren.</span></h1>
         <p class="lead reveal" data-delay="1">Eine neue Optik für Ihr Fahrzeug — ohne Lackierung. Wir folieren Pkw, Transporter und Firmenflotten in der gesamten Steiermark, reversibel und lackschonend.</p>
         <div class="hero__actions reveal" data-delay="2">
           <a class="btn btn--primary" href="/#kontakt">Angebot anfragen</a>
@@ -968,9 +1000,21 @@
   <!-- ===== CTA ===== -->
   <section class="section" aria-labelledby="cta-title">
     <div class="wrap">
+
+      <!-- 3D-Kachel: fotorealistischer Blender-Render (Brandl-BMW) als Beleg -->
+      <div class="cta3d reveal" id="vorschau3d">
+        <img class="cta3d__bg" src="/assets/img/bmw-3d-render.webp" alt="Fotorealistischer 3D-Render eines BMW Touring mit Brandl-Folierung in Orange-Schwarz" loading="lazy" width="941" height="941">
+        <div class="cta3d__body">
+          <p class="eyebrow">3D-Vorschau</p>
+          <h3>3D-Ansicht von Ihrem Auto?</h3>
+          <p>Sehen Sie Ihre Folierung, bevor die erste Bahn geschnitten ist: Wir rendern Ihr Fahrzeug mit Ihrem Wunschdesign fotorealistisch in 3D — wie diesen BMW.</p>
+          <a class="btn btn--primary" href="/#kontakt">3D-Ansicht anfragen</a>
+        </div>
+      </div>
+
       <div class="cta-panel reveal">
         <p class="eyebrow">Kontakt</p>
-        <h2 class="display" id="cta-title">Reden wir über Ihr Fahrzeug.</h2>
+        <h2 class="display" id="cta-title">Welche Folie wird's werden?</h2>
         <p class="lead">Sie überlegen, Ihr Fahrzeug folieren zu lassen? Schildern Sie uns kurz Ihr Vorhaben — wir beraten Sie und erstellen ein unverbindliches Angebot.</p>
         <div class="cta-panel__actions">
           <a class="btn btn--primary" href="/#kontakt">Angebot anfragen</a>
@@ -1338,5 +1382,49 @@ if(canStages){
 })();
 </script>
 
+<script>
+/* ===== Sanfter Anker-Scroll =====
+   Der native scroll-behavior:smooth ruckelt auf den langen Seiten (Sticky-
+   Buehnen + Backdrop-Blur). Darum: eigene Ease-in-out-Kurve mit Dauer nach
+   Distanz, abbrechbar durch Nutzer-Scroll. Bei reduced-motion: Sprung. */
+(function(){
+  'use strict';
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce) return;
+  document.documentElement.style.scrollBehavior = 'auto';
+  var raf = null;
+  function stopp(){ if(raf){ cancelAnimationFrame(raf); raf = null; } }
+  window.addEventListener('wheel', stopp, { passive: true });
+  window.addEventListener('touchstart', stopp, { passive: true });
+  window.addEventListener('keydown', function(e){
+    if(['ArrowUp','ArrowDown','PageUp','PageDown','Home','End',' '].indexOf(e.key) > -1) stopp();
+  });
+  function gleiten(ziel){
+    var start = window.scrollY, dist = ziel - start;
+    if(Math.abs(dist) < 2){ window.scrollTo(0, ziel); return; }
+    var dauer = Math.min(1100, 450 + Math.abs(dist) * 0.12), t0 = null;
+    stopp();
+    function schritt(ts){
+      if(t0 === null) t0 = ts;
+      var t = Math.min((ts - t0) / dauer, 1);
+      var e = t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2;
+      window.scrollTo(0, start + dist * e);
+      if(t < 1){ raf = requestAnimationFrame(schritt); } else { raf = null; }
+    }
+    raf = requestAnimationFrame(schritt);
+  }
+  document.addEventListener('click', function(ev){
+    var a = ev.target.closest('a[href^="#"]');
+    if(!a || a.classList.contains('skip-link')) return;
+    var id = a.getAttribute('href').slice(1);
+    var el = id ? document.getElementById(id) : null;
+    if(!el) return;
+    ev.preventDefault();
+    try { history.pushState(null, '', '#' + id); } catch(e){}
+    var oben = el.getBoundingClientRect().top + window.scrollY - 64;
+    gleiten(Math.max(0, Math.min(oben, document.documentElement.scrollHeight - window.innerHeight)));
+  });
+})();
+</script>
 </body>
 </html>
