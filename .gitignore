@@ -8,3 +8,6 @@ designs/.playwright-mcp/
 
 # Foto-Originale von Lama (441 MB, ZIP >100MB wuerde GitHub-Push sprengen) — nur Web-Derivate in assets/bg/ werden versioniert
 designs/10-apple-motion/assets/Fotos-Lama/
+
+# Iris-Quell-PSDs (Stock-Originale, 97 MB) — PNG-Derivate und Quell-Videos werden versioniert
+designs/14-iris-hero/iris-eye-isolated*/*.psd

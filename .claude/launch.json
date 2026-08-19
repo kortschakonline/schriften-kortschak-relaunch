@@ -29,6 +29,11 @@
       "name": "design11",
       "url": "http://localhost:8767",
       "port": 8767
+    },
+    {
+      "name": "designs",
+      "url": "http://localhost:8768",
+      "port": 8768
     }
   ]
 }

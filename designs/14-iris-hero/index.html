@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Entwurf 14 — Iris-Hero (SICHTBAR glüht) | Kortschak</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --grund:#0b0b0d;
+    --buehne:#000;
+    --hell:#f2f0ec;
+    --hell-soft:#8f8d88;
+    --linie:rgba(242,240,236,.09);
+    --rot:#FF1C20;
+    --rot-hover:#FF3B3E;
+    --umriss:rgba(242,240,236,.42);
+    /* SICHTBAR-Füllung: Verlauf aus Entwurf 12 (Dark-Variante) */
+    --fuell-a:#FF3B3E;
+    --fuell-b:#e0181c;
+    --fuell-c:#F18700;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:auto}
+  body{
+    background:var(--grund);
+    color:var(--hell);
+    font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
+
+  /* ---------- Kopf- und Fußzeilen (Mono-Metadaten wie Entwurf 13) ---------- */
+  header{
+    position:fixed;inset:0 0 auto 0;z-index:40;
+    display:flex;justify-content:space-between;align-items:baseline;
+    padding:20px clamp(18px,3.5vw,44px);pointer-events:none;
+  }
+  .marke{font-weight:800;letter-spacing:.04em;font-size:15px;pointer-events:auto}
+  .marke span{color:var(--rot)}
+  .meta{font-size:11px;color:var(--hell-soft);letter-spacing:.1em;text-transform:uppercase}
+  .ecken{
+    position:fixed;inset:auto 0 0 0;z-index:40;
+    display:flex;justify-content:space-between;
+    padding:18px clamp(18px,3.5vw,44px);
+    font-size:10px;letter-spacing:.12em;color:var(--hell-soft);
+    text-transform:uppercase;pointer-events:none;
+  }
+
+  /* ---------- Bühne ---------- */
+  .track{height:420vh;position:relative}
+  .stage{
+    position:sticky;top:0;height:100vh;height:100svh;
+    overflow:hidden;background:var(--buehne);
+  }
+  #iris{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1}
+
+  /* Scrims oben/unten: halten Mono-Metadaten und Hint über der hellen Iris lesbar */
+  .stage::before,.stage::after{
+    content:"";position:absolute;left:0;right:0;z-index:3;pointer-events:none;
+  }
+  .stage::before{top:0;height:16vh;background:linear-gradient(rgba(0,0,0,.55),transparent)}
+  .stage::after{bottom:0;height:20vh;background:linear-gradient(transparent,rgba(0,0,0,.55))}
+
+  /* Glut-Overlay: verstärkt das Glühen der Iris am Ende */
+  .glut{
+    position:absolute;inset:0;z-index:2;pointer-events:none;opacity:0;
+    background:radial-gradient(58% 52% at 50% 50%,
+      rgba(255,92,24,.5) 0%, rgba(255,28,32,.16) 46%, transparent 72%);
+    mix-blend-mode:screen;
+  }
+
+  /* Filmkorn */
+  .korn{
+    position:absolute;inset:-100px;z-index:3;pointer-events:none;opacity:.05;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='0.8'/%3E%3C/svg%3E");
+    animation:korn 0.7s steps(3) infinite;
+  }
+  @keyframes korn{
+    0%{transform:translate(0,0)}
+    34%{transform:translate(-60px,30px)}
+    67%{transform:translate(40px,-50px)}
+    100%{transform:translate(0,0)}
+  }
+
+  .lade{
+    position:absolute;z-index:6;left:50%;bottom:64px;transform:translateX(-50%);
+    font-variant-numeric:tabular-nums;font-size:12px;font-weight:500;
+    color:var(--hell-soft);letter-spacing:.14em;
+    transition:opacity .5s ease;
+  }
+  .hint{
+    position:absolute;z-index:5;left:50%;bottom:26px;transform:translateX(-50%);
+    font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--hell-soft);
+    transition:opacity .4s ease;
+  }
+
+  /* ---------- Zentrale Headline: SICHTBAR von dünnem Umriss zu Glut ---------- */
+  .claim{
+    position:absolute;z-index:4;inset:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:clamp(10px,1.6vh,20px);padding:0 20px;text-align:center;
+    pointer-events:none;
+  }
+  .vor{
+    font-size:clamp(15px,2.2vw,26px);font-weight:600;letter-spacing:.26em;
+    text-transform:uppercase;color:var(--hell);
+    text-shadow:0 1px 18px rgba(0,0,0,.6);
+  }
+  .wort{
+    display:grid;line-height:.92;position:relative;
+    font-family:'Anton',Impact,sans-serif;font-weight:400;
+    font-size:clamp(64px,17vw,240px);letter-spacing:.015em;text-transform:uppercase;
+  }
+  .wort > span{grid-area:1/1;white-space:nowrap}
+  .umriss{
+    color:transparent;
+    -webkit-text-stroke:1.2px var(--umriss);
+    text-stroke:1.2px var(--umriss);
+  }
+  /* WebKit-Falle: clip-path/filter dürfen NICHT auf demselben Element liegen wie
+     background-clip:text — sonst verliert Safari das Clipping des Verlaufs auf die
+     Glyphen. Deshalb Wrapper (Clip/Filter) + Kind (Verlaufstext) getrennt. */
+  /* Kreis-Füllung mit weicher Feder-Kante: Maske statt clip-path (harte
+     Kante war unerwünscht, und clip-path + background-clip:text ist in
+     Safari heikel). --mi/--mo = Innen-/Außenkante des Übergangs. */
+  .voll-clip{
+    --mi:-14%;--mo:0%;
+    -webkit-mask-image:radial-gradient(circle at 50% 50%, #000 var(--mi), rgba(0,0,0,0) var(--mo));
+    mask-image:radial-gradient(circle at 50% 50%, #000 var(--mi), rgba(0,0,0,0) var(--mo));
+  }
+  .voll{
+    display:block;
+    background:linear-gradient(135deg,var(--fuell-a) 0%,var(--fuell-b) 45%,var(--fuell-c) 115%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    -webkit-text-fill-color:transparent;
+    transition:transform .35s cubic-bezier(.2,1.6,.4,1);
+  }
+  /* Glüh-Ebene: gleiche Füllung, weichgezeichnet — zündet am Peak */
+  .schein-wrap{
+    filter:blur(14px) saturate(1.3);
+    opacity:0;
+  }
+  .schein{
+    display:block;
+    background:linear-gradient(135deg,var(--fuell-a) 0%,var(--fuell-b) 45%,var(--fuell-c) 115%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    -webkit-text-fill-color:transparent;
+  }
+  .wort.fertig .voll,.wort.fertig .neon{transform:scale(1.015)}
+  /* Neon-Kontur: zündet wie eine Leuchtreklame, sobald der Zoom zum Stehen
+     kommt — helle Linie + warmer Glow, trennt das Wort von der Iris. */
+  .neon-wrap{
+    /* Weiche Lichtkontur statt harter Linie: die Linie selbst ist geblurrt,
+       die beiden Schein-Stufen strahlen wie Licht von hinter den Buchstaben */
+    filter:blur(2.5px) drop-shadow(0 0 7px rgba(255,236,214,.85)) drop-shadow(0 0 36px rgba(255,170,80,.55));
+    opacity:0;
+    transition:opacity .35s ease;
+  }
+  .neon{
+    display:block;
+    color:transparent;
+    -webkit-text-stroke:2.2px rgba(255,246,234,.95);
+    text-stroke:2.2px rgba(255,246,234,.95);
+    transition:transform .35s cubic-bezier(.2,1.6,.4,1);
+  }
+  .wort.gezuendet .neon-wrap{
+    animation:neonzuenden .6s ease-out forwards;
+  }
+  @keyframes neonzuenden{
+    0%{opacity:0}
+    16%{opacity:.9}
+    28%{opacity:.22}
+    44%{opacity:1}
+    58%{opacity:.55}
+    100%{opacity:.92}
+  }
+
+  .nach{
+    opacity:0;visibility:hidden;transform:translateY(18px);
+    display:flex;flex-direction:column;align-items:center;gap:16px;
+  }
+  .nach p{
+    font-size:clamp(14px,1.5vw,18px);color:var(--hell);max-width:min(92vw,700px);
+    text-shadow:0 1px 16px rgba(0,0,0,.65);
+  }
+  .ctas{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+  .btn{
+    display:inline-block;padding:13px 26px;border-radius:999px;
+    font-size:15px;font-weight:600;text-decoration:none;color:var(--hell);
+    transition:background .25s ease,color .25s ease,border-color .25s ease;
+  }
+  .btn-voll{background:var(--rot);color:#fff}
+  .btn-voll:hover{background:var(--rot-hover)}
+  .btn-line{border:1.5px solid var(--hell)}
+  .btn-line:hover{border-color:var(--fuell-c);color:var(--fuell-c)}
+
+  .danach{
+    position:relative;z-index:3;background:var(--grund);
+    min-height:70vh;display:flex;align-items:center;justify-content:center;
+    border-top:1px solid var(--linie);
+  }
+  .danach .inner{max-width:640px;padding:80px 24px;text-align:center;color:var(--hell-soft);font-size:15px;line-height:1.7}
+  .danach strong{color:var(--hell)}
+
+  @media (max-width: 640px){
+    .ecken{display:none}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .track{height:auto}
+    .stage{position:relative;height:100vh}
+    .hint,.lade{display:none}
+    .korn{animation:none}
+    .voll-clip{--mi:103%;--mo:118%}
+    .neon-wrap{opacity:.92;animation:none}
+    .nach{opacity:1;visibility:visible;transform:none}
+    .claim{pointer-events:auto}
+  }
+</style>
+<noscript>
+<style>
+  .track{height:auto}
+  .stage{position:relative;height:100vh;background:url("seq/poster.jpg") center/cover no-repeat #000}
+  .hint,.lade{display:none}
+  .voll-clip{--mi:103%;--mo:118%}
+  .neon-wrap{opacity:.92}
+  .nach{opacity:1;visibility:visible;transform:none}
+  .claim{pointer-events:auto}
+</style>
+</noscript>
+</head>
+<body>
+
+<header>
+  <div class="marke">KORTSCHAK<span>.</span></div>
+  <div class="meta mono">Entwurf 14 · Iris-Hero</div>
+</header>
+<div class="ecken mono" aria-hidden="true">
+  <span>Trofaiach · 47.42°N 15.00°E</span>
+  <span>Werbetechnik seit 1958</span>
+</div>
+
+<main>
+<div class="track" id="track">
+  <section class="stage" id="stage" aria-label="Animation: Eine Iris beginnt winzig in Schwarz-Weiß, kommt beim Scrollen näher, gewinnt Farbe und glüht schließlich rot-orange von innen — das Wort SICHTBAR füllt sich dabei mit Farbe.">
+    <canvas id="iris"></canvas>
+    <div class="glut" id="glut"></div>
+    <div class="korn"></div>
+    <div class="claim" id="claim">
+      <p class="vor">Wir machen Sie</p>
+      <h1 class="wort" id="wort" aria-label="sichtbar.">
+        <span class="umriss" aria-hidden="true">Sichtbar.</span>
+        <span class="schein-wrap" id="scheinwrap" aria-hidden="true"><span class="schein">Sichtbar.</span></span>
+        <span class="voll-clip" id="vollclip" aria-hidden="true"><span class="voll">Sichtbar.</span></span>
+        <span class="neon-wrap" aria-hidden="true"><span class="neon">Sichtbar.</span></span>
+      </h1>
+      <div class="nach" id="nach">
+        <p>Werbetechnik, Beschriftung und Car-Wrapping aus Trofaiach — seit 1958.</p>
+        <div class="ctas">
+          <a class="btn btn-voll" href="#danach">Leistungen entdecken</a>
+          <a class="btn btn-line" href="#danach">Angebot anfragen</a>
+        </div>
+      </div>
+    </div>
+    <div class="lade mono" id="lade">0</div>
+    <div class="hint" id="hint">Scrollen</div>
+  </section>
+</div>
+
+<section class="danach" id="danach">
+  <div class="inner">
+    <strong>Prototyp-Ende.</strong> Ab hier begänne die normale Startseite.
+    Rezept: Iris-Zoom als scrollgescrubbte AVIF-Sequenz — erst Schwarz-Weiß,
+    dann bricht die Farbe ein, am Ende glüht die Iris rot-orange von innen.
+    SICHTBAR steht von Anfang an als dünner Umriss in der Mitte und zündet
+    kreisförmig aus der Pupille heraus mit dem Rot-Orange-Verlauf.
+  </div>
+</section>
+</main>
+
+<script>
+(function(){
+  "use strict";
+  var reduziert = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* Debug-Standbild: ?p=0.65 friert den Scrollzustand ein (für Screenshots und
+     Feedback-Runden — auf der echten Seite entfernen). Hat Vorrang vor
+     Reduced-Motion, sonst wäre der Haken dort stumm defekt. */
+  var qp = new URLSearchParams(location.search).get("p");
+  var reduziertOhneDebug = reduziert && qp === null;
+
+  var track = document.getElementById("track");
+  var stage = document.getElementById("stage");
+  var kcv = document.getElementById("iris");
+  var kctx = kcv.getContext("2d");
+  var lade = document.getElementById("lade");
+  var hint = document.getElementById("hint");
+  var glut = document.getElementById("glut");
+  var wort = document.getElementById("wort");
+  var vollClip = document.getElementById("vollclip");
+  var scheinWrap = document.getElementById("scheinwrap");
+  var nach = document.getElementById("nach");
+  var claim = document.getElementById("claim");
+
+  var dpr = Math.min(devicePixelRatio || 1, 2);
+  var vw = 0, vh = 0;
+  var dirty = true;          // erzwingt Neuzeichnen (Resize, neue Frames)
+  function resize(){
+    // An der Stage messen, nicht am Fenster: die Stage ist 100svh hoch — auf iOS
+    // weicht innerHeight bei eingeklappter Toolbar davon ab (Iris würde gestaucht).
+    vw = stage.clientWidth || innerWidth;
+    vh = stage.clientHeight || innerHeight;
+    kcv.width = Math.round(vw * dpr);
+    kcv.height = Math.round(vh * dpr);
+    dirty = true;
+    if (reduziertOhneDebug && nFrames) irisZeichnen(1); // dort läuft kein Loop
+  }
+  addEventListener("resize", function(){
+    if (Math.abs((stage.clientWidth || innerWidth) - vw) > 1 ||
+        Math.abs((stage.clientHeight || innerHeight) - vh) > 120) resize();
+  });
+
+  /* ---------- Sequenz laden (Muster aus Entwurf 13) ---------- */
+  var frames = [], nFrames = 0, geladen = 0, erfolge = 0, basis = "";
+  var startbereit = false, posterAktiv = false;
+
+  // Fallback: Poster statt Sequenz (fetch/AVIF/Frames kaputt) — die Wort-Animation
+  // läuft weiter, aber die Bühne bleibt nicht stumm schwarz.
+  function posterFallback(){
+    if (posterAktiv) return;
+    posterAktiv = true;
+    stage.style.background = "url('seq/poster.jpg') center/cover no-repeat #000";
+    if (lade.parentNode) lade.remove();
+    startbereit = true;
+    dirty = true;
+  }
+
+  // AVIF-Fähigkeit prüfen (Safari erst ab 16.4) — sonst direkt Poster.
+  function avifCheck(cb){
+    var probe = new Image();
+    probe.onload = function(){ cb(probe.naturalWidth > 0); };
+    probe.onerror = function(){ cb(false); };
+    probe.src = "data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADybWV0YQAAAAAAAAAoaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAGxpYmF2aWYAAAAADnBpdG0AAAAAAAEAAAAeaWxvYwAAAABEAAABAAEAAAABAAABGgAAAB0AAAAoaWluZgAAAAAAAQAAABppbmZlAgAAAAABAABhdjAxQ29sb3IAAAAAamlwcnAAAABLaXBjbwAAABRpc3BlAAAAAAAAAAIAAAACAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgQ0MAAAAABNjb2xybmNseAACAAIAAYAAAAAXaXBtYQAAAAAAAAABAAEEAQKDBAAAACVtZGF0EgAKCBgANogQEAwgMg8f8D///8WfhwB8+ErK42A=";
+  }
+
+  function sequenzLaden(){
+    // Portrait -> Mobile-Rendition (3:4-Center-Crop), sonst Desktop 16:9.
+    // Erst hier entscheiden: beim Skriptstart kann der Viewport noch 0 sein.
+    var mobil = vh > vw;
+    fetch("seq/manifest.json").then(function(r){
+      if (!r.ok) throw new Error("manifest " + r.status);
+      return r.json();
+    }).then(function(mf){
+    var rend = mobil && mf.renditions.mobile ? mf.renditions.mobile : mf.renditions.desktop;
+    basis = "seq/" + rend.path;
+    nFrames = rend.frames;
+    frames = new Array(nFrames);
+    var plan = [], i;
+    if (reduziertOhneDebug){
+      // Reduced Motion braucht nur das Endbild — nicht 12 MB Sequenz.
+      plan = [nFrames - 1];
+    } else {
+      for (i = 0; i < nFrames; i += 8) plan.push(i);
+      for (i = 0; i < nFrames; i++) if (i % 8 !== 0) plan.push(i);
+    }
+    var offen = 0, MAX = 6, zeiger = 0;
+    function nachladen(){
+      while (offen < MAX && zeiger < plan.length){
+        (function(idx){
+          offen++;
+          var img = new Image();
+          img.decoding = "async";
+          function fertig(ok){
+            offen--; geladen++;
+            if (ok){ erfolge++; frames[idx] = img; dirty = true; }
+            lade.textContent = Math.round(100 * geladen / nFrames);
+            if (!startbereit && erfolge >= Math.ceil(plan.length / 8)){
+              startbereit = true;
+              lade.style.opacity = 0;
+            }
+            if (geladen >= plan.length){
+              if (erfolge === 0){ posterFallback(); }
+              else if (lade.parentNode){ lade.remove(); }
+            }
+            nachladen();
+          }
+          img.onload = function(){ fertig(img.naturalWidth > 0); };
+          img.onerror = function(){ fertig(false); };
+          img.src = basis + String(idx + 1).padStart(4, "0") + "." + mf.ext;
+        })(plan[zeiger++]);
+      }
+    }
+    nachladen();
+    }).catch(function(){ posterFallback(); });
+  }
+
+  // Warten, bis das Layout eine echte Größe hat (Preview-Panes starten mit 0×0),
+  // dann AVIF prüfen und laden.
+  (function warteAufLayout(){
+    if (innerWidth > 0 && innerHeight > 0){
+      resize();
+      avifCheck(function(ok){ ok ? sequenzLaden() : posterFallback(); });
+    } else {
+      requestAnimationFrame(warteAufLayout);
+    }
+  })();
+
+  function frameBei(idx){
+    if (frames[idx]) return frames[idx];
+    for (var d = 1; d < nFrames; d++){
+      if (frames[idx - d]) return frames[idx - d];
+      if (frames[idx + d]) return frames[idx + d];
+    }
+    return null;
+  }
+
+  function clamp01(x){ return Math.min(1, Math.max(0, x)); }
+  function eo(t){ t = clamp01(t); return 1 - Math.pow(1 - t, 3); }
+
+  /* ---------- Zeichnen: Cover-Fit + scrollgesteuerte Entsättigung ----------
+     Dramaturgie über den Scroll-Fortschritt p:
+       0.00–0.16  Schwarz-Weiß, die Iris kommt aus dem Dunkel
+       0.16–0.38  die Farbe bricht ein, der Zoom läuft weiter
+       0.50–0.78  SICHTBAR zündet kreisförmig aus der Pupille
+       0.62–0.92  Glut-Overlay verstärkt das Glühen der Iris
+       0.88       Sequenz-Ende (letztes Frame steht), dann Subline + CTAs   */
+  function irisZeichnen(p){
+    var w = kcv.width, h = kcv.height;
+    kctx.clearRect(0, 0, w, h);
+    if (!nFrames) return;
+    var ps = clamp01(p / 0.88);
+    var idx = Math.round(ps * (nFrames - 1));
+    var img = frameBei(idx);
+    if (!img) return;
+    var ar = img.naturalWidth / img.naturalHeight, car = w / h;
+    var zw, zh;
+    if (car > ar){ zw = w; zh = w / ar; } else { zh = h; zw = h * ar; }
+    kctx.drawImage(img, (w - zw) / 2, (h - zh) / 2, zw, zh);
+    // Entsättigung: volle Stärke bis p 0.16, danach kommt die Farbe
+    var gs = 1 - clamp01((p - 0.16) / 0.22);
+    if (gs > 0.004){
+      kctx.globalCompositeOperation = "saturation";
+      kctx.fillStyle = "rgba(128,128,128," + gs.toFixed(3) + ")";
+      kctx.fillRect(0, 0, w, h);
+      kctx.globalCompositeOperation = "source-over";
+    }
+    // Finale: die Iris nimmt Farbe und Licht zurück (Wort und Iris tragen
+    // denselben Verlauf — ohne Rücknahme wäre es zu viel Rot auf Rot)
+    var r2 = eo(clamp01((p - 0.80) / 0.14));
+    if (r2 > 0.004){
+      kctx.globalCompositeOperation = "saturation";
+      kctx.fillStyle = "rgba(128,128,128," + (0.38 * r2).toFixed(3) + ")";
+      kctx.fillRect(0, 0, w, h);
+      kctx.globalCompositeOperation = "source-over";
+      kctx.fillStyle = "rgba(0,0,0," + (0.22 * r2).toFixed(3) + ")";
+      kctx.fillRect(0, 0, w, h);
+    }
+    // Nachbarframes vordekodieren, sonst stottert der Scrub beim AV1-Decode
+    for (var d = -2; d <= 6; d++){
+      var f = frames[idx + d];
+      if (f && !f.dekodiert && f.decode){ f.dekodiert = 1; f.decode().catch(function(){}); }
+    }
+  }
+
+  /* ---------- Scroll → Fortschritt ---------- */
+  var pZiel = 0, pIst = 0;
+  function messen(){
+    var r = track.getBoundingClientRect();
+    var weg = r.height - vh;
+    // weg <= 0 heißt "Layout noch nicht da" -> Anfang annehmen, nicht Ende
+    pZiel = weg > 0 ? Math.min(1, Math.max(0, -r.top / weg)) : 0;
+  }
+
+  var lastP = -1, lastStart = false, tPrev = 0;
+  function loop(now){
+    messen();
+    // Zeitbasiert glätten: gleiche Anmutung auf 60- wie 120-Hz-Displays
+    var dt = tPrev ? Math.min(50, now - tPrev) : 16.7;
+    tPrev = now;
+    pIst += (pZiel - pIst) * (1 - Math.pow(0.84, dt / 16.7));
+    if (Math.abs(pZiel - pIst) < 0.0005) pIst = pZiel;
+
+    // Nichts zu tun? (Lerp eingerastet, keine neuen Frames, Ladezustand gleich)
+    if (pIst === lastP && !dirty && startbereit === lastStart){
+      requestAnimationFrame(loop);
+      return;
+    }
+    lastP = pIst; lastStart = startbereit; dirty = false;
+
+    irisZeichnen(pIst);
+
+    hint.style.opacity = (pIst < .03 && startbereit) ? 1 : 0;
+
+    // SICHTBAR-Füllung: weicher Kreis wächst aus der Mitte, p 0.50 -> 0.78
+    var f = eo(clamp01((pIst - .50) / .28));
+    var mo = f * 118;
+    vollClip.style.setProperty("--mi", (mo - 14).toFixed(2) + "%");
+    vollClip.style.setProperty("--mo", mo.toFixed(2) + "%");
+    if (f >= 1) wort.classList.add("fertig"); else wort.classList.remove("fertig");
+
+    // Rücknahme-Faktor des Finales (muss zur Iris-Rücknahme in irisZeichnen passen)
+    var r2 = eo(clamp01((pIst - .80) / .14));
+
+    // Glüh-Ebene hinter der Füllung: zündet am Peak, p 0.74 -> 0.92
+    var g = eo(clamp01((pIst - .74) / .18));
+    var strahlen = Math.sin(Math.min(1, f) * Math.PI) * .26;
+    scheinWrap.style.opacity = Math.max(g * .38, strahlen).toFixed(3);
+
+    // Glut-Overlay auf der Iris, p 0.62 -> 0.92 — tritt im Finale mit zurück
+    var o = eo(clamp01((pIst - .62) / .30));
+    glut.style.opacity = (o * .35 * (1 - .55 * r2)).toFixed(3);
+
+    // Neon-Kontur zündet, sobald der Zoom zum Stehen kommt.
+    // Hysterese: erst unter p 0.82 wieder aus, sonst flackert es an der Schwelle.
+    if (pIst >= .86) wort.classList.add("gezuendet");
+    else if (pIst < .82) wort.classList.remove("gezuendet");
+
+    // Subline + CTAs am Ende (visibility hält sie aus der Tab-Reihenfolge,
+    // solange sie unsichtbar sind)
+    var c = clamp01((pIst - .90) / .09);
+    nach.style.opacity = c;
+    nach.style.visibility = c > 0.01 ? "visible" : "hidden";
+    nach.style.transform = "translateY(" + (18 * (1 - c)) + "px)";
+    claim.style.pointerEvents = c > .6 ? "auto" : "none";
+    requestAnimationFrame(loop);
+  }
+
+  if (qp !== null){
+    // Debug-Standbild: Stage fixieren, Fortschritt festnageln
+    stage.style.position = "fixed";
+    stage.style.inset = "0";
+    var pFix = clamp01(parseFloat(qp) || 0);
+    messen = function(){ pZiel = pFix; };
+    pIst = pFix;
+  }
+
+  if (reduziertOhneDebug){
+    var ruhig = function(){
+      pIst = pZiel = 1;
+      irisZeichnen(1);
+      glut.style.opacity = .14;
+      scheinWrap.style.opacity = .3;
+    };
+    var warten = setInterval(function(){
+      if (posterAktiv){ clearInterval(warten); return; }
+      if (nFrames && frames[nFrames - 1]){ clearInterval(warten); ruhig(); }
+    }, 200);
+  } else {
+    requestAnimationFrame(loop);
+  }
+})();
+</script>
+</body>
+</html>
