@@ -1,0 +1,8 @@
+{
+  "asset": "iris-zoom", "version": "v01", "ext": "avif",
+  "renditions": {
+    "desktop": { "path": "desktop/", "width": 1600, "height": 900,  "frames": 192, "frameStep": 1 },
+    "mobile":  { "path": "mobile/",  "width": 810,  "height": 1080, "frames": 96,  "frameStep": 2 }
+  },
+  "quelle": "iris-eye-isolated-2/Iris-Zoom-01.mp4 (1920x1080, 24fps, 8s)"
+}
