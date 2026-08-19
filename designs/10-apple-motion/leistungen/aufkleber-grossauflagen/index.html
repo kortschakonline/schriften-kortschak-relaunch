@@ -340,7 +340,13 @@
     transition:transform .4s var(--ease),box-shadow .4s var(--ease);
   }
   .finish:hover{transform:translateY(-6px);box-shadow:var(--shadow-md);}
-  .finish__idx{font-size:.75rem;font-weight:600;letter-spacing:.1em;color:var(--text-2);}
+  .finish__idx{
+    font-size:1.5rem;font-weight:800;letter-spacing:-.01em;line-height:1;
+    font-variant-numeric:tabular-nums;
+    background:linear-gradient(100deg,var(--accent),var(--accent-2));
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+  }
   .finish h3{font-size:1.35rem;font-weight:700;letter-spacing:-.02em;}
   .finish p{font-size:.95rem;color:var(--text-2);line-height:1.5;}
 
