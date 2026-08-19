@@ -489,6 +489,83 @@
     *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important;}
     .js .reveal{opacity:1!important;transform:none!important;}
   }
+
+  /* ===== Liquid-Glass-Rollout (19.08.2026) =====
+     Kachel-Flächen als Milchglas mit Lichtkante, dahinter Farbscheine, die
+     sich von Section zu Section spiegeln und die Farben tauschen. Rezept und
+     Referenz: leistungen/social-media-marketing/. Der Block steht bewusst am
+     Ende des Stylesheets und überschreibt die Flächen der Kartenregeln oben.
+     Die Outline-Wortmarke im Footer trägt den Headline-Verlauf (Stops als
+     <defs> im Footer-SVG, userSpaceOnUse = ein Verlauf über das ganze Logo). */
+  :root{
+    --glas-kante:rgba(255,255,255,.5);
+    --glas-licht:rgba(255,255,255,.45);
+    --glas-schatten:rgba(0,0,0,.18);
+  }
+  [data-theme="dark"]{
+    --glas-kante:rgba(255,255,255,.18);
+    --glas-licht:rgba(255,255,255,.2);
+    --glas-schatten:rgba(0,0,0,.45);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme]){
+      --glas-kante:rgba(255,255,255,.18);
+      --glas-licht:rgba(255,255,255,.2);
+      --glas-schatten:rgba(0,0,0,.45);
+    }
+  }
+  .finish,.benefit,.step,.compare__col,.cat-card,.glass-card,.rate,.contact-panel{
+    background:color-mix(in srgb,var(--surface) 46%,transparent);
+    -webkit-backdrop-filter:blur(26px) saturate(170%);
+    backdrop-filter:blur(26px) saturate(170%);
+    border:1px solid var(--glas-kante);
+    box-shadow:
+      inset 0 1px 0 var(--glas-licht),
+      inset 0 -1px 0 rgba(255,255,255,.07),
+      0 24px 60px var(--glas-schatten);
+  }
+  .finish:hover,.step:hover,.cat-card:hover,.rate:hover,.glass-card:hover{
+    box-shadow:
+      inset 0 1px 0 var(--glas-licht),
+      inset 0 -1px 0 rgba(255,255,255,.07),
+      0 30px 70px var(--glas-schatten);
+  }
+  /* Die dunklen Kontrast-Karten weichen dem einheitlichen Glas. */
+  .compare__col--foil{color:var(--text);}
+  .compare__col--foil li{color:var(--text-2);}
+  .rate--featured{color:var(--text);}
+  .rate--featured .rate__desc,.rate--featured .rate__price small{color:var(--text-2);}
+  /* Farbscheine hinter jeder Section mit Glas-Kacheln; gerade Sections
+     spiegeln Position und Farben. Browser ohne :has() zeigen einfach kein
+     Leuchten — das Glas bleibt lesbar. */
+  .section:has(.finish,.benefit,.step,.compare__col,.cat-card,.glass-card,.rate,.contact-panel){
+    position:relative;overflow:hidden;
+  }
+  .section:has(.finish,.benefit,.step,.compare__col,.cat-card,.glass-card,.rate,.contact-panel)::before,
+  .section:has(.finish,.benefit,.step,.compare__col,.cat-card,.glass-card,.rate,.contact-panel)::after{
+    content:"";position:absolute;z-index:0;border-radius:50%;
+    filter:blur(70px);pointer-events:none;
+  }
+  .section:has(.finish,.benefit,.step,.compare__col,.cat-card,.glass-card,.rate,.contact-panel)::before{
+    width:38%;padding-top:38%;left:-6%;top:-10%;
+    background:radial-gradient(circle,color-mix(in srgb,var(--accent) 40%,transparent),transparent 70%);
+  }
+  .section:has(.finish,.benefit,.step,.compare__col,.cat-card,.glass-card,.rate,.contact-panel)::after{
+    width:32%;padding-top:32%;right:-5%;bottom:-14%;
+    background:radial-gradient(circle,color-mix(in srgb,var(--accent-2) 36%,transparent),transparent 70%);
+  }
+  .section:nth-of-type(even):has(.finish,.benefit,.step,.compare__col,.cat-card,.glass-card,.rate,.contact-panel)::before{
+    left:auto;right:-7%;width:44%;padding-top:44%;
+    background:radial-gradient(circle,color-mix(in srgb,var(--accent-2) 38%,transparent),transparent 70%);
+  }
+  .section:nth-of-type(even):has(.finish,.benefit,.step,.compare__col,.cat-card,.glass-card,.rate,.contact-panel)::after{
+    right:auto;left:-6%;width:28%;padding-top:28%;
+    background:radial-gradient(circle,color-mix(in srgb,var(--accent) 44%,transparent),transparent 70%);
+  }
+  .section:has(.finish,.benefit,.step,.compare__col,.cat-card,.glass-card,.rate,.contact-panel) > .wrap{
+    position:relative;z-index:1;
+  }
+  .footer__mark svg{stroke:url(#wm-verlauf);opacity:.55;}
 </style>
 </head>
 <body>
@@ -748,7 +825,7 @@
       </nav>
     </div>
   </div>
-  <div class="footer__mark" aria-hidden="true"><svg viewBox="0 0 233.56 27.8" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMin meet" aria-hidden="true" focusable="false"><path d="M80.29,27.11l-5.9.1-5.58-10.47h-6.17s-.02,10.43-.02,10.43h-5.31s0-26.64,0-26.64l13.83.03c1.36,0,2.75.39,3.99.76,1.9.81,3.12,2.25,3.67,4.24.81,4.12.36,9.23-4.71,10.54l6.19,11.01ZM73.03,10.93c1.07-1.31.99-3.23.07-4.48-.53-.72-1.85-1.1-2.75-1.1l-7.73-.03.03,6.71,7.52-.04c.87,0,2.27-.33,2.86-1.06Z"/><path d="M51.78,20.24c-2.06,7.33-10.01,8.45-16.24,6.98-3.6-.85-6.18-3.4-7.18-6.98-1.11-3.99-1.19-8.27-.17-12.29.92-3.67,3.48-6.37,7.12-7.32,6.07-1.58,14.23-.55,16.4,6.64,1.27,4.21,1.27,8.73.08,12.96ZM46.25,18.59c.96-3.76,1.15-11.08-2.65-13.11-2.23-1.18-5.01-1.18-7.2.1-3.74,2.18-3.37,9.36-2.54,12.91.71,3.03,3.09,4.63,6.08,4.66s5.51-1.45,6.31-4.56Z"/><path d="M130.38,22.57c-1.07,3.74-4.87,4.63-8.36,4.63h-14.07s.03-4.77.03-4.77l14.72-.09c1.79-.01,2.67-1.53,2.61-3.12s-1.03-2.79-2.73-2.81l-8.24-.08c-2.93-.03-6.03-1.2-6.94-4.27-.67-2.27-.65-4.72.05-6.98,1.28-4.12,5.59-4.55,9.29-4.55h12.85s0,4.76,0,4.76l-13.94.06c-1.99,0-3.19,1.53-3.21,3.34-.01,1.53.91,2.92,2.63,2.93l8.57.07c1.18,0,2.47.28,3.56.66,4.02,1.38,4.09,6.97,3.16,10.23Z"/><path d="M200.94,20.88l-10.94-.03-2.24,6.33-5.62-.05L192.75.58h5.66s10.71,26.57,10.71,26.57l-5.91.03-2.27-6.3ZM199.16,16.06l-3.8-10-3.64,10.04,7.44-.04Z"/><path d="M22.81,27.14l-5.53.05-.09-13.15-10.12,13.13-7.07-.08,10.71-13.52L.18.71c2.37-.12,4.39-.12,6.64-.07l10.38,12.59.08-12.61,5.53.02v26.51Z"/><path d="M144.88,22.46l9.91.11v4.62s-10.2-.02-10.2-.02c-4.71,0-8.62-2.92-9.79-7.59-1-3.98-.88-8.26.33-12.2,1.64-5.32,6.28-6.88,11.38-6.87l8.28.02v4.6s-9.23.04-9.23.04c-2.51.01-4.41,1.64-4.99,4.06-.88,3.62-1.81,13.15,4.32,13.21Z"/><polygon points="179.35 27.12 173.99 27.16 173.97 16.08 164.3 16.09 164.28 27.18 158.99 27.17 159 .54 164.29 .56 164.29 11.36 173.97 11.36 174 .56 179.34 .57 179.35 27.12"/><polygon points="223.44 13.54 233.56 27.11 226.81 27.15 217.37 14.22 217.26 27.17 211.98 27.12 212 .54 217.26 .56 217.37 13.12 227.19 .54 233.49 .61 223.44 13.54"/><polygon points="95.64 27.13 90.17 27.2 90.15 5.26 82.03 5.23 82.06 .62 103.79 .62 103.8 5.22 95.64 5.27 95.64 27.13"/></svg></div>
+  <div class="footer__mark" aria-hidden="true"><svg viewBox="0 0 233.56 27.8" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMin meet" aria-hidden="true" focusable="false"><defs><linearGradient id="wm-verlauf" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="233.56" y2="0"><stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent-2)"/></linearGradient></defs><path d="M80.29,27.11l-5.9.1-5.58-10.47h-6.17s-.02,10.43-.02,10.43h-5.31s0-26.64,0-26.64l13.83.03c1.36,0,2.75.39,3.99.76,1.9.81,3.12,2.25,3.67,4.24.81,4.12.36,9.23-4.71,10.54l6.19,11.01ZM73.03,10.93c1.07-1.31.99-3.23.07-4.48-.53-.72-1.85-1.1-2.75-1.1l-7.73-.03.03,6.71,7.52-.04c.87,0,2.27-.33,2.86-1.06Z"/><path d="M51.78,20.24c-2.06,7.33-10.01,8.45-16.24,6.98-3.6-.85-6.18-3.4-7.18-6.98-1.11-3.99-1.19-8.27-.17-12.29.92-3.67,3.48-6.37,7.12-7.32,6.07-1.58,14.23-.55,16.4,6.64,1.27,4.21,1.27,8.73.08,12.96ZM46.25,18.59c.96-3.76,1.15-11.08-2.65-13.11-2.23-1.18-5.01-1.18-7.2.1-3.74,2.18-3.37,9.36-2.54,12.91.71,3.03,3.09,4.63,6.08,4.66s5.51-1.45,6.31-4.56Z"/><path d="M130.38,22.57c-1.07,3.74-4.87,4.63-8.36,4.63h-14.07s.03-4.77.03-4.77l14.72-.09c1.79-.01,2.67-1.53,2.61-3.12s-1.03-2.79-2.73-2.81l-8.24-.08c-2.93-.03-6.03-1.2-6.94-4.27-.67-2.27-.65-4.72.05-6.98,1.28-4.12,5.59-4.55,9.29-4.55h12.85s0,4.76,0,4.76l-13.94.06c-1.99,0-3.19,1.53-3.21,3.34-.01,1.53.91,2.92,2.63,2.93l8.57.07c1.18,0,2.47.28,3.56.66,4.02,1.38,4.09,6.97,3.16,10.23Z"/><path d="M200.94,20.88l-10.94-.03-2.24,6.33-5.62-.05L192.75.58h5.66s10.71,26.57,10.71,26.57l-5.91.03-2.27-6.3ZM199.16,16.06l-3.8-10-3.64,10.04,7.44-.04Z"/><path d="M22.81,27.14l-5.53.05-.09-13.15-10.12,13.13-7.07-.08,10.71-13.52L.18.71c2.37-.12,4.39-.12,6.64-.07l10.38,12.59.08-12.61,5.53.02v26.51Z"/><path d="M144.88,22.46l9.91.11v4.62s-10.2-.02-10.2-.02c-4.71,0-8.62-2.92-9.79-7.59-1-3.98-.88-8.26.33-12.2,1.64-5.32,6.28-6.88,11.38-6.87l8.28.02v4.6s-9.23.04-9.23.04c-2.51.01-4.41,1.64-4.99,4.06-.88,3.62-1.81,13.15,4.32,13.21Z"/><polygon points="179.35 27.12 173.99 27.16 173.97 16.08 164.3 16.09 164.28 27.18 158.99 27.17 159 .54 164.29 .56 164.29 11.36 173.97 11.36 174 .56 179.34 .57 179.35 27.12"/><polygon points="223.44 13.54 233.56 27.11 226.81 27.15 217.37 14.22 217.26 27.17 211.98 27.12 212 .54 217.26 .56 217.37 13.12 227.19 .54 233.49 .61 223.44 13.54"/><polygon points="95.64 27.13 90.17 27.2 90.15 5.26 82.03 5.23 82.06 .62 103.79 .62 103.8 5.22 95.64 5.27 95.64 27.13"/></svg></div>
   <div class="footer__bottom-bar">
     <div class="wrap footer__bottom">
       <span>© 1958–2026 Kortschak Schriften GmbH · Trofaiach · UID ATU71916536</span>

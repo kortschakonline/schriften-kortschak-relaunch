@@ -7,10 +7,28 @@
       "port": 8766
     },
     {
+      "name": "design10-server",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "cd /Volumes/MacUser/Projekte/schriften-kortschak/designs/10-apple-motion && python3 -m http.server 8766"
+      ],
+      "port": 8766
+    },
+    {
       "name": "kortschak-website",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["--prefix", "/Volumes/MacUser/Projekte/kortschak-website", "start"],
+      "runtimeArgs": [
+        "--prefix",
+        "/Volumes/MacUser/Projekte/kortschak-website",
+        "start"
+      ],
       "port": 8765
+    },
+    {
+      "name": "design11",
+      "url": "http://localhost:8767",
+      "port": 8767
     }
   ]
 }
