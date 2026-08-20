@@ -40,11 +40,9 @@ auf 28 % Alpha zurück. Headline steht ab Sekunde null — der leere Anfang von 
 ist damit weg.
 
 **Entwurf 11 (`11-scroll-hero/`, 17.08.2026, live: https://view.kortschak.online/11-scroll-hero/):**
-⚠️ Deploy-Lage seit 08/2026 geändert: **Root von view.kortschak.online = Jörns aktueller
-Relaunch-Build** (vom MacBook deployt), die alten Entwürfe 01–10 sind NICHT mehr live.
-Deploy ersetzt den ganzen Webroot → vorher Live-Site spiegeln (Skript-Muster:
-`mirror_view.py`, Manifest-getriebene Sequenz-Frames!), Entwurf daneben legen, alles
-zusammen hochladen. Rollback-Mirror vom 17.08. lag im Session-Scratchpad.
+(Deploy-Verfahren steht jetzt vollständig in Abschnitt 5. Kurz: Root von
+view.kortschak.online = Design 10, die Entwürfe 11–14 liegen daneben, die alten
+Entwürfe 01–10 sind seit 08/2026 nicht mehr live.)
 Vollbild-Scribble-Scroll-Hero fürs Relaunch-Projekt. Das gespiegelte Logo-K als
 reine Linien-Skulptur (Mantis-/noth.in-Referenz), beim Scrollen: Flug von hinten,
 2 Drehungen, Striche zeichnen sich gestaffelt auf, Headline ab 85 %. Produktion
@@ -60,6 +58,9 @@ Sequenz 240 Frames AVIF desktop (34 MB — vor Live-Gang verschlanken!) + 120 mo
 ```
 schriften-kortschak/
 ├─ MEMORY.md                  ← diese Datei
+├─ deploy/                    ← Deploy-Werkzeug, siehe Abschnitt 5
+│  ├─ paket-bauen.sh          (baut Paket + ZIP, Ausschlussliste inklusive)
+│  └─ pruef-assets.py         (prüft alle Asset-Referenzen gegen die Live-Site)
 ├─ website-backup/            ← vollständiges Mirror der alten Seite (wget)
 │  ├─ www.schriften-kortschak.at/   (37 Seiten HTML + ~670 Bilder + CSS/JS)
 │  ├─ _sitemaps/              (Original-Sitemaps)
@@ -69,14 +70,16 @@ schriften-kortschak/
 │  └─ *.md                    (eine Datei pro Seite: Text + Bildliste)
 ├─ analyse/
 │  └─ INHALTSANALYSE.md       ← Inhalts-/SEO-Analyse aller 36 Seiten (Ampel-System)
-└─ designs/                   ← die neuen Entwürfe
-   ├─ 01-werkstatt-grid/index.html   (hell, editorial)
-   ├─ 02-dark-studio/index.html      (dunkel, cinematic)
-   ├─ 03-bold-kinetic/index.html     (laut, rot/schwarz)
-   ├─ 04-bold-studio/        ← GEWÄHLTE, finale Website
-   │  ├─ index.html           (Startseite)
-   │  ├─ assets/img/          (54 lokale Bilder)
-   │  └─ leistungen/<slug>/index.html  (10 Leistungs-Unterseiten)
+└─ designs/
+   ├─ 01-werkstatt-grid/ … 09-monument/   (frühere Entwurfsstände)
+   ├─ 04-bold-studio/        (erster gewählter Stand, inzwischen abgelöst)
+   ├─ 10-apple-motion/       ← AKTUELLE Website, das ist der Stand, der live geht
+   │  ├─ index.html           (Startseite mit Iris-Hero)
+   │  ├─ assets/              (Bilder, Video, Fonts, Iris-Sequenz; Fotos-Lama = Rohmaterial)
+   │  ├─ leistungen/<slug>/index.html   (11 Leistungs-Unterseiten)
+   │  ├─ impressum/ + datenschutz/
+   │  └─ _archiv/, hero-c/, *.bak-*     (Arbeitsstände – nicht deployen, Abschnitt 5)
+   ├─ 11-scroll-hero/ … 14-iris-hero/   (Hero-Studien, liegen live neben der Site)
    └─ _screenshots/          (Voll-Screenshots aller Entwürfe + Unterseiten)
 ```
 
@@ -101,15 +104,76 @@ schriften-kortschak/
 
 - **Parallele Sub-Agenten** für unabhängige Teilaufgaben (Analyse je Bereich, Entwürfe, Unterseiten) — schnell + konsistent durch gemeinsames Briefing/Vorlage. Danach immer **selbst verifiziert**.
 - **Skills**: `frontend-design` (Design), eigener **`seo-onpage`** (On-Page-SEO beim Bauen; liegt unter `~/.claude/skills/seo-onpage/` — wiederverwendbar für künftige Kundenprojekte; ergänzt das vorhandene `marketing:seo-audit`).
-- **Hostinger-MCP**: Domain-Check, Subdomain `view` anlegen, Static-Deploy — alles per API, kein FTP.
-  ⚠️ **Achtung:** `deployStaticWebsite` **ersetzt den kompletten Inhalt** des Webroots (kein additives Entpacken). Beim Online-Stellen eines einzelnen Entwurfs daher immer die **ganze Site** paketieren: Root = `04-bold-studio` + alle Entwurfs-Ordner + `entwuerfe/`-Übersicht (liegt nicht lokal — vor dem Deploy von der Live-Site holen und ergänzen).
+- **Hostinger-MCP**: Domain-Check, Subdomain `view` anlegen, Static-Deploy – alles per API, kein FTP.
+  ⚠️ `deployStaticWebsite` **ersetzt den kompletten Webroot**. Vollständiges Rezept samt Skripten: **Abschnitt 5**.
 - **Playwright-MCP**: Seiten rendern, Screenshots, Bild-Ladekontrolle.
 - **Skripte (Python/Bash)** für Fleißarbeit: Bilder lokalisieren, Links umschreiben, alles validieren.
 - Prinzip durchgehend: **Behauptungen belegen** (Live-Status, JSON-LD-Validierung, Bild-Checks) statt „müsste passen".
 
 ---
 
-## 5. Lokale Vorschau
+## 5. Deploy-Rezept `view.kortschak.online` (Stand 20.08.2026)
+
+**Ziel:** Hostinger, Domain `view.kortschak.online`, User `u578130405`,
+Webroot `/home/u578130405/domains/view.kortschak.online/public_html`.
+Werkzeug: Hostinger-MCP **`hosting_deployStaticWebsite`** – lädt das Archiv per
+TUS hoch und entpackt es selbst, kein FTP und kein separater Upload-Aufruf.
+
+> ⚠️ **Der Deploy ersetzt den kompletten Webroot.** Kein additives Entpacken,
+> kein Rollback am Server. Was nicht im Archiv liegt, ist danach offline.
+> Darum immer das ganze Ziel paketieren, nie nur die geänderte Seite.
+> Der Rückweg ist das Git-Repo – **vor dem Deploy committen und pushen.**
+
+### Was ins Paket gehört
+
+| Im Archiv | Quelle |
+|---|---|
+| Wurzel: `index.html`, `leistungen/`, `impressum/`, `datenschutz/`, `assets/` | `designs/10-apple-motion/` |
+| `11-scroll-hero/`, `12-scroll-hero/`, `13-foil-hero/`, `14-iris-hero/` | `designs/<name>/` |
+
+Die vier Entwurfs-Bühnen waren schon vorher live und müssen mit, sonst
+verschwinden sie.
+
+### Was bewusst draußen bleibt
+
+- `10-apple-motion/assets/Fotos-Lama/` – 219 MB Rohfotos
+- `14-iris-hero/iris-eye-isolated/` + `-2/` – 116 MB Photoshop-Quellen
+- `10-apple-motion/_archiv/` (12 MB), `hero-c/`
+- `index.html.bak-*` sowie alle `*.md` im Seitenordner (PLAN, PROMPT-\*, BLENDER-SPECS)
+- `.DS_Store`
+
+Ohne diese Ausschlüsse wären es über 300 MB, und Rohmaterial läge öffentlich.
+
+### Ablauf
+
+```bash
+# 1. Paket + Archiv bauen (Ausschlussliste steckt im Skript)
+sh deploy/paket-bauen.sh
+#    -> /tmp/kortschak-deploy  +  /tmp/view-kortschak_<zeitstempel>.zip
+#    -> aktuell rund 165 MB / 2.048 Dateien
+
+# 2. Deploy ueber den Hostinger-MCP:
+#      hosting_deployStaticWebsite
+#      domain      = view.kortschak.online
+#      archivePath = <der ausgegebene ZIP-Pfad>
+#      removeArchive = true
+#    Nach rund 15 Sekunden ist der neue Stand live.
+
+# 3. Verifizieren – nicht klicken, messen:
+python3 deploy/pruef-assets.py /tmp/kortschak-deploy https://view.kortschak.online
+```
+
+`pruef-assets.py` zieht jede `src`/`href`/`content`- und CSS-`url()`-Referenz aus
+allen HTML-Dateien des Pakets, prüft erst, ob die Datei lokal überhaupt
+mitgepackt wurde, und fragt sie dann live ab. Exit-Code 1, sobald etwas fehlt.
+
+**Lauf vom 20.08.2026:** 14 Kundenseiten + 4 Entwurfs-Bühnen je HTTP 200,
+**68 referenzierte Assets, 0 Fehler**, PSD-Quellen erwartungsgemäß 404,
+`noindex, nofollow` steht noch, keine Konsolenfehler.
+
+---
+
+## 6. Lokale Vorschau
 
 ```bash
 cd designs/04-bold-studio
@@ -121,7 +185,7 @@ Die Entwürfe 01–03 öffnet man jeweils direkt als `designs/0X-…/index.html`
 
 ---
 
-## 6. Offen — Checkliste fürs echte Go-Live
+## 7. Offen – Checkliste fürs echte Go-Live
 
 - [ ] **Rechtsseiten**: Impressum-Seite + **neue DSGVO-Datenschutzerklärung** (alte ist veraltet/unvollständig → war 🔴 in der Analyse)
 - [ ] **Kontaktformular-Backend** (aktuell nur Frontend, kein Versand)
@@ -135,7 +199,7 @@ Die Entwürfe 01–03 öffnet man jeweils direkt als `designs/0X-…/index.html`
 
 ---
 
-## 7. Hinweise für Norbert
+## 8. Hinweise für Norbert
 
 - Fang bei **`analyse/INHALTSANALYSE.md`** an (zeigt, was an der alten Seite gut/schlecht war) und schau dir dann **`designs/04-bold-studio/`** an — das ist die neue Site.
 - Vergleiche `content/<seite>.md` (alt) mit der jeweiligen neuen `leistungen/<slug>/index.html` — man sieht gut, wie aus dünnem Text echte Inhalte wurden.
