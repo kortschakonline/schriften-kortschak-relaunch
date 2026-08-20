@@ -21,3 +21,7 @@ designs/14-iris-hero/iris-eye-isolated*/*.psd
 
 # Arbeitsordner fuer Bild-Uploads (Originale, gehoeren nicht ins Repo)
 image-upload/
+
+# Rohmaterial von Norbert (Briefings, Original-JPGs, 96-MB-Testvideo) —
+# Web-Derivate liegen versioniert in designs/10-apple-motion/assets/img/projekte/
+norbert-input/
