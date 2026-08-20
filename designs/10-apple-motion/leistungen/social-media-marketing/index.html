@@ -616,6 +616,50 @@
   .mega__montage-kopf{font-weight:700;color:var(--text);}
   .mega__montage-text{color:var(--text-2);font-size:.93rem;flex:1;}
   .mega__montage .arr{color:var(--accent);}
+  /* ===== Megamenue-Facelift (20.08.2026): Icon-Kacheln im Akzentverlauf,
+     Projekte-Leiste neben dem Montage-Band, Panel als leichtes Glas.
+     Das fruehere Deck-Argument (Seiteninhalt schlug durch) loest der
+     kraeftige Blur; ohne backdrop-filter-Support bleibt es deckend. ===== */
+  @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
+    .mega{
+      background:color-mix(in srgb, var(--surface) 84%, transparent);
+      -webkit-backdrop-filter:blur(26px) saturate(1.35);
+      backdrop-filter:blur(26px) saturate(1.35);
+    }
+  }
+  .mega__icon{
+    display:inline-grid;place-items:center;width:38px;height:38px;
+    border-radius:11px;margin-bottom:.6rem;
+    background:linear-gradient(135deg,#FF1C20,#d81216 45%,#F18700);
+    box-shadow:0 6px 16px rgba(255,28,32,.28);
+  }
+  .mega__icon svg{width:21px;height:21px;color:#fff;}
+  .mega__unten{
+    display:grid;grid-template-columns:1.15fr .95fr;
+    gap:clamp(.9rem,1.6vw,1.3rem);margin-top:clamp(1.1rem,2vw,1.7rem);
+  }
+  .mega__unten .mega__montage{
+    margin-top:0;
+    display:grid;grid-template-columns:auto 1fr auto;align-items:center;
+  }
+  .mega__projekte{
+    display:flex;align-items:center;flex-wrap:wrap;gap:.7rem;
+    padding:.85rem 1.1rem;border-radius:var(--radius-lg);
+    background:var(--bg-alt);border:1px solid var(--border);
+  }
+  .mega__projekte-kopf{font-weight:700;color:var(--text);margin-right:.2rem;}
+  .mega__projekte-kopf .arr{color:var(--accent);}
+  .mega__projekte-kopf:hover{color:var(--accent);}
+  .mega__projekt{
+    display:flex;align-items:center;gap:.55rem;
+    padding:.28rem .75rem .28rem .3rem;border-radius:var(--radius-pill);
+    background:var(--surface);border:1px solid var(--border);
+    font-size:.9rem;font-weight:500;color:var(--text-2);
+    transition:border-color .2s var(--ease),color .2s var(--ease),transform .2s var(--ease);
+  }
+  .mega__projekt img{width:30px;height:30px;border-radius:50%;object-fit:cover;display:block;}
+  .mega__projekt:hover{border-color:var(--accent);color:var(--text);transform:translateY(-2px);}
+  @media (max-width:1100px){ .mega__unten{grid-template-columns:1fr;} }
   @media (max-width:900px){ .mega{display:none;} }
   @media (prefers-reduced-motion:reduce){
     .mega{transition:opacity .01s,visibility .01s;transform:none;}
@@ -1157,7 +1201,7 @@
             <div class="wrap mega__inner">
               <div class="mega__felder">
               <div class="mega__feld">
-                <span class="mega__idx" aria-hidden="true">01</span>
+                <span class="mega__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12.6l1.8-4.5A1.8 1.8 0 0 1 7 7h10a1.8 1.8 0 0 1 1.7 1.1l1.8 4.5"/><path d="M3.5 12.6h17v4.4a.9.9 0 0 1-.9.9h-1.5"/><path d="M5.9 17.9H4.4a.9.9 0 0 1-.9-.9v-4.4"/><circle cx="7.6" cy="17.7" r="1.7"/><circle cx="16.4" cy="17.7" r="1.7"/><path d="M9.3 17.9h5.4"/></svg></span>
                 <h3 class="mega__titel"><a href="/leistungen/fahrzeugbeschriftung/">Fahrzeug</a></h3>
                 <ul>
                   <li><a href="/leistungen/fahrzeugbeschriftung/">Fahrzeugbeschriftung</a></li>
@@ -1166,7 +1210,7 @@
                 </ul>
               </div>
               <div class="mega__feld">
-                <span class="mega__idx" aria-hidden="true">02</span>
+                <span class="mega__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4.5h16"/><path d="M12 4.5V7"/><rect x="4.8" y="7" width="14.4" height="9.5" rx="2"/><path d="M8 10.5h8"/><path d="M8 13h5"/></svg></span>
                 <h3 class="mega__titel"><a href="/leistungen/beschriftungen/">Beschriftung &amp; Schilder</a></h3>
                 <ul>
                   <li><a href="/leistungen/beschriftungen/">Au&szlig;en- &amp; Innenbeschriftung</a></li>
@@ -1174,7 +1218,7 @@
                 </ul>
               </div>
               <div class="mega__feld">
-                <span class="mega__idx" aria-hidden="true">03</span>
+                <span class="mega__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.3 4.5L4 7.3l1.8 2.9 1.7-.9v10.2h9V9.3l1.7.9L20 7.3l-4.3-2.8a3.7 3.7 0 0 1-7.4 0z"/></svg></span>
                 <h3 class="mega__titel"><a href="/leistungen/textildruck/">Textil &amp; Druck</a></h3>
                 <ul>
                   <li><a href="/leistungen/textildruck/">Textildruck</a></li>
@@ -1182,7 +1226,7 @@
                 </ul>
               </div>
               <div class="mega__feld">
-                <span class="mega__idx" aria-hidden="true">04</span>
+                <span class="mega__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.2" y="4.8" width="17.6" height="11.8" rx="2"/><path d="M9.5 20.5h5"/><path d="M12 16.6v3.9"/><path d="M7 13.2l2.5-2.5 2 2 3-3"/></svg></span>
                 <h3 class="mega__titel"><a href="/leistungen/webdesign/">Digital</a></h3>
                 <ul>
                   <li><a href="/leistungen/webdesign/">Webdesign</a></li>
@@ -1191,11 +1235,18 @@
                 </ul>
               </div>
               </div>
+              <div class="mega__unten">
               <a class="mega__montage" href="/leistungen/montage/">
                 <span class="mega__montage-kopf">Montage</span>
                 <span class="mega__montage-text">Steiger, Werkzeug und eigene Crew – wir montieren selbst, was wir fertigen.</span>
                 <span class="arr" aria-hidden="true">→</span>
               </a>
+              <div class="mega__projekte">
+                <a class="mega__projekte-kopf" href="/leistungen/social-media-marketing/#projekte">Projekte <span class="arr" aria-hidden="true">→</span></a>
+                <a class="mega__projekt" href="/projekte/austrotrucker/"><img src="/assets/img/projekte/austrotrucker/thumb.webp" alt="" loading="lazy" width="176" height="176"><span>Austrotrucker</span></a>
+                <a class="mega__projekt" href="/projekte/paltentaler/"><img src="/assets/img/projekte/paltentaler/thumb.webp" alt="" loading="lazy" width="176" height="176"><span>Paltentaler</span></a>
+              </div>
+              </div>
             </div>
           </div>
         </li>
@@ -1254,6 +1305,12 @@
       <li class="mobile-menu__feld"><span>Montage</span>
         <ul>
         <li><a href="/leistungen/montage/">Montage &amp; Anbringung</a></li>
+        </ul>
+      </li>
+      <li class="mobile-menu__feld"><span>Projekte</span>
+        <ul>
+        <li><a href="/projekte/austrotrucker/">Austrotrucker</a></li>
+        <li><a href="/projekte/paltentaler/">Paltentaler</a></li>
         </ul>
       </li>
     </ul>
