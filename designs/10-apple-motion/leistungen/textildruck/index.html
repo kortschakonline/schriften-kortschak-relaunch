@@ -288,6 +288,37 @@
 
   /* ===== Sektionen ===== */
   .section{padding-block:clamp(4.5rem,9vw,8rem);}
+
+  /* ===== Wandernder Lichtschein (20.08.2026) =====
+     Statt pro Sektion neu zu zuenden: EIN Licht, das beim Scrollen durch
+     die ganze Seite wandert und die Sektionsgrenzen ueberspielt. Es laeuft
+     langsamer als die Seite (Parallax) und wechselt dabei von Marken-Warm
+     nach Iris-Blau – dieselben beiden Toene wie im Hero.
+     Ein einziges Element, bewegt nur ueber transform. Bewusst OHNE
+     mix-blend-mode und mit sehr niedriger Deckkraft: der Schein legt sich
+     zwar ueber den Text, veraendert dessen Kontrast aber nicht messbar.
+     Der Wechsel hell/hellgrau der Sektionen (.section / .section--alt)
+     bleibt unangetastet und traegt weiter den Rhythmus. */
+  .wanderlicht{
+    position:fixed;top:0;left:50%;z-index:500;pointer-events:none;
+    width:min(155vw,1750px);height:min(155vw,1750px);
+    margin-left:calc(min(155vw,1750px) / -2);
+    opacity:var(--wanderlicht-deckung,.09);
+    will-change:transform;
+  }
+  /* Zwei Lichter statt eines farbwechselnden: eine RGB-Interpolation von
+     Orange nach Cyan laeuft durch ein mattes Braun. Ueberblendet man
+     stattdessen zwei Ebenen, bleibt jede Farbe sauber, und der Wechsel
+     liest sich als "das Licht kuehlt ab". */
+  .wanderlicht__licht{
+    position:absolute;inset:0;border-radius:50%;
+    background:radial-gradient(circle at 50% 50%, var(--f) 0%, transparent 66%);
+  }
+  .wanderlicht__warm{--f:rgba(255,92,24,.55);}          /* Markenglut */
+  .wanderlicht__kalt{--f:rgba(140,210,220,.6);opacity:0;} /* Iris-Blau */
+  [data-theme="dark"]{--wanderlicht-deckung:.20;}
+  @media (prefers-color-scheme: dark){ :root:not([data-theme]){--wanderlicht-deckung:.20;} }
+  @media (prefers-reduced-motion: reduce){ .wanderlicht{transform:none!important;} }
   .section--alt{background:var(--bg-alt);transition:background .4s var(--ease);}
   .section-head{max-width:820px;margin-bottom:clamp(2.5rem,5vw,4rem);}
   .section-head--center{margin-inline:auto;text-align:center;}
@@ -622,6 +653,11 @@
 
 <a class="skip-link" href="#main">Zum Inhalt springen</a>
 
+<div class="wanderlicht" id="wanderlicht" aria-hidden="true">
+  <div class="wanderlicht__licht wanderlicht__warm"></div>
+  <div class="wanderlicht__licht wanderlicht__kalt" id="wanderlicht-kalt"></div>
+</div>
+
 <!-- ===== NAVBAR ===== -->
 <header class="navbar" id="navbar">
   <div class="wrap navbar__inner">
@@ -941,6 +977,47 @@ if(reduce || !('IntersectionObserver' in window)){
 })();
 </script>
 
+<script>
+/* ===== Wandernder Lichtschein =====
+   Position und Farbe haengen am Scrollfortschritt der ganzen Seite.
+   Der Schein legt nur 1,15 Viewporthoehen zurueck, waehrend die Seite ihre
+   volle Laenge scrollt – daher der Parallax-Nachlauf.
+   Passiver Scroll-Listener, ueber requestAnimationFrame gebuendelt: pro
+   Frame hoechstens ein Schreibzugriff, kein Layout-Lesen im Handler. */
+(function(){
+  'use strict';
+  var el = document.getElementById('wanderlicht');
+  if(!el) return;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var warm = el.querySelector('.wanderlicht__warm');
+  var kalt = document.getElementById('wanderlicht-kalt');
+  /* Der Farbwechsel passiert erst im letzten Drittel: den grossen Teil der
+     Seite traegt die Markenglut, gegen Ende kuehlt das Licht auf das
+     Iris-Blau ab und verklammert Footer und Hero. */
+  var WECHSEL_VON = 0.55, WECHSEL_BIS = 0.85;
+  var raf = null;
+
+  function mal(){
+    raf = null;
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    var t = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+    var k = Math.min(1, Math.max(0,
+              (t - WECHSEL_VON) / (WECHSEL_BIS - WECHSEL_VON)));
+    k = k * k * (3 - 2 * k);       /* weich rein, weich raus */
+    kalt.style.opacity = k.toFixed(3);
+    warm.style.opacity = (1 - 0.85 * k).toFixed(3);
+    if(!reduce){
+      el.style.transform = 'translate3d(0,' +
+        ((0.5 - t) * window.innerHeight * 1.15).toFixed(1) + 'px,0)';
+    }
+  }
+  function an(){ if(!raf) raf = requestAnimationFrame(mal); }
+
+  mal();
+  window.addEventListener('scroll', an, { passive: true });
+  window.addEventListener('resize', an, { passive: true });
+})();
+</script>
 <script>
 /* ===== Sanfter Anker-Scroll =====
    Der native scroll-behavior:smooth ruckelt auf den langen Seiten (Sticky-
