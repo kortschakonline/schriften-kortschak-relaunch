@@ -14,3 +14,10 @@ designs/10-apple-motion/assets/Fotos-Lama/
 # Die Sequenz von Entwurf 14 IST versioniert (wird als Startseiten-Hero verwendet).
 designs/11-scroll-hero/seq/
 designs/13-foil-hero/seq/
+
+# Iris-Quell-PSDs (Stock-Originale, 97 MB) — PNG-Derivate und Quell-Videos werden versioniert
+# (Regel ging in de0eab0 verloren, als die seq-Regeln sie ersetzt statt ergaenzt haben)
+designs/14-iris-hero/iris-eye-isolated*/*.psd
+
+# Arbeitsordner fuer Bild-Uploads (Originale, gehoeren nicht ins Repo)
+image-upload/
