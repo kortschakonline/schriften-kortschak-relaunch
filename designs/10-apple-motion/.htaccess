@@ -1,0 +1,6 @@
+# MIME-Typ fuer AVIF nachruesten — Hostinger/LiteSpeed kennt die Endung nicht
+# und liefert die Frames sonst als text/plain aus. Das funktioniert nur, weil
+# Browser bei <img> am Inhalt schnueffeln; sobald irgendwo
+# X-Content-Type-Options: nosniff gesetzt wird, waere jede Scroll-Buehne
+# schwarz. (woff2/webp/svg liefert der Server bereits korrekt.)
+AddType image/avif .avif
