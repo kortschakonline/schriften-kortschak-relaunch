@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Entwurf 11 — Scribble-Scroll-Hero | Kortschak</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root{
+    --papier:#f4f2ee;
+    --tinte:#141414;
+    --tinte-soft:#6b6862;
+    --linie:rgba(20,20,20,.14);
+    --accent:#FF1C20;
+    --accent-hover:#CC1418;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --papier:#101010;
+      --tinte:#efece6;
+      --tinte-soft:#98948c;
+      --linie:rgba(239,236,230,.13);
+      --accent:#FF3B3E;
+      --accent-hover:#FF6265;
+    }
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:auto}
+  body{
+    background:var(--papier);
+    color:var(--tinte);
+    font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- Kopf ---------- */
+  header{
+    position:fixed;inset:0 0 auto 0;z-index:40;
+    display:flex;justify-content:space-between;align-items:center;
+    padding:22px clamp(20px,4vw,48px);
+    mix-blend-mode:normal;pointer-events:none;
+  }
+  .marke{font-weight:800;letter-spacing:.04em;font-size:15px;pointer-events:auto}
+  .marke span{color:var(--accent)}
+  .meta{font-size:12px;color:var(--tinte-soft);letter-spacing:.08em;text-transform:uppercase}
+
+  /* ---------- Vollbild-Bühne ---------- */
+  .track{height:260vh;position:relative}
+  .stage{
+    position:sticky;top:0;height:100vh;height:100svh;
+    overflow:hidden;
+  }
+  .stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+  #waber{z-index:1}
+  #kcanvas{z-index:2}
+
+  /* Scroll-Hinweis */
+  .hint{
+    position:absolute;z-index:5;left:50%;bottom:26px;transform:translateX(-50%);
+    font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--tinte-soft);
+    display:flex;flex-direction:column;align-items:center;gap:8px;
+    transition:opacity .4s ease;
+  }
+  .hint::after{
+    content:"";width:1px;height:34px;background:var(--tinte-soft);
+    animation:hintline 1.6s ease-in-out infinite;transform-origin:top;
+  }
+  @keyframes hintline{0%{transform:scaleY(0)}55%{transform:scaleY(1)}100%{transform:scaleY(1);opacity:0}}
+
+  /* Preloader-Zahl (Understatement wie beim Vorbild) */
+  .lade{
+    position:absolute;z-index:6;left:50%;bottom:22px;transform:translateX(-50%);
+    font-variant-numeric:tabular-nums;font-size:13px;font-weight:600;
+    color:var(--tinte-soft);letter-spacing:.1em;
+    transition:opacity .5s ease;
+  }
+
+  /* ---------- Headline am Ende der Choreografie ---------- */
+  .claim{
+    position:absolute;z-index:4;inset:auto 0 0 0;
+    display:flex;flex-direction:column;align-items:center;gap:18px;
+    padding:14vh 24px calc(7vh + 12px);text-align:center;
+    opacity:0;transform:translateY(26px);pointer-events:none;
+    background:linear-gradient(to top,var(--papier) 32%,color-mix(in srgb,var(--papier) 55%,transparent) 78%,transparent);
+  }
+  .claim h1{
+    font-size:clamp(34px,6vw,74px);font-weight:800;letter-spacing:-.02em;line-height:1.04;
+  }
+  .claim p{font-size:clamp(15px,1.6vw,19px);color:var(--tinte-soft);max-width:560px}
+  .ctas{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:6px}
+  .btn{
+    display:inline-block;padding:13px 26px;border-radius:999px;
+    font-size:15px;font-weight:600;text-decoration:none;
+    transition:background .25s ease,color .25s ease,border-color .25s ease;
+  }
+  .btn-voll{background:var(--accent);color:#fff}
+  .btn-voll:hover{background:var(--accent-hover)}
+  .btn-line{border:1.5px solid var(--tinte);color:var(--tinte)}
+  .btn-line:hover{border-color:var(--accent);color:var(--accent)}
+
+  /* ---------- Abschnitt danach (nur damit der Scroll weitergeht) ---------- */
+  .danach{
+    position:relative;z-index:3;background:var(--papier);
+    min-height:70vh;display:flex;align-items:center;justify-content:center;
+    border-top:1px solid var(--linie);
+  }
+  .danach .inner{max-width:640px;padding:80px 24px;text-align:center;color:var(--tinte-soft);font-size:15px;line-height:1.7}
+  .danach strong{color:var(--tinte)}
+
+  /* ---------- Reduced Motion: stehendes Poster ---------- */
+  @media (prefers-reduced-motion: reduce){
+    .track{height:auto}
+    .stage{position:relative;height:100vh}
+    .hint,.lade{display:none}
+    .claim{opacity:1;transform:none;pointer-events:auto}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="marke">KORTSCHAK<span>.</span></div>
+  <div class="meta">Entwurf 11 · Scribble-Scroll-Hero</div>
+</header>
+
+<div class="track" id="track">
+  <section class="stage" id="stage" aria-label="Animation: Das Kortschak-K zeichnet sich beim Scrollen aus Skizzenlinien und dreht sich nach vorn.">
+    <canvas id="waber"></canvas>
+    <canvas id="kcanvas"></canvas>
+    <div class="hint" id="hint">Scrollen</div>
+    <div class="lade" id="lade">0</div>
+    <div class="claim" id="claim">
+      <h1>Wir machen Sie sichtbar.</h1>
+      <p>Werbetechnik, Beschriftung und Car-Wrapping aus Trofaiach — seit über 30 Jahren.</p>
+      <div class="ctas">
+        <a class="btn btn-voll" href="#danach">Leistungen entdecken</a>
+        <a class="btn btn-line" href="#danach">Angebot anfragen</a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<section class="danach" id="danach">
+  <div class="inner">
+    <strong>Prototyp-Ende.</strong> Ab hier begänne die normale Startseite.
+    Die Bühne darüber ist scrollgesteuert: Flug, Drehung und Strichaufbau folgen
+    deinem Scrollweg; die Hintergrundlinien wabern zeitbasiert von selbst.
+  </div>
+</section>
+
+<script>
+(function(){
+  "use strict";
+  var reduziert = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var dunkel = matchMedia("(prefers-color-scheme: dark)");
+
+  var track = document.getElementById("track");
+  var kcv = document.getElementById("kcanvas");
+  var wcv = document.getElementById("waber");
+  var kctx = kcv.getContext("2d");
+  var wctx = wcv.getContext("2d");
+  var hint = document.getElementById("hint");
+  var lade = document.getElementById("lade");
+  var claim = document.getElementById("claim");
+
+  var dpr = Math.min(devicePixelRatio || 1, 2);
+  var vw = 0, vh = 0;
+  function resize(){
+    vw = innerWidth; vh = innerHeight;
+    [kcv, wcv].forEach(function(c){
+      c.width = Math.round(vw * dpr);
+      c.height = Math.round(vh * dpr);
+    });
+  }
+  resize();
+  addEventListener("resize", function(){
+    // iOS: reine URL-Leisten-Resizes ignorieren (nur Breite zählt)
+    if (Math.abs(innerWidth - vw) > 1 || Math.abs(innerHeight - vh) > 120) resize();
+  });
+
+  /* ---------------- Sequenz laden (grob zuerst, dann auffüllen) -------- */
+  var mobil = matchMedia("(pointer: coarse)").matches || vw < 820;
+  var frames = [], nFrames = 0, geladen = 0, basis = "";
+  var startbereit = false;
+
+  fetch("seq/manifest.json").then(function(r){ return r.json(); }).then(function(mf){
+    var rend = mobil && mf.renditions.mobile ? mf.renditions.mobile : mf.renditions.desktop;
+    basis = "seq/" + rend.path;
+    nFrames = rend.frames;
+    frames = new Array(nFrames);
+    // Ladeplan: jeder 8. Frame zuerst (Scrub sofort möglich), dann Rest
+    var plan = [], i;
+    for (i = 0; i < nFrames; i += 8) plan.push(i);
+    for (i = 0; i < nFrames; i++) if (i % 8 !== 0) plan.push(i);
+    var offen = 0, MAX = 6, zeiger = 0;
+    function nachladen(){
+      while (offen < MAX && zeiger < plan.length){
+        (function(idx){
+          offen++;
+          var img = new Image();
+          img.decoding = "async";
+          img.onload = img.onerror = function(){
+            offen--; geladen++;
+            frames[idx] = img.naturalWidth ? img : null;
+            var pct = Math.round(100 * geladen / nFrames);
+            lade.textContent = pct;
+            if (!startbereit && geladen >= Math.ceil(nFrames / 8)){
+              startbereit = true;
+              lade.style.opacity = 0;
+            }
+            if (geladen >= nFrames) lade.remove();
+            nachladen();
+          };
+          img.src = basis + String(idx + 1).padStart(4, "0") + "." + mf.ext;
+        })(plan[zeiger++]);
+      }
+    }
+    nachladen();
+  });
+
+  function frameBei(idx){
+    // nächstliegenden bereits geladenen Frame suchen
+    if (frames[idx]) return frames[idx];
+    for (var d = 1; d < nFrames; d++){
+      if (frames[idx - d]) return frames[idx - d];
+      if (frames[idx + d]) return frames[idx + d];
+    }
+    return null;
+  }
+
+  /* ---------------- Waber-Hintergrund (zeitbasiert, Vollbild) ---------- */
+  // Pseudo-Noise aus überlagerten Sinuswellen — ruhig, organisch, billig.
+  function wnoise(x, y, t){
+    return Math.sin(x * 1.7 + t * .21 + Math.sin(y * 2.3 + t * .13) * 1.4)
+         + Math.sin(x * .6 - t * .09 + y * 1.1) * .8
+         + Math.sin((x + y) * 2.6 + t * .05) * .35;
+  }
+  function waberZeichnen(t, p){
+    var w = wcv.width, h = wcv.height;
+    wctx.clearRect(0, 0, w, h);
+    wctx.lineWidth = 1 * dpr;
+    wctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--linie").trim();
+    var reihen = 26;
+    var amp = h * .035 * (1 - p * .45);       // Feld beruhigt sich, wenn das K einrastet
+    var schritt = Math.max(8 * dpr, w / 160);
+    for (var r = 0; r < reihen; r++){
+      var y0 = h * (r + .5) / reihen;
+      wctx.beginPath();
+      for (var x = 0; x <= w; x += schritt){
+        var nx = x / w * 6, ny = r * .55;
+        var y = y0 + wnoise(nx, ny, t) * amp;
+        x === 0 ? wctx.moveTo(x, y) : wctx.lineTo(x, y);
+      }
+      wctx.stroke();
+    }
+  }
+
+  /* ---------------- K zeichnen (Vollbild-Bühne, Frame mittig) ---------- */
+  function kZeichnen(p){
+    var w = kcv.width, h = kcv.height;
+    kctx.clearRect(0, 0, w, h);
+    if (!nFrames) return;
+    var idx = Math.round(p * (nFrames - 1));
+    var img = frameBei(idx);
+    if (!img) return;
+    // K füllt die Bühne: 86% der Viewport-Höhe, mittig, leicht nach oben.
+    // Beim Einrasten (p > 0.85) macht es der Headline Platz: rückt hoch, schrumpft leicht.
+    var c = Math.min(1, Math.max(0, (p - .85) / .12));
+    var ce = 1 - Math.pow(1 - c, 3);
+    var ar = img.naturalWidth / img.naturalHeight;
+    var zh = h * (.86 - .14 * ce), zw = zh * ar;
+    if (zw > w * .92){ zw = w * .92; zh = zw / ar; }
+    var x = (w - zw) / 2, y = (h - zh) / 2 - h * (.02 + .085 * ce);
+    kctx.filter = dunkel.matches ? "invert(0.92)" : "none";
+    kctx.drawImage(img, x, y, zw, zh);
+    kctx.filter = "none";
+  }
+
+  /* ---------------- Scroll → Fortschritt, sanft nachgeführt ------------ */
+  var pZiel = 0, pIst = 0;
+  function messen(){
+    var r = track.getBoundingClientRect();
+    var weg = r.height - vh;
+    pZiel = weg > 0 ? Math.min(1, Math.max(0, -r.top / weg)) : 1;
+  }
+  addEventListener("scroll", messen, { passive: true });
+  messen();
+
+  var t0 = performance.now();
+  function loop(now){
+    var t = (now - t0) / 1000;
+    pIst += (pZiel - pIst) * 0.16;
+    if (Math.abs(pZiel - pIst) < 0.0005) pIst = pZiel;
+    waberZeichnen(t, pIst);
+    kZeichnen(pIst);
+    hint.style.opacity = (pIst < .04 && startbereit) ? 1 : 0;
+    // Headline ab p 0.85 einblenden
+    var c = Math.min(1, Math.max(0, (pIst - .85) / .12));
+    claim.style.opacity = c;
+    claim.style.transform = "translateY(" + (26 * (1 - c)) + "px)";
+    claim.style.pointerEvents = c > .6 ? "auto" : "none";
+    requestAnimationFrame(loop);
+  }
+
+  if (reduziert){
+    // Stehendes Poster: letzter Frame, Feld ruhig, Headline sichtbar
+    var ruhig = function(){
+      pIst = pZiel = 1;
+      waberZeichnen(0, 1);
+      kZeichnen(1);
+    };
+    var warten = setInterval(function(){
+      if (geladen > 0){ ruhig(); }
+      if (geladen >= nFrames && nFrames){ clearInterval(warten); ruhig(); }
+    }, 300);
+  } else {
+    requestAnimationFrame(loop);
+  }
+
+  dunkel.addEventListener && dunkel.addEventListener("change", function(){
+    kZeichnen(pIst);
+  });
+})();
+</script>
+</body>
+</html>

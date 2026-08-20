@@ -18,6 +18,41 @@ Neubau der Website der eigenen Werbeagentur **Kortschak Schriften GmbH** (Bestan
 (Startseite = finaler Entwurf „Bold Studio" + 10 Leistungs-Unterseiten)
 **Entwürfe-Übersicht:** https://view.kortschak.online/entwuerfe/ — alle Entwürfe 01–10 als Unterordner (zuletzt ergänzt: `10-apple-motion` mit scrollgesteuerter BMW-G21-Sequenz aus eigenem Blender-Rendering, Juli 2026)
 
+**Entwurf 13 (`13-foil-hero/`, 17.08.2026, live: https://view.kortschak.online/13-foil-hero/):**
+NOTHIN'-Nachbau (noth.in als Referenz): dunkle Studiobühne mit Vignette + Filmkorn,
+IBM-Plex-Mono-Metadaten in den Ecken, Intro-Statement mit Zeilen-Maske, dann
+scrollgescrubbtes **K aus zerknitterter roter Chromfolie** („rotes Chrom", von Jörn
+am Still freigegeben; Cycles + Studio-HDRI + Displace-Knitter), Abbinder mit
+Zeilen-Reveal. Sequenz nur 6,8 MB Desktop / 1,7 MB Mobile (opake Folie komprimiert
+viel besser als Line-Art). Produktion: `Kortschak-3D/render/k_folie_anim.py` +
+`k_folie_postprocess.sh`. Lehre daraus: Ease-Kurven für Scroll-Scrub quadratisch
+und bis p≈0.85 strecken, kubisch/0.75 ist frontlastig (Probe-Frames prüfen!).
+
+**Entwurf 12 (`12-scroll-hero/`, 17.08.2026, live: https://view.kortschak.online/12-scroll-hero/):**
+Reaktion auf Jörns Kritik an 11 („nicht spektakulär"): Headline zentriert in der
+Bühnenmitte, **SICHTBAR in Anton als dezente Outline (1,2 px, abgedunkelt), füllt
+sich beim Scrollen von links mit dem Design-10-Akzentverlauf Rot→Orange
+(#FF1C20→#d81216→#F18700, 135°)** — und ein **Rakel** (Inline-SVG, oranger Filz)
+fährt an der Füllkante mit: Das Wort wird „foliert". Jörn probierte erst
+Silber→Orange, entschied dann Rot→Orange. K-Sequenz (geteilt aus
+`11-scroll-hero/seq/` — nicht doppelt deployen!) läuft dahinter und tritt am Ende
+auf 28 % Alpha zurück. Headline steht ab Sekunde null — der leere Anfang von v11
+ist damit weg.
+
+**Entwurf 11 (`11-scroll-hero/`, 17.08.2026, live: https://view.kortschak.online/11-scroll-hero/):**
+⚠️ Deploy-Lage seit 08/2026 geändert: **Root von view.kortschak.online = Jörns aktueller
+Relaunch-Build** (vom MacBook deployt), die alten Entwürfe 01–10 sind NICHT mehr live.
+Deploy ersetzt den ganzen Webroot → vorher Live-Site spiegeln (Skript-Muster:
+`mirror_view.py`, Manifest-getriebene Sequenz-Frames!), Entwurf daneben legen, alles
+zusammen hochladen. Rollback-Mirror vom 17.08. lag im Session-Scratchpad.
+Vollbild-Scribble-Scroll-Hero fürs Relaunch-Projekt. Das gespiegelte Logo-K als
+reine Linien-Skulptur (Mantis-/noth.in-Referenz), beim Scrollen: Flug von hinten,
+2 Drehungen, Striche zeichnen sich gestaffelt auf, Headline ab 85 %. Produktion
+reproduzierbar in `Kortschak-3D/render/k_scribble_anim.py` (+ `k_scribble_postprocess.sh`);
+Sequenz 240 Frames AVIF desktop (34 MB — vor Live-Gang verschlanken!) + 120 mobile
+(7,6 MB) in `seq/`. Light/Dark aus einem Asset (Canvas-Invertierung), Reduced-Motion
+= stehendes Poster. Lokale Vorschau: `cd designs/11-scroll-hero && python3 -m http.server 8767`.
+
 ---
 
 ## 2. Ordnerstruktur

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Entwurf 13 — Folien-Hero (NOTHIN'-Nachbau) | Kortschak</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --grund:#111113;
+    --hell:#f2f0ec;
+    --hell-soft:#8f8d88;
+    --rot:#FF1C20;
+    --rot-hover:#FF3B3E;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:auto}
+  body{
+    background:var(--grund);
+    color:var(--hell);
+    font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
+
+  /* ---------- Kopf- und Fußzeilen im noth.in-Stil (Mono-Metadaten) ---------- */
+  header{
+    position:fixed;inset:0 0 auto 0;z-index:40;
+    display:flex;justify-content:space-between;align-items:baseline;
+    padding:20px clamp(18px,3.5vw,44px);pointer-events:none;
+  }
+  .marke{font-weight:800;letter-spacing:.04em;font-size:15px;pointer-events:auto}
+  .marke span{color:var(--rot)}
+  .meta{font-size:11px;color:var(--hell-soft);letter-spacing:.1em;text-transform:uppercase}
+  .ecken{
+    position:fixed;inset:auto 0 0 0;z-index:40;
+    display:flex;justify-content:space-between;
+    padding:18px clamp(18px,3.5vw,44px);
+    font-size:10px;letter-spacing:.12em;color:var(--hell-soft);
+    text-transform:uppercase;pointer-events:none;
+  }
+
+  /* ---------- Vollbild-Bühne ---------- */
+  .track{height:300vh;position:relative}
+  .stage{
+    position:sticky;top:0;height:100vh;height:100svh;
+    overflow:hidden;
+    background:
+      radial-gradient(120% 90% at 50% 38%, #1a191c 0%, var(--grund) 55%, #0b0b0d 100%);
+  }
+  #kcanvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:2}
+
+  /* Filmkorn */
+  .korn{
+    position:absolute;inset:-100px;z-index:3;pointer-events:none;opacity:.05;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='0.8'/%3E%3C/svg%3E");
+    animation:korn 0.7s steps(3) infinite;
+  }
+  @keyframes korn{
+    0%{transform:translate(0,0)}
+    34%{transform:translate(-60px,30px)}
+    67%{transform:translate(40px,-50px)}
+    100%{transform:translate(0,0)}
+  }
+  @media (prefers-reduced-motion: reduce){ .korn{animation:none} }
+
+  /* Preloader-Zahl (Understatement wie beim Vorbild) */
+  .lade{
+    position:absolute;z-index:6;left:50%;bottom:64px;transform:translateX(-50%);
+    font-variant-numeric:tabular-nums;font-size:12px;font-weight:500;
+    color:var(--hell-soft);letter-spacing:.14em;
+    transition:opacity .5s ease;
+  }
+  .hint{
+    position:absolute;z-index:5;left:50%;bottom:26px;transform:translateX(-50%);
+    font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--hell-soft);
+    transition:opacity .4s ease;
+  }
+
+  /* ---------- Intro-Wort (steht ab Sekunde null, Zeilen-Maske) ---------- */
+  .intro{
+    position:absolute;z-index:4;inset:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:6px;text-align:center;pointer-events:none;
+  }
+  .zeile{overflow:hidden}
+  .zeile > span{
+    display:block;
+    font-size:clamp(30px,4.6vw,64px);font-weight:800;letter-spacing:-.01em;line-height:1.08;
+    transform:translateY(0);
+  }
+  .intro .mono-zeile{
+    margin-top:14px;font-size:clamp(11px,1.2vw,13px);letter-spacing:.3em;
+    color:var(--hell-soft);text-transform:uppercase;
+  }
+
+  /* ---------- Abbinder am Ende (Zeilen-Masken-Reveal) ---------- */
+  .claim{
+    position:absolute;z-index:4;inset:auto 0 0 0;
+    display:flex;flex-direction:column;align-items:center;gap:14px;
+    padding:0 24px calc(11vh);text-align:center;pointer-events:none;
+  }
+  .claim .zeile > span{
+    font-size:clamp(34px,5.6vw,72px);font-weight:800;letter-spacing:-.02em;line-height:1.05;
+    transform:translateY(110%);
+  }
+  .claim .sub{
+    overflow:hidden;
+  }
+  .claim .sub > span{
+    display:block;font-size:clamp(13px,1.5vw,17px);color:var(--hell-soft);
+    transform:translateY(110%);
+  }
+  .ctas{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:8px;
+    opacity:0;transform:translateY(14px)}
+  .btn{
+    display:inline-block;padding:12px 26px;border-radius:999px;
+    font-size:14px;font-weight:600;text-decoration:none;color:var(--hell);
+    transition:background .25s ease,color .25s ease,border-color .25s ease;
+  }
+  .btn-voll{background:var(--rot);color:#fff}
+  .btn-voll:hover{background:var(--rot-hover)}
+  .btn-line{border:1.5px solid var(--hell)}
+  .btn-line:hover{border-color:var(--rot);color:var(--rot)}
+
+  .danach{
+    position:relative;z-index:3;background:var(--grund);
+    min-height:70vh;display:flex;align-items:center;justify-content:center;
+    border-top:1px solid rgba(242,240,236,.09);
+  }
+  .danach .inner{max-width:640px;padding:80px 24px;text-align:center;color:var(--hell-soft);font-size:15px;line-height:1.7}
+  .danach strong{color:var(--hell)}
+
+  @media (prefers-reduced-motion: reduce){
+    .track{height:auto}
+    .stage{position:relative;height:100vh}
+    .hint,.lade{display:none}
+    .intro{display:none}
+    .claim .zeile > span,.claim .sub > span{transform:none}
+    .ctas{opacity:1;transform:none}
+    .claim{pointer-events:auto}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="marke">KORTSCHAK<span>.</span></div>
+  <div class="meta mono">Entwurf 13 · Folien-Hero</div>
+</header>
+<div class="ecken mono" aria-hidden="true">
+  <span>Trofaiach · 47.42°N 15.00°E</span>
+  <span>Werbetechnik seit 1958</span>
+</div>
+
+<div class="track" id="track">
+  <section class="stage" id="stage" aria-label="Animation: Das Kortschak-K aus zerknitterter roter Chromfolie schwebt beim Scrollen heran und dreht sich nach vorn.">
+    <canvas id="kcanvas"></canvas>
+    <div class="korn"></div>
+    <div class="intro" id="intro">
+      <div class="zeile"><span id="intro1">Werbung, die man</span></div>
+      <div class="zeile"><span id="intro2">nicht übersehen kann.</span></div>
+      <div class="mono-zeile">— Scrollen —</div>
+    </div>
+    <div class="lade mono" id="lade">0</div>
+    <div class="hint" id="hint"></div>
+    <div class="claim" id="claim">
+      <div class="zeile"><span id="c1">Wir machen Sie sichtbar.</span></div>
+      <div class="sub"><span id="c2">Werbetechnik, Beschriftung und Car-Wrapping aus Trofaiach.</span></div>
+      <div class="ctas" id="ctas">
+        <a class="btn btn-voll" href="#danach">Leistungen entdecken</a>
+        <a class="btn btn-line" href="#danach">Angebot anfragen</a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<section class="danach" id="danach">
+  <div class="inner">
+    <strong>Prototyp-Ende.</strong> Ab hier begänne die normale Startseite.
+    NOTHIN'-Rezept: dunkle Studiobühne, Filmkorn, Mono-Metadaten in den Ecken,
+    und das K aus zerknitterter roter Chromfolie — scrollgescrubbt aus einer
+    vorgerenderten Cycles-Sequenz, wie beim Vorbild die Ballon-Objekte.
+  </div>
+</section>
+
+<script>
+(function(){
+  "use strict";
+  var reduziert = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  var track = document.getElementById("track");
+  var kcv = document.getElementById("kcanvas");
+  var kctx = kcv.getContext("2d");
+  var lade = document.getElementById("lade");
+  var intro1 = document.getElementById("intro1");
+  var intro2 = document.getElementById("intro2");
+  var c1 = document.getElementById("c1");
+  var c2 = document.getElementById("c2");
+  var ctas = document.getElementById("ctas");
+  var claim = document.getElementById("claim");
+
+  var dpr = Math.min(devicePixelRatio || 1, 2);
+  var vw = 0, vh = 0;
+  function resize(){
+    vw = innerWidth; vh = innerHeight;
+    kcv.width = Math.round(vw * dpr);
+    kcv.height = Math.round(vh * dpr);
+  }
+  resize();
+  addEventListener("resize", function(){
+    if (Math.abs(innerWidth - vw) > 1 || Math.abs(innerHeight - vh) > 120) resize();
+  });
+
+  /* ---------- Sequenz laden ---------- */
+  var mobil = matchMedia("(pointer: coarse)").matches || vw < 820;
+  var frames = [], nFrames = 0, geladen = 0, basis = "";
+  var startbereit = false;
+
+  fetch("seq/manifest.json").then(function(r){ return r.json(); }).then(function(mf){
+    var rend = mobil && mf.renditions.mobile ? mf.renditions.mobile : mf.renditions.desktop;
+    basis = "seq/" + rend.path;
+    nFrames = rend.frames;
+    frames = new Array(nFrames);
+    var plan = [], i;
+    for (i = 0; i < nFrames; i += 8) plan.push(i);
+    for (i = 0; i < nFrames; i++) if (i % 8 !== 0) plan.push(i);
+    var offen = 0, MAX = 6, zeiger = 0;
+    function nachladen(){
+      while (offen < MAX && zeiger < plan.length){
+        (function(idx){
+          offen++;
+          var img = new Image();
+          img.decoding = "async";
+          img.onload = img.onerror = function(){
+            offen--; geladen++;
+            frames[idx] = img.naturalWidth ? img : null;
+            lade.textContent = Math.round(100 * geladen / nFrames);
+            if (!startbereit && geladen >= Math.ceil(nFrames / 8)){
+              startbereit = true;
+              lade.style.opacity = 0;
+            }
+            if (geladen >= nFrames) lade.remove();
+            nachladen();
+          };
+          img.src = basis + String(idx + 1).padStart(4, "0") + "." + mf.ext;
+        })(plan[zeiger++]);
+      }
+    }
+    nachladen();
+  });
+
+  function frameBei(idx){
+    if (frames[idx]) return frames[idx];
+    for (var d = 1; d < nFrames; d++){
+      if (frames[idx - d]) return frames[idx - d];
+      if (frames[idx + d]) return frames[idx + d];
+    }
+    return null;
+  }
+
+  function kZeichnen(p){
+    var w = kcv.width, h = kcv.height;
+    kctx.clearRect(0, 0, w, h);
+    if (!nFrames) return;
+    var idx = Math.round(Math.min(1, p) * (nFrames - 1));
+    var img = frameBei(idx);
+    if (!img) return;
+    var ar = img.naturalWidth / img.naturalHeight;
+    var zh = h * .9, zw = zh * ar;
+    if (zw > w * .94){ zw = w * .94; zh = zw / ar; }
+    kctx.drawImage(img, (w - zw) / 2, (h - zh) / 2, zw, zh);
+  }
+
+  /* ---------- Scroll ---------- */
+  var pZiel = 0, pIst = 0;
+  function messen(){
+    var r = track.getBoundingClientRect();
+    var weg = r.height - vh;
+    // weg <= 0 heißt "Layout noch nicht da" -> Anfang annehmen, nicht Ende
+    pZiel = weg > 0 ? Math.min(1, Math.max(0, -r.top / weg)) : 0;
+  }
+
+  function clamp01(x){ return Math.min(1, Math.max(0, x)); }
+  function eo(t){ t = clamp01(t); return 1 - Math.pow(1 - t, 3); }
+
+  function loop(){
+    messen();
+    pIst += (pZiel - pIst) * 0.16;
+    if (Math.abs(pZiel - pIst) < 0.0005) pIst = pZiel;
+    kZeichnen(pIst);
+
+    // Intro-Zeilen: ab p 0.06 nach oben aus der Maske schieben
+    var a = eo(clamp01((pIst - .06) / .14));
+    intro1.style.transform = "translateY(" + (-115 * a) + "%)";
+    intro2.style.transform = "translateY(" + (-115 * a) + "%)";
+    intro1.parentElement.parentElement.style.opacity = 1 - a;
+
+    // Abbinder: Zeilen-Reveal ab p 0.82, CTAs ab 0.9
+    var b = eo(clamp01((pIst - .82) / .12));
+    c1.style.transform = "translateY(" + (110 * (1 - b)) + "%)";
+    var b2 = eo(clamp01((pIst - .86) / .12));
+    c2.style.transform = "translateY(" + (110 * (1 - b2)) + "%)";
+    var b3 = eo(clamp01((pIst - .90) / .09));
+    ctas.style.opacity = b3;
+    ctas.style.transform = "translateY(" + (14 * (1 - b3)) + "px)";
+    claim.style.pointerEvents = b3 > .6 ? "auto" : "none";
+    requestAnimationFrame(loop);
+  }
+
+  if (reduziert){
+    var ruhig = function(){ pIst = pZiel = 1; kZeichnen(1); };
+    var warten = setInterval(function(){
+      if (geladen > 0) ruhig();
+      if (geladen >= nFrames && nFrames){ clearInterval(warten); ruhig(); }
+    }, 300);
+  } else {
+    requestAnimationFrame(loop);
+  }
+})();
+</script>
+</body>
+</html>
