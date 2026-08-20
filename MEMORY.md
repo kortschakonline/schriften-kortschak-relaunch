@@ -159,17 +159,37 @@ sh deploy/paket-bauen.sh
 #      removeArchive = true
 #    Nach rund 15 Sekunden ist der neue Stand live.
 
-# 3. Verifizieren – nicht klicken, messen:
+# 3. CDN-Cache leeren – der Deploy tauscht nur den Origin:
+#      hosting_clearWebsiteCacheV1
+#      username = u578130405, domain = view.kortschak.online
+#    Hostingers Edge (server: hcdn) liefert sonst weiter gecachte Antworten
+#    mit alten Inhalten/Headern aus – je Edge-Node verschieden alt, darum
+#    koennen Stichproben "schon ok" zeigen, waehrend andere Dateien alt
+#    bleiben (so geschehen am 20.08.: 666 von 1.896 MIME-Befunden ueberlebten
+#    den Deploy als Cache-HITs). Nach dem Purge greift alles binnen ~1 Minute.
+
+# 4. Verifizieren – nicht klicken, messen:
 python3 deploy/pruef-assets.py /tmp/kortschak-deploy https://view.kortschak.online
 ```
 
 `pruef-assets.py` zieht jede `src`/`href`/`content`- und CSS-`url()`-Referenz aus
-allen HTML-Dateien des Pakets, prüft erst, ob die Datei lokal überhaupt
-mitgepackt wurde, und fragt sie dann live ab. Exit-Code 1, sobald etwas fehlt.
+allen HTML-Dateien des Pakets **plus die Frame-Sequenzen aus allen
+`manifest.json`** (die lädt das JS der Scroll-Bühnen zur Laufzeit – über 1.100
+AVIF-Frames, die in keinem Attribut stehen). Je Asset wird geprüft: lokal
+mitgepackt, live HTTP 200, **Content-Type passend zur Endung**. Läuft parallel
+(HEAD, 12 Worker, 1 Retry), meldet gesammelt je Ordner. Exit-Code 1 bei jedem
+Befund.
 
-**Lauf vom 20.08.2026:** 14 Kundenseiten + 4 Entwurfs-Bühnen je HTTP 200,
-**68 referenzierte Assets, 0 Fehler**, PSD-Quellen erwartungsgemäß 404,
-`noindex, nofollow` steht noch, keine Konsolenfehler.
+Der MIME-Check existiert, weil Hostinger `.avif` nicht kennt und die Frames als
+`text/plain` auslieferte – das trug nur, weil Browser bei `<img>` am Inhalt
+schnüffeln; mit `nosniff` wäre jede Bühne schwarz. Fix: die **`.htaccess`**
+(`AddType image/avif .avif`) liegt in `designs/10-apple-motion/` und wandert
+automatisch mit ins Paket.
+
+**Lauf vom 20.08.2026 (nach Deploy + Cache-Purge):** 14 Kundenseiten +
+4 Entwurfs-Bühnen je HTTP 200, **1.972 Assets geprüft, 0 fehlerhaft** –
+inklusive aller Frame-Sequenzen und Content-Types. PSD-Quellen erwartungsgemäß
+nicht im Paket, `noindex, nofollow` steht noch.
 
 ---
 
