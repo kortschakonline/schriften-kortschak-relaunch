@@ -1243,8 +1243,9 @@
   .team-fan__grau{filter:grayscale(1);opacity:.16;}
   .team-fan__bunt{
     opacity:0;transition:opacity .45s var(--ease);
-    -webkit-mask-image:radial-gradient(circle 250px at var(--fan-x,50%) var(--fan-y,45%), #000 32%, transparent 74%);
-    mask-image:radial-gradient(circle 250px at var(--fan-x,50%) var(--fan-y,45%), #000 32%, transparent 74%);
+    /* Spotlight-Radius auf Jörns Wunsch verdoppelt (250 -> 500px) */
+    -webkit-mask-image:radial-gradient(circle 500px at var(--fan-x,50%) var(--fan-y,45%), #000 32%, transparent 74%);
+    mask-image:radial-gradient(circle 500px at var(--fan-x,50%) var(--fan-y,45%), #000 32%, transparent 74%);
   }
   #team:hover .team-fan__bunt{opacity:.95;}
   [data-theme="dark"] .team-fan__grau{opacity:.12;}
