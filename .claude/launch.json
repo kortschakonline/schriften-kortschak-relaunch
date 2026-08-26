@@ -34,6 +34,17 @@
       "name": "designs",
       "url": "http://localhost:8768",
       "port": 8768
+    },
+    {
+      "name": "formular-php",
+      "runtimeExecutable": "php",
+      "runtimeArgs": [
+        "-S",
+        "localhost:8788",
+        "-t",
+        "/Users/jornmartin/Projekte/schriften-kortschak/designs/10-apple-motion"
+      ],
+      "port": 8788
     }
   ]
 }

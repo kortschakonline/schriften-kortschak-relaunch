@@ -984,6 +984,12 @@
   .check input{width:20px;height:20px;flex-shrink:0;accent-color:var(--accent);margin-top:2px;}
   .check a{color:var(--accent);text-decoration:underline;text-underline-offset:3px;}
   form .btn{justify-self:start;margin-top:var(--space-1);}
+  .hp-feld{position:absolute !important;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;}
+  .form-status{margin:0;font-size:.9rem;font-weight:600;color:var(--accent);}
+  .form-erfolg{background:var(--bg-alt);border:1px solid var(--border);border-radius:var(--radius-md);padding:var(--space-4);}
+  .form-erfolg strong{display:flex;align-items:center;gap:.6rem;font-size:1.1rem;color:var(--text);}
+  .form-erfolg strong::before{content:"";width:12px;height:12px;border-radius:50%;background:#1db954;flex-shrink:0;}
+  .form-erfolg p{margin:.6rem 0 0;color:var(--text-2);line-height:1.55;}
   @media (max-width:900px){
     .contact-panel{grid-template-columns:1fr;}
     .field-row{grid-template-columns:1fr;}
@@ -1663,7 +1669,12 @@
             </div>
           </div>
         </div>
-        <form action="#" method="post" novalidate>
+        <form action="/api/anfrage.php" method="post" data-anfrage>
+          <input type="hidden" name="formular" value="kontakt">
+          <div class="hp-feld" aria-hidden="true">
+            <label for="webseite">Webseite (bitte leer lassen)</label>
+            <input type="text" id="webseite" name="webseite" tabindex="-1" autocomplete="off">
+          </div>
           <div class="field-row">
             <div class="field">
               <label for="name">Name <span class="req" aria-hidden="true">*</span></label>
@@ -1698,6 +1709,7 @@
             <input type="checkbox" id="datenschutz" name="datenschutz" required>
             <span>Ich habe die <a href="/datenschutz/">Datenschutzerklärung</a> gelesen und stimme der Verarbeitung meiner Daten zur Bearbeitung der Anfrage zu. <span class="req" aria-hidden="true">*</span></span>
           </label>
+          <p class="form-status" role="status" aria-live="polite" hidden></p>
           <button type="submit" class="btn btn--primary">Anfrage senden</button>
         </form>
       </div>
@@ -2309,6 +2321,58 @@ if(zeitTrack && !reduce && 'IntersectionObserver' in window){
     try { history.pushState(null, '', '#' + id); } catch(e){}
     var oben = el.getBoundingClientRect().top + window.scrollY - 64;
     gleiten(Math.max(0, Math.min(oben, document.documentElement.scrollHeight - window.innerHeight)));
+  });
+})();
+</script>
+<script>
+/* ===== Formularversand =====
+   Schickt die Anfrage per fetch an /api/anfrage.php (JSON). Bei Erfolg wird
+   das Formular durch eine Bestaetigungskarte ersetzt; bei Fehlern erscheint
+   die Server-Meldung ueber dem Senden-Knopf. Ohne JavaScript laeuft ein
+   normaler POST — der Endpoint rendert dann eine eigene Antwortseite. */
+(function(){
+  'use strict';
+  document.querySelectorAll('form[data-anfrage]').forEach(function(formular){
+    formular.addEventListener('submit', function(ereignis){
+      ereignis.preventDefault();
+      var knopf  = formular.querySelector('button[type="submit"]');
+      var status = formular.querySelector('.form-status');
+      var altText = knopf.textContent;
+      knopf.disabled = true;
+      knopf.textContent = 'Wird gesendet…';
+      status.hidden = true;
+      fetch(formular.action, {
+        method: 'POST',
+        body: new FormData(formular),
+        headers: { 'Accept': 'application/json', 'X-Requested-With': 'fetch' }
+      })
+      .then(function(antwort){ return antwort.json().catch(function(){ return null; }); })
+      .then(function(daten){
+        if (daten && daten.ok) {
+          var karte = document.createElement('div');
+          karte.className = 'form-erfolg';
+          karte.setAttribute('tabindex', '-1');
+          var titel = document.createElement('strong');
+          titel.textContent = 'Anfrage gesendet!';
+          var text = document.createElement('p');
+          text.textContent = daten.meldung;
+          karte.appendChild(titel);
+          karte.appendChild(text);
+          formular.replaceChildren(karte);
+          karte.focus();
+          return;
+        }
+        zeigeFehler(daten && daten.meldung);
+      })
+      .catch(function(){ zeigeFehler(''); });
+
+      function zeigeFehler(meldung){
+        status.textContent = meldung || 'Gerade hat das Senden leider nicht geklappt. Bitte versuchen Sie es gleich noch einmal — oder schreiben Sie direkt an office@schriften-kortschak.at.';
+        status.hidden = false;
+        knopf.disabled = false;
+        knopf.textContent = altText;
+      }
+    });
   });
 })();
 </script>

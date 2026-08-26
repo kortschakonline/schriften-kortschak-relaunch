@@ -1,0 +1,4 @@
+# Konfigurationsdateien niemals ausliefern
+<FilesMatch "^anfrage-config.*\.php$">
+  Require all denied
+</FilesMatch>

@@ -25,3 +25,6 @@ image-upload/
 # Rohmaterial von Norbert (Briefings, Original-JPGs, 96-MB-Testvideo) —
 # Web-Derivate liegen versioniert in designs/10-apple-motion/assets/img/projekte/
 norbert-input/
+
+# Formular-Zugangsdaten (Passwort!) nie ins oeffentliche Repo
+designs/10-apple-motion/api/anfrage-config.php
