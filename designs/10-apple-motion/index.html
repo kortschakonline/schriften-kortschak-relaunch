@@ -348,30 +348,49 @@
     color:var(--accent);
   }
   .mega__icon svg{width:20px;height:20px;}
-  .mega__karten{
-    display:grid;grid-template-columns:repeat(3,1fr);
-    gap:clamp(.8rem,1.5vw,1.2rem);margin-top:clamp(1.2rem,2vw,1.8rem);
-  }
-  .mega a.mega__karte{
-    display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:.85rem;
-    padding:.7rem .9rem;border-radius:var(--radius-md);
+  /* Facelift 3. Runde (26.08.2026, Punkte 6+7): die vier Themenfelder als
+     Glas-Kacheln (Rezept der frueheren Projekt-Karten); Montage + Projekte
+     ziehen in eine schlanke Fusszeile – sie waren zu prominent. */
+  .mega__feld{
+    padding:clamp(.9rem,1.6vw,1.3rem);
+    border:1px solid var(--border);border-radius:var(--radius-md);
     background:color-mix(in srgb, var(--bg-alt) 70%, transparent);
-    border:1px solid var(--border);
-    transition:border-color .2s var(--ease),transform .2s var(--ease),background .2s var(--ease);
+    transition:border-color .25s var(--ease),transform .25s var(--ease),background .25s var(--ease),box-shadow .25s var(--ease);
   }
-  .mega a.mega__karte:hover{border-color:var(--accent);transform:translateY(-2px);background:var(--bg-alt);}
-  .mega__karte-bild{width:44px;height:44px;border-radius:12px;object-fit:cover;display:block;}
-  .mega__karte-icon{
-    display:grid;place-items:center;width:44px;height:44px;border-radius:12px;
-    background:color-mix(in srgb, var(--accent) 10%, transparent);color:var(--accent);
+  .mega__feld:hover{border-color:var(--accent);transform:translateY(-3px);background:var(--bg-alt);box-shadow:var(--shadow-sm);}
+  .mega__fuss{
+    display:flex;flex-wrap:wrap;align-items:center;gap:.3rem .9rem;
+    margin-top:clamp(1.1rem,1.8vw,1.6rem);
+    padding-top:clamp(.8rem,1.4vw,1.1rem);
+    border-top:1px solid var(--border);
+    font-size:.9rem;color:var(--text-2);
   }
-  .mega__karte-icon svg{width:21px;height:21px;}
-  .mega__karte-inhalt{min-width:0;}
-  .mega__karte-kopf{display:block;font-weight:700;font-size:.97rem;color:var(--text);}
-  .mega__karte-text{display:block;font-size:.8rem;color:var(--text-2);margin-top:.12rem;}
-  .mega a.mega__karte .arr{color:var(--accent);}
-  .mega a.mega__karte::after{content:none;}
-  @media (max-width:1100px){ .mega__karten{grid-template-columns:1fr;} }
+  .mega__fuss a{display:inline-flex;align-items:center;gap:.4em;color:var(--text-2);padding:.2rem 0;}
+  .mega__fuss a:hover{color:var(--accent);}
+  .mega__fuss a strong{font-weight:700;color:var(--text);}
+  .mega__fuss a:hover strong{color:var(--accent);}
+  .mega__fuss .arr{color:var(--accent);}
+  .mega__fuss-label{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;}
+  .mega__fuss-trenn{flex:1;min-width:1rem;}
+  .mega__fuss-punkt{opacity:.5;}
+  .mega__fuss-alle{font-weight:600;}
+  /* Kleines Aufklapp-Panel (Unternehmen): gleiches Verhalten wie das
+     Megamenue, nur schmal und unter dem Ausloeser verankert. */
+  .nav-mega--mini{position:relative;}
+  .nav-mega--mini .mega{
+    left:50%;right:auto;min-width:230px;
+    transform:translate(-50%,-10px);
+    border:1px solid var(--border);border-radius:var(--radius-md);
+  }
+  .nav-mega--mini.is-offen .mega{transform:translate(-50%,0);}
+  .nav-mega--mini .mega__inner{padding:.55rem;}
+  .nav-mega--mini .mega__inner ul{list-style:none;display:grid;gap:.1rem;}
+  .nav-mega--mini .mega__inner ul a{
+    display:block;padding:.5rem .85rem;border-radius:8px;
+    font-size:.92rem;color:var(--text-2);
+    transition:background .2s var(--ease),color .2s var(--ease);
+  }
+  .nav-mega--mini .mega__inner ul a:hover{background:var(--bg-alt);color:var(--accent);}
   @media (max-width:900px){ .mega{display:none;} }
   @media (prefers-reduced-motion:reduce){
     .mega{transition:opacity .01s,visibility .01s;transform:none;}
@@ -769,7 +788,7 @@
   .stat::after{
     content:"";position:absolute;left:50%;top:8%;width:70%;padding-top:70%;
     transform:translateX(-50%);border-radius:50%;pointer-events:none;
-    background:radial-gradient(circle,color-mix(in srgb,var(--accent) 22%,transparent),transparent 70%);
+    background:radial-gradient(circle,color-mix(in srgb,var(--accent) 10%,transparent),transparent 72%);
     filter:blur(30px);
   }
   .stat__value{
@@ -1063,18 +1082,18 @@
   :root{
     --glas-kante:rgba(255,255,255,.5);
     --glas-licht:rgba(255,255,255,.45);
-    --glas-schatten:rgba(0,0,0,.18);
+    --glas-schatten:rgba(0,0,0,.18);--eis:#7fc8d8;
   }
   [data-theme="dark"]{
     --glas-kante:rgba(255,255,255,.18);
     --glas-licht:rgba(255,255,255,.2);
-    --glas-schatten:rgba(0,0,0,.45);
+    --glas-schatten:rgba(0,0,0,.45);--eis:#8CD2DC;
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme]){
       --glas-kante:rgba(255,255,255,.18);
       --glas-licht:rgba(255,255,255,.2);
-      --glas-schatten:rgba(0,0,0,.45);
+      --glas-schatten:rgba(0,0,0,.45);--eis:#8CD2DC;
     }
   }
   .finish,.benefit,.step,.compare__col,.cat-card,.glass-card,.stat,.zeit__card,.contact-panel{
@@ -1105,23 +1124,23 @@
   .section:has(.finish,.benefit,.step,.compare__col,.cat-card,.glass-card,.stat,.zeit__card,.contact-panel)::before,
   .section:has(.finish,.benefit,.step,.compare__col,.cat-card,.glass-card,.stat,.zeit__card,.contact-panel)::after{
     content:"";position:absolute;z-index:0;border-radius:50%;
-    filter:blur(70px);pointer-events:none;
+    filter:blur(120px);pointer-events:none;
   }
   .section:has(.finish,.benefit,.step,.compare__col,.cat-card,.glass-card,.stat,.zeit__card,.contact-panel)::before{
-    width:38%;padding-top:38%;left:-6%;top:-10%;
-    background:radial-gradient(circle,color-mix(in srgb,var(--accent) 40%,transparent),transparent 70%);
+    width:55%;padding-top:55%;left:-6%;top:-10%;
+    background:radial-gradient(circle,color-mix(in srgb,var(--accent) 14%,transparent),transparent 72%);
   }
   .section:has(.finish,.benefit,.step,.compare__col,.cat-card,.glass-card,.stat,.zeit__card,.contact-panel)::after{
-    width:32%;padding-top:32%;right:-5%;bottom:-14%;
-    background:radial-gradient(circle,color-mix(in srgb,var(--accent-2) 36%,transparent),transparent 70%);
+    width:46%;padding-top:46%;right:-5%;bottom:-14%;
+    background:radial-gradient(circle,color-mix(in srgb,var(--eis) 13%,transparent),transparent 72%);
   }
   .section:nth-of-type(even):has(.finish,.benefit,.step,.compare__col,.cat-card,.glass-card,.stat,.zeit__card,.contact-panel)::before{
-    left:auto;right:-7%;width:44%;padding-top:44%;
-    background:radial-gradient(circle,color-mix(in srgb,var(--accent-2) 38%,transparent),transparent 70%);
+    left:auto;right:-7%;width:64%;padding-top:64%;
+    background:radial-gradient(circle,color-mix(in srgb,var(--eis) 14%,transparent),transparent 72%);
   }
   .section:nth-of-type(even):has(.finish,.benefit,.step,.compare__col,.cat-card,.glass-card,.stat,.zeit__card,.contact-panel)::after{
-    right:auto;left:-6%;width:28%;padding-top:28%;
-    background:radial-gradient(circle,color-mix(in srgb,var(--accent) 44%,transparent),transparent 70%);
+    right:auto;left:-6%;width:41%;padding-top:41%;
+    background:radial-gradient(circle,color-mix(in srgb,var(--accent) 16%,transparent),transparent 72%);
   }
   .section:has(.finish,.benefit,.step,.compare__col,.cat-card,.glass-card,.stat,.zeit__card,.contact-panel) > .wrap{
     position:relative;z-index:1;
@@ -1181,6 +1200,172 @@
   .footer__credit a{display:inline-flex;align-items:center;}
   .footer__credit a:hover img{opacity:.9;}
   .footer__credit .herz{width:13px;height:13px;fill:var(--accent);vertical-align:-1px;}
+
+  /* ===== Go-Live-Feinschliff (26.08.2026) ===== */
+
+  /* (2) Zitat über Anja: nur Text, keine Kachel mehr – die Glasfläche hat
+     sie halb verdeckt (Feedback Jörn 26.08.). Läuft über die volle
+     Bühnenbreite, ein weicher Schein hält den Text auf dem Verlauf lesbar. */
+  .about__zitat{
+    position:absolute;z-index:1;
+    left:clamp(1.1rem,2.4vw,1.8rem);right:clamp(1.1rem,2.4vw,1.8rem);
+    top:clamp(1rem,2.2vw,1.7rem);
+  }
+  .about__zitat p{
+    font-size:clamp(1.35rem,2vw,2rem);font-weight:800;
+    letter-spacing:-.02em;line-height:1.18;
+    /* Bewusst weder reines Schwarz noch reines Weiß (Feedback Jörn):
+       Textfarbe Richtung Grau gemischt, wirkt auf dem Verlauf weicher. */
+    color:color-mix(in srgb,var(--text) 72%,var(--text-2));
+    text-shadow:0 1px 2px color-mix(in srgb,var(--bg) 35%,transparent),
+                0 6px 28px color-mix(in srgb,var(--bg) 55%,transparent);
+  }
+  .about__zitat footer{
+    margin-top:.5rem;font-size:.8rem;color:var(--text-2);
+    text-shadow:0 1px 2px color-mix(in srgb,var(--bg) 45%,transparent);
+  }
+
+  /* (3b) Fächer-Hintergrund: vollbreiter Parallax hinter der Team-Section.
+     Unten das Bild entsättigt und stark zurückgenommen, darüber die bunte
+     Fassung, die nur durch eine weiche Radial-Maske am Mauszeiger sichtbar
+     wird (Koordinaten --fan-x/--fan-y setzt das Skript). inset:-14% gibt
+     dem Parallax-Versatz Luft, ohne Ränder freizulegen. */
+  #team{position:relative;overflow:hidden;}
+  #team > .wrap{position:relative;z-index:1;}
+  .team-fan{
+    position:absolute;left:0;right:0;top:-14%;bottom:-14%;
+    z-index:0;pointer-events:none;will-change:transform;
+  }
+  .team-fan img{
+    position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+    object-position:center 38%;
+  }
+  .team-fan__grau{filter:grayscale(1);opacity:.16;}
+  .team-fan__bunt{
+    opacity:0;transition:opacity .45s var(--ease);
+    -webkit-mask-image:radial-gradient(circle 250px at var(--fan-x,50%) var(--fan-y,45%), #000 32%, transparent 74%);
+    mask-image:radial-gradient(circle 250px at var(--fan-x,50%) var(--fan-y,45%), #000 32%, transparent 74%);
+  }
+  #team:hover .team-fan__bunt{opacity:.95;}
+  [data-theme="dark"] .team-fan__grau{opacity:.12;}
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme]) .team-fan__grau{opacity:.12;}
+  }
+  /* Ohne Maus (Touch): kein Spotlight – der Fächer schimmert sanft farbig */
+  @media (hover:none){
+    .team-fan__bunt{
+      opacity:.3;
+      -webkit-mask-image:none;mask-image:none;
+    }
+  }
+
+  /* (3) Team = Folienfächer: Karten wie Muster aus der Farbkarte, mit
+     Stanzloch, Farbcode und geplotteten Initialen. Desktop leicht
+     aufgefächert (nth-child-Rotation), Hover richtet die Karte auf. */
+  .faecher{
+    list-style:none;display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:clamp(14px,1.8vw,24px);
+    padding-top:.6rem;
+  }
+  .folie{
+    position:relative;aspect-ratio:3/4.1;
+    border-radius:18px 18px var(--radius-lg) var(--radius-lg);
+    background:
+      linear-gradient(115deg,rgba(255,255,255,.34) 0%,rgba(255,255,255,.06) 28%,rgba(0,0,0,.12) 62%,rgba(255,255,255,.10) 100%),
+      linear-gradient(160deg,var(--folie) 0%,var(--folie-2) 100%);
+    box-shadow:var(--shadow-md);
+    display:flex;flex-direction:column;
+    padding:clamp(1rem,1.8vw,1.4rem);
+    color:#fff;
+    transition:transform .45s var(--ease),box-shadow .45s var(--ease);
+  }
+  .folie:nth-child(1){transform:rotate(-2.4deg) translateY(6px);}
+  .folie:nth-child(2){transform:rotate(-.8deg);}
+  .folie:nth-child(3){transform:rotate(1deg);}
+  .folie:nth-child(4){transform:rotate(2.6deg) translateY(6px);}
+  .folie:hover,.folie:focus-within{
+    transform:rotate(0) translateY(-8px);
+    box-shadow:var(--shadow-lg);
+  }
+  .folie__loch{
+    position:absolute;top:14px;left:50%;transform:translateX(-50%);
+    width:16px;height:16px;border-radius:50%;
+    background:var(--bg);box-shadow:inset 0 1px 3px rgba(0,0,0,.35);
+    transition:background .4s var(--ease);
+  }
+  .folie__code{
+    font-size:.68rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+    opacity:.75;margin-top:1.4rem;
+  }
+  .folie__initialen{
+    font-family:'Anton',Impact,sans-serif;font-weight:400;
+    font-size:clamp(2.6rem,5vw,4.4rem);line-height:1;letter-spacing:.01em;
+    margin:auto 0;
+    text-shadow:0 2px 0 rgba(0,0,0,.18);
+  }
+  .folie__info{display:grid;gap:.15rem;}
+  .folie__info strong{font-size:clamp(.98rem,1.2vw,1.12rem);letter-spacing:-.01em;}
+  .folie__info span{font-size:.8rem;opacity:.8;}
+  .folie--offen a{
+    position:absolute;inset:0;display:flex;flex-direction:column;
+    padding:inherit;padding:clamp(1rem,1.8vw,1.4rem);color:inherit;
+  }
+  .folie--offen{border:1.5px dashed rgba(255,255,255,.4);}
+  .folie--offen .arr{color:var(--accent);}
+  [data-theme="dark"] .folie--offen{--folie:#3a3a3c;--folie-2:#1c1c1e;}
+  @media (max-width:840px){
+    .faecher{grid-template-columns:1fr 1fr;}
+    .folie:nth-child(n){transform:none;}
+  }
+  @media (max-width:420px){.faecher{grid-template-columns:1fr;} .folie{aspect-ratio:3/2.4;}}
+
+  /* (4) Kundenband auf dem roten Referenz-Panel: Endlos-Marquee, Logos per
+     Filter weiß gestellt. Bei reduced-motion steht das Band. */
+  .kunden-band{position:relative;margin-top:clamp(2rem,4vw,3rem);}
+  .kunden-band__label{
+    font-size:.78rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+    color:rgba(255,255,255,.7);margin-bottom:1rem;
+  }
+  .kunden-band__spur{
+    display:flex;gap:clamp(2.4rem,5vw,4.5rem);overflow:hidden;
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+    mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+  }
+  .kunden-band__liste{
+    list-style:none;flex-shrink:0;
+    display:flex;align-items:center;gap:clamp(2.4rem,5vw,4.5rem);
+    animation:kunden-lauf 36s linear infinite;
+  }
+  @keyframes kunden-lauf{
+    from{transform:translateX(0);}
+    to{transform:translateX(calc(-100% - clamp(2.4rem,5vw,4.5rem)));}
+  }
+  .kunden-band:hover .kunden-band__liste{animation-play-state:paused;}
+  /* Logos auf weißen Chips statt Weiß-Filter: die Kundenlogos sind für
+     hellen Grund gemacht (teils weiße Hintergründe im Raster). */
+  .kunden-band__liste img{
+    height:44px;width:auto;max-width:170px;object-fit:contain;
+    background:#fff;padding:.5rem .9rem;border-radius:12px;
+    box-shadow:0 6px 20px rgba(0,0,0,.18);
+  }
+  .kunden-band__wort{
+    font-size:1.05rem;font-weight:700;letter-spacing:-.01em;white-space:nowrap;
+    color:rgba(255,255,255,.85);
+  }
+  @media (prefers-reduced-motion:reduce){
+    .kunden-band__liste{animation:none;flex-wrap:wrap;}
+    .kunden-band__liste[aria-hidden="true"]{display:none;}
+    .kunden-band__spur{-webkit-mask-image:none;mask-image:none;}
+  }
+  /* Partner-Logos im Footer: auf Textfarbe gefiltert, dezent (26.08.2026) */
+  .footer__partner a{display:inline-flex;align-items:center;gap:.55em;}
+  .footer__partner img{height:15px;width:auto;max-width:92px;object-fit:contain;filter:brightness(0);opacity:.55;transition:opacity .2s var(--ease);}
+  .footer__partner a:hover img{opacity:.85;}
+  [data-theme="dark"] .footer__partner img{filter:brightness(0) invert(1);}
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme]) .footer__partner img{filter:brightness(0) invert(1);}
+  }
 </style>
 </head>
 <body>
@@ -1205,7 +1390,7 @@
               <div class="mega__felder">
               <div class="mega__feld">
                 <span class="mega__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H8.5c-1 0-1.9.6-2.3 1.5L5 11c-1.2.3-2 1.3-2 2.5V16c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg></span>
-                <h3 class="mega__titel"><a href="/leistungen/fahrzeugbeschriftung/">Fahrzeug</a></h3>
+                <h3 class="mega__titel"><a href="/leistungen/fahrzeugbeschriftung/">Fahrzeugbeklebung &amp; Folierung</a></h3>
                 <ul>
                   <li><a href="/leistungen/fahrzeugbeschriftung/">Fahrzeugbeschriftung</a></li>
                   <li><a href="/leistungen/car-wrapping/">Car Wrapping</a></li>
@@ -1230,7 +1415,7 @@
               </div>
               <div class="mega__feld">
                 <span class="mega__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg></span>
-                <h3 class="mega__titel"><a href="/leistungen/webdesign/">Digital</a></h3>
+                <h3 class="mega__titel"><a href="/leistungen/webdesign/">Digital &amp; Online</a></h3>
                 <ul>
                   <li><a href="/leistungen/webdesign/">Webdesign</a></li>
                   <li><a href="/leistungen/online-marketing/">Online-Marketing</a></li>
@@ -1238,27 +1423,32 @@
                 </ul>
               </div>
               </div>
-              <div class="mega__karten">
-              <a class="mega__karte" href="/leistungen/montage/">
-                <span class="mega__karte-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span>
-                <span class="mega__karte-inhalt"><span class="mega__karte-kopf">Montage</span><span class="mega__karte-text">Wir montieren selbst, was wir fertigen</span></span>
-                <span class="arr" aria-hidden="true">→</span>
-              </a>
-              <a class="mega__karte" href="/projekte/austrotrucker/">
-                <img class="mega__karte-bild" src="/assets/img/projekte/austrotrucker/thumb.webp" alt="" loading="lazy" width="176" height="176">
-                <span class="mega__karte-inhalt"><span class="mega__karte-kopf">Austrotrucker</span><span class="mega__karte-text">Projekt · Social-Media-Betreuung</span></span>
-                <span class="arr" aria-hidden="true">→</span>
-              </a>
-              <a class="mega__karte" href="/projekte/paltentaler/">
-                <img class="mega__karte-bild" src="/assets/img/projekte/paltentaler/thumb.webp" alt="" loading="lazy" width="176" height="176">
-                <span class="mega__karte-inhalt"><span class="mega__karte-kopf">Paltentaler</span><span class="mega__karte-text">Projekt · Content &amp; Meta-Kampagnen</span></span>
-                <span class="arr" aria-hidden="true">→</span>
-              </a>
+              <div class="mega__fuss">
+                <a href="/leistungen/montage/"><strong>Montage &amp; Anbringung</strong> – wir montieren selbst, was wir fertigen <span class="arr" aria-hidden="true">→</span></a>
+                <span class="mega__fuss-trenn" aria-hidden="true"></span>
+                <span class="mega__fuss-label">Projekte</span>
+                <a href="/projekte/austrotrucker/">Austrotrucker</a>
+                <span class="mega__fuss-punkt" aria-hidden="true">·</span>
+                <a href="/projekte/paltentaler/">Paltentaler</a>
+                <span class="mega__fuss-punkt" aria-hidden="true">·</span>
+                <a class="mega__fuss-alle" href="/projekte/">Alle Projekte <span class="arr" aria-hidden="true">→</span></a>
               </div>
             </div>
           </div>
         </li>
-        <li><a href="#unternehmen">Unternehmen</a></li>
+        <li><a href="/projekte/">Projekte</a></li>
+        <li class="nav-mega nav-mega--mini">
+          <a class="nav-mega__ausloeser" href="#unternehmen" aria-expanded="false" aria-controls="mini-unternehmen">Unternehmen<span class="nav-mega__pfeil" aria-hidden="true"></span></a>
+          <div class="mega" id="mini-unternehmen">
+            <div class="mega__inner">
+              <ul>
+                <li><a href="#unternehmen">Über uns</a></li>
+                <li><a href="#team">Team</a></li>
+                <li><a href="#geschichte">Firmengeschichte</a></li>
+              </ul>
+            </div>
+          </div>
+        </li>
         <li><a href="#referenzen">Referenzen</a></li>
         <li><a href="#faq">FAQ</a></li>
         <li><a class="btn btn--grad-outline" href="#kontakt">Kontakt</a></li>
@@ -1279,12 +1469,14 @@
 <nav class="mobile-menu" id="mobile-menu" aria-label="Mobile Navigation" data-open="false">
   <ul>
     <li><a href="#leistungen">Leistungen</a></li>
+    <li><a href="/projekte/">Projekte</a></li>
     <li><a href="#unternehmen">Unternehmen</a></li>
+    <li><a href="#team">Team</a></li>
     <li><a href="#referenzen">Referenzen</a></li>
     <li><a href="#faq">FAQ</a></li>
   </ul>
     <ul class="mobile-menu__unter">
-      <li class="mobile-menu__feld"><span>Fahrzeug</span>
+      <li class="mobile-menu__feld"><span>Fahrzeugbeklebung &amp; Folierung</span>
         <ul>
         <li><a href="/leistungen/fahrzeugbeschriftung/">Fahrzeugbeschriftung</a></li>
         <li><a href="/leistungen/car-wrapping/">Car Wrapping</a></li>
@@ -1303,7 +1495,7 @@
         <li><a href="/leistungen/drucksorten-grafikdesign/">Drucksorten &amp; Grafikdesign</a></li>
         </ul>
       </li>
-      <li class="mobile-menu__feld"><span>Digital</span>
+      <li class="mobile-menu__feld"><span>Digital &amp; Online</span>
         <ul>
         <li><a href="/leistungen/webdesign/">Webdesign</a></li>
         <li><a href="/leistungen/online-marketing/">Online-Marketing</a></li>
@@ -1317,6 +1509,7 @@
       </li>
       <li class="mobile-menu__feld"><span>Projekte</span>
         <ul>
+        <li><a href="/projekte/">Alle Projekte</a></li>
         <li><a href="/projekte/austrotrucker/">Austrotrucker</a></li>
         <li><a href="/projekte/paltentaler/">Paltentaler</a></li>
         </ul>
@@ -1389,10 +1582,10 @@
       <div class="cats">
 
         <article class="cat-card reveal">
-          <a class="cat-card__media" href="/leistungen/fahrzeugbeschriftung/" tabindex="-1" aria-hidden="true"><img src="/assets/bg/hero-fahrzeug.webp" alt="" loading="lazy" width="2200" height="1467"></a>
+          <a class="cat-card__media" href="/leistungen/fahrzeugbeschriftung/" tabindex="-1" aria-hidden="true"><img src="/assets/img/Headerbild_Car_Wrapping-1920x600-2.jpg" alt="" loading="lazy" width="1920" height="600"></a>
           <div class="cat-card__body">
             <span class="cat-card__idx" aria-hidden="true">01</span>
-            <h3>Fahrzeug</h3>
+            <h3>Fahrzeugbeklebung &amp; Folierung</h3>
             <p>Ihre mobile Werbefläche: Beschriftung, Vollfolierung und Schutzfolien – reversibel und lackschonend.</p>
             <ul class="cat-card__links">
               <li><a href="/leistungen/fahrzeugbeschriftung/">Fahrzeugbeschriftung <span class="arr" aria-hidden="true">→</span></a></li>
@@ -1403,7 +1596,7 @@
         </article>
 
         <article class="cat-card reveal" data-delay="1">
-          <a class="cat-card__media" href="/leistungen/beschriftungen/" tabindex="-1" aria-hidden="true"><img src="/assets/img/lama-buero.webp" alt="" loading="lazy" width="1400" height="1750"></a>
+          <a class="cat-card__media" href="/leistungen/beschriftungen/" tabindex="-1" aria-hidden="true"><img src="/assets/img/Kortschak_Bildergallerie_Schilder_innen_aussen-1280x567.jpg" alt="" loading="lazy" width="1280" height="567"></a>
           <div class="cat-card__body">
             <span class="cat-card__idx" aria-hidden="true">02</span>
             <h3>Beschriftung &amp; Schilder</h3>
@@ -1416,7 +1609,7 @@
         </article>
 
         <article class="cat-card reveal">
-          <a class="cat-card__media" href="/leistungen/textildruck/" tabindex="-1" aria-hidden="true"><img src="/assets/img/lama-textil.webp" alt="" loading="lazy" width="1080" height="1350"></a>
+          <a class="cat-card__media" href="/leistungen/textildruck/" tabindex="-1" aria-hidden="true"><img src="/assets/img/Textil_Shirt_DSF1753_800x800p.jpg" alt="" loading="lazy" width="800" height="800"></a>
           <div class="cat-card__body">
             <span class="cat-card__idx" aria-hidden="true">03</span>
             <h3>Textil &amp; Druck</h3>
@@ -1429,10 +1622,10 @@
         </article>
 
         <article class="cat-card reveal" data-delay="1">
-          <a class="cat-card__media" href="/leistungen/webdesign/" tabindex="-1" aria-hidden="true"><img src="/assets/img/Zaversky-Apotheke.jpg" alt="" loading="lazy"></a>
+          <a class="cat-card__media" href="/leistungen/webdesign/" tabindex="-1" aria-hidden="true"><img src="/assets/img/Social_Media_Hero.jpg" alt="" loading="lazy" width="1920" height="1074"></a>
           <div class="cat-card__body">
             <span class="cat-card__idx" aria-hidden="true">04</span>
-            <h3>Digital</h3>
+            <h3>Digital &amp; Online</h3>
             <p>Moderne Websites und Online-Marketing, das gefunden wird – betreut aus Trofaiach statt anonymer Hotline.</p>
             <ul class="cat-card__links">
               <li><a href="/leistungen/webdesign/">Webdesign <span class="arr" aria-hidden="true">→</span></a></li>
@@ -1461,20 +1654,91 @@
     <div class="wrap about">
       <div class="about__body reveal">
         <p class="eyebrow">Unternehmen</p>
-        <h2 class="display" id="company-title">Wir machen was draus. <span class="gradient-text">Seit&nbsp;1958.</span></h2>
+        <h2 class="display" id="company-title">Ein Betrieb, eine Handschrift. <span class="gradient-text">Seit&nbsp;1958.</span></h2>
         <p class="sub">Vom kleinsten Aufkleber bis zum beschrifteten LKW-Führerhaus. Was früher von Hand gezeichnet, gemalt und gedruckt wurde, entsteht heute mit modernster Technik – doch an der Liebe zum Detail hat sich seit 1958 nichts geändert. Heute sind wir eine vollwertige Werbeagentur in Trofaiach: mit eigener Grafik, Fertigung und Montage, geführt von Anja Brandl, B.A.</p>
-        <div class="about__chips">
-          <span class="chip">Kundenberatung</span>
-          <span class="chip">Beschriftung &amp; Textildruck</span>
-          <span class="chip">Grafik &amp; Social Media</span>
-        </div>
       </div>
       <div class="about__media reveal" data-delay="1">
-        <div class="about__stage">
+        <!-- Zitat-Kachel füllt den Raum über dem Freisteller (Punkt 2 der
+             Go-Live-Liste): das Motto gehört jetzt Anja, die Headline
+             daneben doppelt es nicht mehr. -->
+        <figure class="about__stage">
           <img src="/assets/img/anja-brandl-freigestellt.webp" alt="Anja Brandl, B.A., Geschäftsführerin der Kortschak Schriften GmbH" width="1080" height="1350">
-        </div>
-        <p class="about__caption">Anja Brandl, B.A. – Geschäftsführung</p>
+          <blockquote class="about__zitat">
+            <p>„Wir machen was draus – jeden Tag, aus jeder Idee.“</p>
+            <footer>Anja Brandl, B.A. · Geschäftsführung</footer>
+          </blockquote>
+        </figure>
       </div>
+    </div>
+  </section>
+
+  <!-- ===== TEAM – Folienfächer (26.08.2026, Punkt 3 der Go-Live-Liste) =====
+       Konzept: kein Standard-Foto-Raster. Jede Person ist ein Muster aus
+       dem Folienfächer – Folienfarbe, geplottete Initialen, Farbcode wie
+       auf echten Musterkarten. Die Karten stehen leicht aufgefächert und
+       richten sich beim Hover/Fokus auf.
+       Bewusst KEINE erfundenen Namen (Lehre aus den Alt-Zitaten): bis
+       Namen/Fotos vom Team kommen, stehen die beiden Geschäftsführer
+       drin plus Crew- und Recruiting-Karte.
+       TODO Jörn/Norbert: weitere Teammitglieder = weitere <li class="folie">
+       mit --folie/--folie-2 (Folienfarbe), Initialen, Name, Rolle. -->
+  <section class="section" id="team" aria-labelledby="team-title">
+    <!-- Echter Folienfächer als Parallax-Hintergrund (26.08.2026, Jörns
+         Bild image-upload/final_images/color-fan.jpg): Grundzustand
+         Schwarz-Weiß und stark zurückgenommen; um den Mauszeiger färbt
+         eine weiche Radial-Maske das Bild ein ("die Farbe folgt der Hand").
+         Touch-Geräte sehen stattdessen eine sanfte, statische Färbung,
+         reduced-motion bekommt keinen Parallax. Zwei Layer = ein Request. -->
+    <div class="team-fan" id="team-fan" aria-hidden="true">
+      <img class="team-fan__grau" src="/assets/img/team-fan.jpg" alt="" loading="lazy" width="1798" height="842">
+      <img class="team-fan__bunt" src="/assets/img/team-fan.jpg" alt="" loading="lazy" width="1798" height="842">
+    </div>
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">Team</p>
+        <h2 class="display" id="team-title">Zwölf Köpfe. Ein Fächer.</h2>
+        <p class="lead">Wie in unserem Folienfächer: jede Farbe ein eigener Charakter – zusammen ergeben sie das ganze Spektrum.</p>
+      </div>
+      <ul class="faecher reveal" data-delay="1">
+        <li class="folie" style="--folie:#FF1C20;--folie-2:#a80d10;">
+          <span class="folie__code" aria-hidden="true">K-01 · Hochglanz</span>
+          <span class="folie__loch" aria-hidden="true"></span>
+          <span class="folie__initialen" aria-hidden="true">AB</span>
+          <div class="folie__info">
+            <strong>Anja Brandl, B.A.</strong>
+            <span>Geschäftsführung</span>
+          </div>
+        </li>
+        <li class="folie" style="--folie:#F18700;--folie-2:#b35c00;">
+          <span class="folie__code" aria-hidden="true">K-02 · Matt</span>
+          <span class="folie__loch" aria-hidden="true"></span>
+          <span class="folie__initialen" aria-hidden="true">KL</span>
+          <div class="folie__info">
+            <strong>Kai Leitner</strong>
+            <span>Geschäftsführung · Meister</span>
+          </div>
+        </li>
+        <li class="folie" style="--folie:#8CD2DC;--folie-2:#4f99ab;">
+          <span class="folie__code" aria-hidden="true">K-03 · Metallic</span>
+          <span class="folie__loch" aria-hidden="true"></span>
+          <span class="folie__initialen" aria-hidden="true">+10</span>
+          <div class="folie__info">
+            <strong>Die Crew</strong>
+            <span>Grafik · Fertigung · Montage</span>
+          </div>
+        </li>
+        <li class="folie folie--offen" style="--folie:#2c2c2e;--folie-2:#121214;">
+          <a href="#kontakt">
+            <span class="folie__code" aria-hidden="true">K-13 · Noch frei</span>
+            <span class="folie__loch" aria-hidden="true"></span>
+            <span class="folie__initialen" aria-hidden="true">DU?</span>
+            <div class="folie__info">
+              <strong>Werde Teil des Fächers</strong>
+              <span>Jetzt melden <span class="arr" aria-hidden="true">→</span></span>
+            </div>
+          </a>
+        </li>
+      </ul>
     </div>
   </section>
 
@@ -1609,6 +1873,39 @@
             <blockquote>Vom Konzept bis zur Montage – alles aus einer Hand.</blockquote>
             <cite>IC ContServ</cite>
           </figure>
+        </div>
+        <!-- Kundenband (26.08.2026, Punkt 4): laufende Logo-/Wortmarken-Leiste
+             unter den drei Zitat-Kacheln. Logos werden per CSS-Filter weiß
+             auf das rote Panel gelegt.
+             TODO Jörn: für die Wortmarken (Austrotrucker, Paltentaler,
+             Zaversky, Trauner) echte Logodateien nachliefern – dann einfach
+             <li> gegen <li><img …> tauschen. -->
+        <div class="kunden-band reveal" data-delay="1">
+          <p class="kunden-band__label">… und viele mehr aus der Region</p>
+          <div class="kunden-band__spur">
+            <ul class="kunden-band__liste">
+              <li><img src="/assets/img/Stadtwerke_Trofaiach-Logo-300x100px.webp" alt="Stadtwerke Trofaiach" loading="lazy"></li>
+              <li class="kunden-band__wort">Austrotrucker</li>
+              <li><img src="/assets/img/partner/brandl.png" alt="Brandl Transporte" loading="lazy"></li>
+              <li class="kunden-band__wort">Paltentaler</li>
+              <li><img src="/assets/img/OESTU_Stettin-Logo-300x100px.webp" alt="ÖSTU-STETTIN" loading="lazy"></li>
+              <li><img src="/assets/img/partner/trofaiach.svg" alt="Stadt Trofaiach" loading="lazy"></li>
+              <li class="kunden-band__wort">Zaversky Apotheke</li>
+              <li><img src="/assets/img/ContServe-Logo-300x100px.webp" alt="IC ContServ" loading="lazy"></li>
+              <li class="kunden-band__wort">Trauner</li>
+            </ul>
+            <ul class="kunden-band__liste" aria-hidden="true">
+              <li><img src="/assets/img/Stadtwerke_Trofaiach-Logo-300x100px.webp" alt="" loading="lazy"></li>
+              <li class="kunden-band__wort">Austrotrucker</li>
+              <li><img src="/assets/img/partner/brandl.png" alt="" loading="lazy"></li>
+              <li class="kunden-band__wort">Paltentaler</li>
+              <li><img src="/assets/img/OESTU_Stettin-Logo-300x100px.webp" alt="" loading="lazy"></li>
+              <li><img src="/assets/img/partner/trofaiach.svg" alt="" loading="lazy"></li>
+              <li class="kunden-band__wort">Zaversky Apotheke</li>
+              <li><img src="/assets/img/ContServe-Logo-300x100px.webp" alt="" loading="lazy"></li>
+              <li class="kunden-band__wort">Trauner</li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -1756,9 +2053,11 @@
       </nav>
       <nav aria-label="Footer Partnerseiten">
         <h3>Partner &amp; Projekte</h3>
-        <!-- TODO Jörn: Liste bestätigen. Hier stehen bewusst nur Seiten aus
-             dem eigenen Haus, nichts Erfundenes – bitte ergänzen/streichen. -->
-        <ul>
+        <ul class="footer__partner">
+          <li><a href="https://shop.kortschak.online" rel="noopener"><img src="/assets/img/partner/trofaiach.svg" alt="" loading="lazy"><span>Stadt Trofaiach · Webshop</span></a></li>
+          <li><a href="https://jrn.digital" rel="noopener"><img src="/assets/img/partner/jrn-digital.svg" alt="" loading="lazy"><span>JRN.digital</span></a></li>
+          <li><a href="https://www.brandl-transporte.at" rel="noopener"><img src="/assets/img/partner/brandl.png" alt="" loading="lazy"><span>Brandl Transporte</span></a></li>
+          <li><a href="https://scano.at" rel="noopener"><img src="/assets/img/partner/scano.svg" alt="" loading="lazy"><span>scano.at</span></a></li>
           <li><a href="https://proof.kortschak.online" rel="noopener">Kundenportal</a></li>
           <li><a href="https://qr.kortschak.online" rel="noopener">QR-Service</a></li>
         </ul>
@@ -2227,6 +2526,41 @@ if(zeitTrack && !reduce && 'IntersectionObserver' in window){
 })();
 </script>
 <script>
+/* ===== Team-Fächer: Farb-Spotlight am Zeiger + leiser Parallax =====
+   pointermove schreibt die Zeigerposition als Prozent in --fan-x/--fan-y
+   (Maske sitzt auf dem bunten Layer). Der Parallax verschiebt beide Layer
+   gegen die Scrollrichtung – nur transform, ein Schreibzugriff pro Frame.
+   Bei reduced-motion steht das Bild. */
+(function(){
+  'use strict';
+  var sec = document.getElementById('team');
+  var fan = document.getElementById('team-fan');
+  if(!sec || !fan) return;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  sec.addEventListener('pointermove', function(e){
+    var r = sec.getBoundingClientRect();
+    fan.style.setProperty('--fan-x', ((e.clientX - r.left) / r.width * 100).toFixed(2) + '%');
+    fan.style.setProperty('--fan-y', ((e.clientY - r.top) / r.height * 100).toFixed(2) + '%');
+  });
+
+  if(reduce) return;
+  var raf = null;
+  function mal(){
+    raf = null;
+    var r = sec.getBoundingClientRect();
+    if(r.bottom < 0 || r.top > window.innerHeight) return;
+    /* -1 (Section unten am Einlaufen) .. +1 (oben am Auslaufen) */
+    var t = (r.top + r.height / 2 - window.innerHeight / 2) / window.innerHeight;
+    fan.style.transform = 'translateY(' + (t * 44).toFixed(1) + 'px)';
+  }
+  function an(){ if(!raf) raf = requestAnimationFrame(mal); }
+  window.addEventListener('scroll', an, { passive: true });
+  window.addEventListener('resize', an, { passive: true });
+  mal();
+})();
+</script>
+<script>
 /* ===== Megamenue "Leistungen" =====
    Oeffnet bei Zeigergeraeten auf Hover, bei Tastatur auf Fokus. Schliesst
    per Escape (Fokus geht zurueck auf den Ausloeser), beim Verlassen mit
@@ -2236,8 +2570,9 @@ if(zeitTrack && !reduce && 'IntersectionObserver' in window){
    Mobilmenue uebernimmt. */
 (function(){
   'use strict';
-  var wurzel = document.querySelector('.nav-mega');
-  if(!wurzel) return;
+  /* Seit 26.08.2026 gibt es zwei Aufklapp-Menues (Leistungen + Unternehmen) */
+  document.querySelectorAll('.nav-mega').forEach(machMega);
+  function machMega(wurzel){
   var ausloeser = wurzel.querySelector('.nav-mega__ausloeser');
   var hoverFaehig = window.matchMedia('(hover: hover)').matches;
   var schmal = function(){ return window.matchMedia('(max-width: 900px)').matches; };
@@ -2278,6 +2613,7 @@ if(zeitTrack && !reduce && 'IntersectionObserver' in window){
   window.addEventListener('scroll', function(){
     if(wurzel.classList.contains('is-offen')) zumachen();
   }, { passive: true });
+  }
 })();
 </script>
 <script>

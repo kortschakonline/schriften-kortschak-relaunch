@@ -603,30 +603,49 @@
     color:var(--accent);
   }
   .mega__icon svg{width:20px;height:20px;}
-  .mega__karten{
-    display:grid;grid-template-columns:repeat(3,1fr);
-    gap:clamp(.8rem,1.5vw,1.2rem);margin-top:clamp(1.2rem,2vw,1.8rem);
-  }
-  .mega a.mega__karte{
-    display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:.85rem;
-    padding:.7rem .9rem;border-radius:var(--radius-md);
+  /* Facelift 3. Runde (26.08.2026, Punkte 6+7): die vier Themenfelder als
+     Glas-Kacheln (Rezept der frueheren Projekt-Karten); Montage + Projekte
+     ziehen in eine schlanke Fusszeile – sie waren zu prominent. */
+  .mega__feld{
+    padding:clamp(.9rem,1.6vw,1.3rem);
+    border:1px solid var(--border);border-radius:var(--radius-md);
     background:color-mix(in srgb, var(--bg-alt) 70%, transparent);
-    border:1px solid var(--border);
-    transition:border-color .2s var(--ease),transform .2s var(--ease),background .2s var(--ease);
+    transition:border-color .25s var(--ease),transform .25s var(--ease),background .25s var(--ease),box-shadow .25s var(--ease);
   }
-  .mega a.mega__karte:hover{border-color:var(--accent);transform:translateY(-2px);background:var(--bg-alt);}
-  .mega__karte-bild{width:44px;height:44px;border-radius:12px;object-fit:cover;display:block;}
-  .mega__karte-icon{
-    display:grid;place-items:center;width:44px;height:44px;border-radius:12px;
-    background:color-mix(in srgb, var(--accent) 10%, transparent);color:var(--accent);
+  .mega__feld:hover{border-color:var(--accent);transform:translateY(-3px);background:var(--bg-alt);box-shadow:var(--shadow-sm);}
+  .mega__fuss{
+    display:flex;flex-wrap:wrap;align-items:center;gap:.3rem .9rem;
+    margin-top:clamp(1.1rem,1.8vw,1.6rem);
+    padding-top:clamp(.8rem,1.4vw,1.1rem);
+    border-top:1px solid var(--border);
+    font-size:.9rem;color:var(--text-2);
   }
-  .mega__karte-icon svg{width:21px;height:21px;}
-  .mega__karte-inhalt{min-width:0;}
-  .mega__karte-kopf{display:block;font-weight:700;font-size:.97rem;color:var(--text);}
-  .mega__karte-text{display:block;font-size:.8rem;color:var(--text-2);margin-top:.12rem;}
-  .mega a.mega__karte .arr{color:var(--accent);}
-  .mega a.mega__karte::after{content:none;}
-  @media (max-width:1100px){ .mega__karten{grid-template-columns:1fr;} }
+  .mega__fuss a{display:inline-flex;align-items:center;gap:.4em;color:var(--text-2);padding:.2rem 0;}
+  .mega__fuss a:hover{color:var(--accent);}
+  .mega__fuss a strong{font-weight:700;color:var(--text);}
+  .mega__fuss a:hover strong{color:var(--accent);}
+  .mega__fuss .arr{color:var(--accent);}
+  .mega__fuss-label{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;}
+  .mega__fuss-trenn{flex:1;min-width:1rem;}
+  .mega__fuss-punkt{opacity:.5;}
+  .mega__fuss-alle{font-weight:600;}
+  /* Kleines Aufklapp-Panel (Unternehmen): gleiches Verhalten wie das
+     Megamenue, nur schmal und unter dem Ausloeser verankert. */
+  .nav-mega--mini{position:relative;}
+  .nav-mega--mini .mega{
+    left:50%;right:auto;min-width:230px;
+    transform:translate(-50%,-10px);
+    border:1px solid var(--border);border-radius:var(--radius-md);
+  }
+  .nav-mega--mini.is-offen .mega{transform:translate(-50%,0);}
+  .nav-mega--mini .mega__inner{padding:.55rem;}
+  .nav-mega--mini .mega__inner ul{list-style:none;display:grid;gap:.1rem;}
+  .nav-mega--mini .mega__inner ul a{
+    display:block;padding:.5rem .85rem;border-radius:8px;
+    font-size:.92rem;color:var(--text-2);
+    transition:background .2s var(--ease),color .2s var(--ease);
+  }
+  .nav-mega--mini .mega__inner ul a:hover{background:var(--bg-alt);color:var(--accent);}
   @media (max-width:900px){ .mega{display:none;} }
   @media (prefers-reduced-motion:reduce){
     .mega{transition:opacity .01s,visibility .01s;transform:none;}
@@ -833,15 +852,15 @@
   .content-buehne::before,
   .content-buehne::after{
     content:"";position:absolute;z-index:0;border-radius:50%;
-    filter:blur(70px);pointer-events:none;
+    filter:blur(120px);pointer-events:none;
   }
   .content-buehne::before{
-    width:34%;padding-top:34%;left:-4%;bottom:-12%;
-    background:radial-gradient(circle,color-mix(in srgb,var(--accent) 50%,transparent),transparent 70%);
+    width:49%;padding-top:49%;left:-4%;bottom:-12%;
+    background:radial-gradient(circle,color-mix(in srgb,var(--accent) 18%,transparent),transparent 72%);
   }
   .content-buehne::after{
-    width:30%;padding-top:30%;left:42%;top:-10%;
-    background:radial-gradient(circle,color-mix(in srgb,var(--accent-2) 45%,transparent),transparent 70%);
+    width:44%;padding-top:44%;left:42%;top:-10%;
+    background:radial-gradient(circle,color-mix(in srgb,var(--eis) 16%,transparent),transparent 72%);
   }
   .content-buehne .content-grid{position:relative;z-index:1;}
   @media (max-width:780px){
@@ -896,18 +915,18 @@
   :root{
     --glas-kante:rgba(255,255,255,.5);
     --glas-licht:rgba(255,255,255,.45);
-    --glas-schatten:rgba(0,0,0,.18);
+    --glas-schatten:rgba(0,0,0,.18);--eis:#7fc8d8;
   }
   [data-theme="dark"]{
     --glas-kante:rgba(255,255,255,.18);
     --glas-licht:rgba(255,255,255,.2);
-    --glas-schatten:rgba(0,0,0,.45);
+    --glas-schatten:rgba(0,0,0,.45);--eis:#8CD2DC;
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme]){
       --glas-kante:rgba(255,255,255,.18);
       --glas-licht:rgba(255,255,255,.2);
-      --glas-schatten:rgba(0,0,0,.45);
+      --glas-schatten:rgba(0,0,0,.45);--eis:#8CD2DC;
     }
   }
   /* Das Liquid-Glass-Rezept – geteilt von allen Kachel-Flächen der Seite
@@ -928,48 +947,48 @@
   .schein{position:relative;}
   .schein::before,.schein::after{
     content:"";position:absolute;z-index:0;border-radius:50%;
-    filter:blur(70px);pointer-events:none;
+    filter:blur(120px);pointer-events:none;
   }
   .schein::before{
-    width:38%;padding-top:38%;left:-6%;top:-12%;
-    background:radial-gradient(circle,color-mix(in srgb,var(--accent) 45%,transparent),transparent 70%);
+    width:55%;padding-top:55%;left:-6%;top:-12%;
+    background:radial-gradient(circle,color-mix(in srgb,var(--accent) 16%,transparent),transparent 72%);
   }
   .schein::after{
-    width:32%;padding-top:32%;right:-5%;bottom:-16%;
-    background:radial-gradient(circle,color-mix(in srgb,var(--accent-2) 40%,transparent),transparent 70%);
+    width:46%;padding-top:46%;right:-5%;bottom:-16%;
+    background:radial-gradient(circle,color-mix(in srgb,var(--eis) 14%,transparent),transparent 72%);
   }
   .schein > *{position:relative;z-index:1;}
   /* Varianten: aufeinanderfolgende Sections spiegeln den Schein und tauschen
      die Farben – so entsteht kein sichtbares Muster. */
   .schein--b::before{
-    left:auto;right:-8%;top:-16%;width:44%;padding-top:44%;
-    background:radial-gradient(circle,color-mix(in srgb,var(--accent-2) 42%,transparent),transparent 70%);
+    left:auto;right:-8%;top:-16%;width:64%;padding-top:64%;
+    background:radial-gradient(circle,color-mix(in srgb,var(--eis) 15%,transparent),transparent 72%);
   }
   .schein--b::after{
-    right:auto;left:-7%;bottom:-14%;width:28%;padding-top:28%;
-    background:radial-gradient(circle,color-mix(in srgb,var(--accent) 46%,transparent),transparent 70%);
+    right:auto;left:-7%;bottom:-14%;width:41%;padding-top:41%;
+    background:radial-gradient(circle,color-mix(in srgb,var(--accent) 17%,transparent),transparent 72%);
   }
   .schein--c::before{
-    left:16%;top:-20%;width:30%;padding-top:30%;
-    background:radial-gradient(circle,color-mix(in srgb,var(--accent) 48%,transparent),transparent 70%);
+    left:16%;top:-20%;width:44%;padding-top:44%;
+    background:radial-gradient(circle,color-mix(in srgb,var(--accent) 17%,transparent),transparent 72%);
   }
   .schein--c::after{
-    right:-10%;bottom:-24%;width:46%;padding-top:46%;
-    background:radial-gradient(circle,color-mix(in srgb,var(--accent-2) 36%,transparent),transparent 70%);
+    right:-10%;bottom:-24%;width:67%;padding-top:67%;
+    background:radial-gradient(circle,color-mix(in srgb,var(--eis) 13%,transparent),transparent 72%);
   }
   .stimmen-buehne{position:relative;}
   .stimmen-buehne::before,
   .stimmen-buehne::after{
     content:"";position:absolute;z-index:0;border-radius:50%;
-    filter:blur(70px);pointer-events:none;
+    filter:blur(120px);pointer-events:none;
   }
   .stimmen-buehne::before{
-    width:46%;padding-top:46%;left:-8%;top:-18%;
-    background:radial-gradient(circle,color-mix(in srgb,var(--accent) 55%,transparent),transparent 70%);
+    width:67%;padding-top:67%;left:-8%;top:-18%;
+    background:radial-gradient(circle,color-mix(in srgb,var(--accent) 20%,transparent),transparent 72%);
   }
   .stimmen-buehne::after{
-    width:40%;padding-top:40%;right:-6%;bottom:-22%;
-    background:radial-gradient(circle,color-mix(in srgb,var(--accent-2) 50%,transparent),transparent 70%);
+    width:58%;padding-top:58%;right:-6%;bottom:-22%;
+    background:radial-gradient(circle,color-mix(in srgb,var(--eis) 18%,transparent),transparent 72%);
   }
   .stimmen-slider{
     position:relative;z-index:1;
@@ -1240,6 +1259,14 @@
   .pj-cta .hero__actions{justify-content:center;margin-top:var(--space-4);display:flex;flex-wrap:wrap;gap:var(--space-2);}
   .pj-cta .hinweis{margin-top:var(--space-2);font-size:.9rem;color:var(--text-2);}
 
+  /* Partner-Logos im Footer: auf Textfarbe gefiltert, dezent (26.08.2026) */
+  .footer__partner a{display:inline-flex;align-items:center;gap:.55em;}
+  .footer__partner img{height:15px;width:auto;max-width:92px;object-fit:contain;filter:brightness(0);opacity:.55;transition:opacity .2s var(--ease);}
+  .footer__partner a:hover img{opacity:.85;}
+  [data-theme="dark"] .footer__partner img{filter:brightness(0) invert(1);}
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme]) .footer__partner img{filter:brightness(0) invert(1);}
+  }
 </style>
 </head>
 <body>
@@ -1264,7 +1291,7 @@
               <div class="mega__felder">
               <div class="mega__feld">
                 <span class="mega__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H8.5c-1 0-1.9.6-2.3 1.5L5 11c-1.2.3-2 1.3-2 2.5V16c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg></span>
-                <h3 class="mega__titel"><a href="/leistungen/fahrzeugbeschriftung/">Fahrzeug</a></h3>
+                <h3 class="mega__titel"><a href="/leistungen/fahrzeugbeschriftung/">Fahrzeugbeklebung &amp; Folierung</a></h3>
                 <ul>
                   <li><a href="/leistungen/fahrzeugbeschriftung/">Fahrzeugbeschriftung</a></li>
                   <li><a href="/leistungen/car-wrapping/">Car Wrapping</a></li>
@@ -1289,7 +1316,7 @@
               </div>
               <div class="mega__feld">
                 <span class="mega__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg></span>
-                <h3 class="mega__titel"><a href="/leistungen/webdesign/">Digital</a></h3>
+                <h3 class="mega__titel"><a href="/leistungen/webdesign/">Digital &amp; Online</a></h3>
                 <ul>
                   <li><a href="/leistungen/webdesign/">Webdesign</a></li>
                   <li><a href="/leistungen/online-marketing/">Online-Marketing</a></li>
@@ -1297,27 +1324,32 @@
                 </ul>
               </div>
               </div>
-              <div class="mega__karten">
-              <a class="mega__karte" href="/leistungen/montage/">
-                <span class="mega__karte-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span>
-                <span class="mega__karte-inhalt"><span class="mega__karte-kopf">Montage</span><span class="mega__karte-text">Wir montieren selbst, was wir fertigen</span></span>
-                <span class="arr" aria-hidden="true">→</span>
-              </a>
-              <a class="mega__karte" href="/projekte/austrotrucker/">
-                <img class="mega__karte-bild" src="/assets/img/projekte/austrotrucker/thumb.webp" alt="" loading="lazy" width="176" height="176">
-                <span class="mega__karte-inhalt"><span class="mega__karte-kopf">Austrotrucker</span><span class="mega__karte-text">Projekt · Social-Media-Betreuung</span></span>
-                <span class="arr" aria-hidden="true">→</span>
-              </a>
-              <a class="mega__karte" href="/projekte/paltentaler/">
-                <img class="mega__karte-bild" src="/assets/img/projekte/paltentaler/thumb.webp" alt="" loading="lazy" width="176" height="176">
-                <span class="mega__karte-inhalt"><span class="mega__karte-kopf">Paltentaler</span><span class="mega__karte-text">Projekt · Content &amp; Meta-Kampagnen</span></span>
-                <span class="arr" aria-hidden="true">→</span>
-              </a>
+              <div class="mega__fuss">
+                <a href="/leistungen/montage/"><strong>Montage &amp; Anbringung</strong> – wir montieren selbst, was wir fertigen <span class="arr" aria-hidden="true">→</span></a>
+                <span class="mega__fuss-trenn" aria-hidden="true"></span>
+                <span class="mega__fuss-label">Projekte</span>
+                <a href="/projekte/austrotrucker/">Austrotrucker</a>
+                <span class="mega__fuss-punkt" aria-hidden="true">·</span>
+                <a href="/projekte/paltentaler/">Paltentaler</a>
+                <span class="mega__fuss-punkt" aria-hidden="true">·</span>
+                <a class="mega__fuss-alle" href="/projekte/">Alle Projekte <span class="arr" aria-hidden="true">→</span></a>
               </div>
             </div>
           </div>
         </li>
-        <li><a href="/#unternehmen">Unternehmen</a></li>
+        <li><a href="/projekte/">Projekte</a></li>
+        <li class="nav-mega nav-mega--mini">
+          <a class="nav-mega__ausloeser" href="/#unternehmen" aria-expanded="false" aria-controls="mini-unternehmen">Unternehmen<span class="nav-mega__pfeil" aria-hidden="true"></span></a>
+          <div class="mega" id="mini-unternehmen">
+            <div class="mega__inner">
+              <ul>
+                <li><a href="/#unternehmen">Über uns</a></li>
+                <li><a href="/#team">Team</a></li>
+                <li><a href="/#geschichte">Firmengeschichte</a></li>
+              </ul>
+            </div>
+          </div>
+        </li>
         <li><a href="/#referenzen">Referenzen</a></li>
         <li><a href="/#faq">FAQ</a></li>
         <li><a class="btn btn--grad-outline" href="/#kontakt">Kontakt</a></li>
@@ -1338,12 +1370,14 @@
 <nav class="mobile-menu" id="mobile-menu" aria-label="Mobile Navigation" data-open="false">
   <ul>
     <li><a href="/#leistungen">Leistungen</a></li>
+    <li><a href="/projekte/">Projekte</a></li>
     <li><a href="/#unternehmen">Unternehmen</a></li>
+    <li><a href="/#team">Team</a></li>
     <li><a href="/#referenzen">Referenzen</a></li>
     <li><a href="/#faq">FAQ</a></li>
   </ul>
     <ul class="mobile-menu__unter">
-      <li class="mobile-menu__feld"><span>Fahrzeug</span>
+      <li class="mobile-menu__feld"><span>Fahrzeugbeklebung &amp; Folierung</span>
         <ul>
         <li><a href="/leistungen/fahrzeugbeschriftung/">Fahrzeugbeschriftung</a></li>
         <li><a href="/leistungen/car-wrapping/">Car Wrapping</a></li>
@@ -1362,7 +1396,7 @@
         <li><a href="/leistungen/drucksorten-grafikdesign/">Drucksorten &amp; Grafikdesign</a></li>
         </ul>
       </li>
-      <li class="mobile-menu__feld"><span>Digital</span>
+      <li class="mobile-menu__feld"><span>Digital &amp; Online</span>
         <ul>
         <li><a href="/leistungen/webdesign/">Webdesign</a></li>
         <li><a href="/leistungen/online-marketing/">Online-Marketing</a></li>
@@ -1376,6 +1410,7 @@
       </li>
       <li class="mobile-menu__feld"><span>Projekte</span>
         <ul>
+        <li><a href="/projekte/">Alle Projekte</a></li>
         <li><a href="/projekte/austrotrucker/">Austrotrucker</a></li>
         <li><a href="/projekte/paltentaler/">Paltentaler</a></li>
         </ul>
@@ -1687,9 +1722,11 @@
       </nav>
       <nav aria-label="Footer Partnerseiten">
         <h3>Partner &amp; Projekte</h3>
-        <!-- TODO Jörn: Liste bestätigen. Hier stehen bewusst nur Seiten aus
-             dem eigenen Haus, nichts Erfundenes – bitte ergänzen/streichen. -->
-        <ul>
+        <ul class="footer__partner">
+          <li><a href="https://shop.kortschak.online" rel="noopener"><img src="/assets/img/partner/trofaiach.svg" alt="" loading="lazy"><span>Stadt Trofaiach · Webshop</span></a></li>
+          <li><a href="https://jrn.digital" rel="noopener"><img src="/assets/img/partner/jrn-digital.svg" alt="" loading="lazy"><span>JRN.digital</span></a></li>
+          <li><a href="https://www.brandl-transporte.at" rel="noopener"><img src="/assets/img/partner/brandl.png" alt="" loading="lazy"><span>Brandl Transporte</span></a></li>
+          <li><a href="https://scano.at" rel="noopener"><img src="/assets/img/partner/scano.svg" alt="" loading="lazy"><span>scano.at</span></a></li>
           <li><a href="https://proof.kortschak.online" rel="noopener">Kundenportal</a></li>
           <li><a href="https://qr.kortschak.online" rel="noopener">QR-Service</a></li>
         </ul>
@@ -1819,8 +1856,9 @@ if(reduce || !('IntersectionObserver' in window)){
    Mobilmenue uebernimmt. */
 (function(){
   'use strict';
-  var wurzel = document.querySelector('.nav-mega');
-  if(!wurzel) return;
+  /* Seit 26.08.2026 gibt es zwei Aufklapp-Menues (Leistungen + Unternehmen) */
+  document.querySelectorAll('.nav-mega').forEach(machMega);
+  function machMega(wurzel){
   var ausloeser = wurzel.querySelector('.nav-mega__ausloeser');
   var hoverFaehig = window.matchMedia('(hover: hover)').matches;
   var schmal = function(){ return window.matchMedia('(max-width: 900px)').matches; };
@@ -1861,6 +1899,7 @@ if(reduce || !('IntersectionObserver' in window)){
   window.addEventListener('scroll', function(){
     if(wurzel.classList.contains('is-offen')) zumachen();
   }, { passive: true });
+  }
 })();
 </script>
 <script>
