@@ -1320,6 +1320,7 @@
        ein, der Rücken dafür aus. DU?-Karte liegt frei und bleibt offen. */
     .folie:not(.folie--trenn):not(.folie--offen) .folie__code,
     .folie:not(.folie--trenn):not(.folie--offen) .folie__initialen,
+    .folie:not(.folie--trenn):not(.folie--offen) .folie__foto,
     .folie:not(.folie--trenn):not(.folie--offen) .folie__info{
       opacity:0;transition:opacity .3s var(--ease);
     }
@@ -1329,6 +1330,10 @@
     .folie:not(.folie--trenn):not(.folie--offen):focus-visible .folie__info,
     .folie:not(.folie--trenn):not(.folie--offen):focus-within .folie__initialen,
     .folie:not(.folie--trenn):not(.folie--offen):focus-within .folie__info,
+    .folie:not(.folie--trenn):not(.folie--offen):hover .folie__foto,
+    .folie:not(.folie--trenn):not(.folie--offen):focus-visible .folie__foto,
+    .folie:not(.folie--trenn):not(.folie--offen):focus-within .folie__foto,
+    .folie:not(.folie--trenn):not(.folie--offen).is-oben .folie__foto,
     .folie:not(.folie--trenn):not(.folie--offen).is-oben .folie__initialen,
     .folie:not(.folie--trenn):not(.folie--offen).is-oben .folie__info{
       opacity:1;
@@ -1413,9 +1418,21 @@
     margin:auto 0;
     text-shadow:0 2px 0 rgba(0,0,0,.18);
   }
-  .folie__info{display:grid;gap:.15rem;}
+  .folie__info{display:grid;gap:.15rem;position:relative;z-index:2;}
   .folie__info strong{font-size:clamp(.98rem,1.2vw,1.12rem);letter-spacing:-.01em;}
   .folie__info span{font-size:.8rem;opacity:.8;}
+  /* Foto auf der Karte (27.08.2026, nach Jörns Photoshop-Muster):
+     freigestellte Person, rechts unten auf der Kartenkante stehend,
+     überlappt die rechte Kartenhälfte. Info-Block liegt per z-index
+     davor. Markup: <img class="folie__foto" src="/assets/img/team/…png"
+     alt="" loading="lazy" width="…" height="…"> direkt vor .folie__info.
+     Karten ohne Foto zeigen weiter nur Initialen — beides koexistiert. */
+  .folie__foto{
+    position:absolute;right:-3%;bottom:0;z-index:1;
+    height:82%;width:auto;max-width:78%;object-fit:contain;object-position:bottom right;
+    filter:drop-shadow(-8px 10px 18px rgba(0,0,0,.35));
+    pointer-events:none;
+  }
   /* Kontaktzeilen auf der Karte: Mail + Durchwahl als echte Links */
   .folie__kontakt{display:grid;gap:.12rem;margin-top:.5rem;}
   .folie__kontakt a{
