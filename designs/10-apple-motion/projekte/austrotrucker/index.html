@@ -1214,15 +1214,20 @@
   .pj-bilder{display:grid;grid-template-columns:1.25fr .9fr;gap:clamp(.9rem,1.6vw,1.3rem);align-items:end;}
   .pj-bilder img{width:100%;height:auto;border-radius:var(--radius-md);box-shadow:var(--shadow-md);display:block;}
   .pj-bilder img:last-child{transform:translateY(clamp(1rem,3vw,2.2rem));}
-  /* Variante mit Reel (27.08.2026): Video gleichberechtigt neben den
-     Beiträgen, drei schmalere Spalten statt zwei. */
-  .pj-bilder--reel{grid-template-columns:1fr 1fr 1.05fr;align-items:start;}
-  .pj-bilder video{width:100%;height:auto;border-radius:var(--radius-md);box-shadow:var(--shadow-md);display:block;background:#000;}
+  /* Variante mit Reel (27.08.2026, Lamas Feedback zur Anordnung):
+     eine Reihe fester Höhe wie im Arbeitsproben-Bento — jedes Medium
+     behält sein Seitenverhältnis, alle enden auf gleicher Kante. */
+  .pj-bilder--reel{
+    display:flex;align-items:stretch;justify-content:flex-start;
+    height:clamp(260px,26vw,350px);
+  }
+  .pj-bilder--reel img,.pj-bilder--reel video{height:100%;width:auto;}
+  .pj-bilder--reel img:last-child{transform:none;}
+  .pj-bilder video{border-radius:var(--radius-md);box-shadow:var(--shadow-md);display:block;background:#000;}
   @media (max-width:860px){
     .pj-split{grid-template-columns:1fr;}
     .pj-bilder img:last-child{transform:none;}
-    .pj-bilder--reel{grid-template-columns:1fr 1fr;}
-    .pj-bilder--reel video{grid-column:1/-1;max-width:340px;margin-inline:auto;}
+    .pj-bilder--reel{height:clamp(220px,52vw,300px);justify-content:center;}
   }
   /* Kampagnen-Video in den Kennzahlen (Aufruf-Kampagne) */
   .pj-video{margin:var(--space-4) auto 0;width:clamp(230px,26vw,300px);}
@@ -1296,9 +1301,10 @@
   .pj-case__extra{margin-top:var(--space-2);}
   .pj-case__extra img{width:100%;height:auto;border-radius:var(--radius-sm);border:1px solid var(--border);display:block;}
   .pj-kpis{display:flex;flex-wrap:wrap;gap:clamp(.8rem,1.6vw,1.2rem);margin-top:var(--space-3);}
-  /* Kleinere Ziffern als auf der Startseite: der Verlaufstext
-     (background-clip:text) schneidet alles ab, was über die Kachel
-     hinausragt. (27.08.2026, für Norberts kommende Zahlen) */
+  /* Breitere Kacheln (Lamas Feedback) + kleinere Ziffern als auf der
+     Startseite: der Verlaufstext (background-clip:text) schneidet
+     alles ab, was über die Kachel hinausragt. (27.08.2026) */
+  .pj-kpis .kpi-kachel{flex:1 1 200px;}
   .pj-kpis .kpi-kachel strong{font-size:clamp(1.6rem,2.3vw,2.3rem);}
   .pj-kpis .kpi-kachel{flex:1 1 140px;min-height:110px;}
   @media (max-width:760px){ .pj-case{grid-template-columns:1fr;} .pj-case__media{max-width:300px;margin-inline:auto;} }
@@ -1316,7 +1322,14 @@
     padding:.35rem .8rem;color:var(--text-2);font-size:.9rem;
   }
   .kpi-kachel--offen{border-style:dashed;}
-  .kpi-kachel--offen strong{color:var(--text-2);font-size:clamp(1.3rem,2vw,1.7rem);}
+  /* 27.08.2026: Verlaufstext raus — background-clip:text hat lange
+     Wörter ("Interaktionen") unsichtbar abgeschnitten. Offene Kacheln
+     tragen graue Labels, wie ursprünglich gedacht. */
+  .kpi-kachel--offen strong{
+    background:none;-webkit-background-clip:initial;background-clip:initial;
+    -webkit-text-fill-color:var(--text-2);color:var(--text-2);
+    font-size:clamp(1.1rem,1.5vw,1.4rem);letter-spacing:0;line-height:1.25;
+  }
 
   /* CTA-Abschluss in Kortschak-Optik */
   .pj-cta{text-align:center;max-width:760px;margin-inline:auto;}
@@ -1585,6 +1598,9 @@
             <button class="tile" type="button" data-typ="bild" data-src="/assets/img/projekte/austrotrucker/post-02.webp" aria-label="Bild in Großansicht öffnen: Community-Beitrag Transporte A. Eder">
               <img src="/assets/img/projekte/austrotrucker/post-02.webp" alt="" loading="lazy" width="900" height="1392">
             </button>
+            <!-- Glas-Textkachel füllt den Reihenrest — wie auf der
+                 Leistungsseite (27.08.2026, Lamas Wunsch) -->
+            <div class="kpi-kachel"><strong>4</strong><span>Formate in einer Kommunikations&shy;linie</span></div>
             <button class="tile" type="button" data-typ="bild" data-src="/assets/img/projekte/austrotrucker/post-09.webp" aria-label="Bild in Großansicht öffnen: Truckertalk-Story Lieblings-Lkw-Marke">
               <img src="/assets/img/projekte/austrotrucker/post-09.webp" alt="" loading="lazy" width="900" height="1750">
             </button>
@@ -1605,6 +1621,7 @@
             <button class="tile" type="button" data-typ="bild" data-src="/assets/img/projekte/austrotrucker/post-15.webp" aria-label="Bild in Großansicht öffnen: Branchenthema Lkw-Unfallstatistik">
               <img src="/assets/img/projekte/austrotrucker/post-15.webp" alt="" loading="lazy" width="900" height="1375">
             </button>
+            <div class="kpi-kachel"><strong>2</strong><span>Kanäle: Facebook &amp; Instagram</span></div>
           </div>
         </div>
       </div>
@@ -1679,7 +1696,7 @@
         <h2 class="display" id="ergebnisse-title">Was die Betreuung <span class="gradient-text">sichtbar gemacht hat.</span></h2>
         <p class="lead">Die Ergebnisse betrachten wir getrennt nach laufender organischer Kommunikation und den zeitlich begrenzten Meta-Kampagnen. So wird erkennbar, welche Reichweite die regelmäßigen Beiträge aufgebaut haben und wie viele Menschen durch die bezahlte Aktivierung bis zur Landingpage geführt wurden.</p>
       </div>
-      <div class="pj-kpis reveal" style="max-width:880px;margin-inline:auto;">
+      <div class="pj-kpis reveal" style="max-width:1100px;margin-inline:auto;">
         <div class="kpi-kachel kpi-kachel--offen"><strong>Reichweite</strong><span>organisch · Wert folgt</span></div>
         <div class="kpi-kachel kpi-kachel--offen"><strong>Interaktionen</strong><span>Wert folgt</span></div>
         <div class="kpi-kachel kpi-kachel--offen"><strong>Videoaufrufe</strong><span>Wert folgt</span></div>

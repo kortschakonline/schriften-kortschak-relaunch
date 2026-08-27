@@ -1234,7 +1234,8 @@
   .pj-case__extra{margin-top:var(--space-2);}
   .pj-case__extra img{width:100%;height:auto;border-radius:var(--radius-sm);border:1px solid var(--border);display:block;}
   .pj-kpis{display:flex;flex-wrap:wrap;gap:clamp(.8rem,1.6vw,1.2rem);margin-top:var(--space-3);}
-  .pj-kpis .kpi-kachel{flex:1 1 140px;min-height:110px;padding:var(--space-2);}
+  /* Breitere Kacheln (Lamas Feedback 27.08.2026) */
+  .pj-kpis .kpi-kachel{flex:1 1 200px;min-height:110px;padding:var(--space-2);}
   /* Kleinere Ziffern als auf der Startseite: der Verlaufstext
      (background-clip:text) schneidet alles ab, was über die Kachel
      hinausragt — "12.435" braucht Platz. (27.08.2026) */
@@ -1254,7 +1255,14 @@
     padding:.35rem .8rem;color:var(--text-2);font-size:.9rem;
   }
   .kpi-kachel--offen{border-style:dashed;}
-  .kpi-kachel--offen strong{color:var(--text-2);font-size:clamp(1.3rem,2vw,1.7rem);}
+  /* 27.08.2026: Verlaufstext raus — background-clip:text hat lange
+     Wörter unsichtbar abgeschnitten. Offene Kacheln tragen graue
+     Labels, wie ursprünglich gedacht. */
+  .kpi-kachel--offen strong{
+    background:none;-webkit-background-clip:initial;background-clip:initial;
+    -webkit-text-fill-color:var(--text-2);color:var(--text-2);
+    font-size:clamp(1.1rem,1.5vw,1.4rem);letter-spacing:0;line-height:1.25;
+  }
 
   /* CTA-Abschluss in Kortschak-Optik */
   .pj-cta{text-align:center;max-width:760px;margin-inline:auto;}
