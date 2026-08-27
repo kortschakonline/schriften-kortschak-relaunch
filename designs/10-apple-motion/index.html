@@ -1299,7 +1299,7 @@
       display:flex;align-items:flex-start;
       --kw:clamp(210px,18.5vw,264px);
       gap:0;
-      padding-top:1.2rem;padding-bottom:56px;
+      padding-top:1.2rem;padding-bottom:96px; /* Platz für Bogen + ausgestellte DU?-Karte */
     }
     .folie{
       flex:0 0 auto;width:var(--kw);
@@ -1427,9 +1427,23 @@
     position:absolute;inset:0;display:flex;flex-direction:column;
     padding:inherit;padding:clamp(1rem,1.8vw,1.4rem);color:inherit;
   }
-  .folie--offen{border:1.5px dashed rgba(255,255,255,.4);}
+  .folie--offen{border:1.5px dashed rgba(255,255,255,.55);}
   .folie--offen .arr{color:var(--accent);}
-  [data-theme="dark"] .folie--offen{--folie:#3a3a3c;--folie-2:#1c1c1e;}
+  /* Die DU?-Karte steckt noch nicht ganz im Fächer: im Fächer-Modus nach
+     unten-außen ausgestellt (mehr Drehung, hängt tiefer). Hover/Fokus
+     hebt sie wie die anderen — sie "rückt ins Team auf". */
+  @media (min-width:841px){
+    .folie--offen{
+      transform:
+        rotate(calc((var(--i) - 6.5)*1.5deg + 4deg))
+        translateY(calc((var(--i) - 6.5)*(var(--i) - 6.5)*.9px + 30px));
+    }
+    .folie--offen:hover,.folie--offen:focus-visible,.folie--offen:focus-within{
+      transform:
+        rotate(calc((var(--i) - 6.5)*1.5deg))
+        translateY(calc((var(--i) - 6.5)*(var(--i) - 6.5)*.9px - 38px));
+    }
+  }
   @media (max-width:420px){.faecher{grid-template-columns:1fr;} .folie:not(.folie--trenn){aspect-ratio:3/2.4;}}
 
   /* (4) Kundenband auf dem roten Referenz-Panel: Endlos-Marquee, Logos per
@@ -1943,7 +1957,7 @@
             <span>Lehrling Beschriftungsdesign &amp; Werbetechnik</span>
           </div>
         </li>
-        <li class="folie folie--offen" style="--i:13;--folie:#2c2c2e;--folie-2:#121214;">
+        <li class="folie folie--offen" style="--i:13;--folie:#85858c;--folie-2:#4e4e55;">
           <a href="#kontakt">
             <span class="folie__code" aria-hidden="true">K-11 · Noch frei</span>
             <span class="folie__loch" aria-hidden="true"></span>
