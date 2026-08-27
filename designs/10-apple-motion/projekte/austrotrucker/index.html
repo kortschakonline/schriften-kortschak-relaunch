@@ -786,9 +786,38 @@
     50%{transform:translateY(-14px) rotate(-2deg);}
   }
   .sm-hero__video{display:block;width:100%;height:auto;border-radius:clamp(30px,3.2vw,40px);background:#000;}
+  /* Laptop-Mockup neben dem Handy (27.08.2026, Lamas Änderungsliste):
+     die Facebook-Desktop-Ansicht im schlanken Notebook-Rahmen, das
+     Handy rückt überlappend davor. */
+  .sm-hero__geraete{
+    position:relative;justify-self:center;
+    display:flex;align-items:center;justify-content:center;
+    width:100%;
+  }
+  .sm-hero__laptop{
+    width:clamp(300px,30vw,520px);position:relative;
+    background:#0b0b0d;border:1px solid rgba(255,255,255,.16);
+    border-radius:14px;padding:10px 10px 12px;
+    box-shadow:0 40px 80px rgba(0,0,0,.55);
+  }
+  .sm-hero__laptop img{display:block;width:100%;height:auto;border-radius:8px;}
+  .sm-hero__laptop::after{
+    content:"";position:absolute;left:-7%;right:-7%;bottom:-12px;height:12px;
+    background:linear-gradient(#48484c,#1d1d1f);
+    border-radius:2px 2px 14px 14px;
+  }
+  .sm-hero__geraete .sm-hero__phone{
+    width:clamp(150px,13vw,190px);
+    margin-left:calc(clamp(150px,13vw,190px)*-.4);
+    margin-bottom:-2.5rem;
+    z-index:2;
+  }
   @media (max-width:860px){
     .sm-hero__inner{grid-template-columns:1fr;}
     .sm-hero__phone{width:min(62vw,250px);margin-top:var(--space-2);}
+    .sm-hero__geraete{margin-top:var(--space-2);}
+    .sm-hero__laptop{width:min(74vw,440px);}
+    .sm-hero__geraete .sm-hero__phone{width:min(32vw,170px);margin-top:0;margin-bottom:-1.6rem;}
   }
 
   /* ===== Arbeitsproben als Bento aus zwei Reihen unterschiedlicher Höhe:
@@ -1185,9 +1214,42 @@
   .pj-bilder{display:grid;grid-template-columns:1.25fr .9fr;gap:clamp(.9rem,1.6vw,1.3rem);align-items:end;}
   .pj-bilder img{width:100%;height:auto;border-radius:var(--radius-md);box-shadow:var(--shadow-md);display:block;}
   .pj-bilder img:last-child{transform:translateY(clamp(1rem,3vw,2.2rem));}
+  /* Variante mit Reel (27.08.2026): Video gleichberechtigt neben den
+     Beiträgen, drei schmalere Spalten statt zwei. */
+  .pj-bilder--reel{grid-template-columns:1fr 1fr 1.05fr;align-items:start;}
+  .pj-bilder video{width:100%;height:auto;border-radius:var(--radius-md);box-shadow:var(--shadow-md);display:block;background:#000;}
   @media (max-width:860px){
     .pj-split{grid-template-columns:1fr;}
     .pj-bilder img:last-child{transform:none;}
+    .pj-bilder--reel{grid-template-columns:1fr 1fr;}
+    .pj-bilder--reel video{grid-column:1/-1;max-width:340px;margin-inline:auto;}
+  }
+  /* Kampagnen-Video in den Kennzahlen (Aufruf-Kampagne) */
+  .pj-video{margin:var(--space-4) auto 0;width:clamp(230px,26vw,300px);}
+  .pj-video video{display:block;width:100%;height:auto;border-radius:clamp(22px,2.4vw,30px);background:#000;box-shadow:var(--shadow-md);}
+  .pj-video figcaption{padding-top:.7rem;font-size:.85rem;color:var(--text-2);text-align:center;}
+  /* Truckertalk-Dialog (27.08.2026): der echte Beitrag links, die echten
+     Kommentare der Community rechts als Facebook-artige Blasen. */
+  .tt-dialog{
+    display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(1.4rem,3vw,2.6rem);
+    align-items:start;margin-top:clamp(2.5rem,5vw,4rem);
+  }
+  .tt-dialog__post img{width:100%;height:auto;border-radius:var(--radius-md);box-shadow:var(--shadow-md);display:block;}
+  .tt-dialog__post figcaption{padding-top:.6rem;font-size:.85rem;color:var(--text-2);text-align:center;}
+  .tt-dialog__titel{font-weight:700;font-size:clamp(1.1rem,1.5vw,1.3rem);letter-spacing:-.01em;}
+  .tt-dialog ul{list-style:none;display:grid;gap:.7rem;margin-top:var(--space-2);}
+  .tt-dialog li{
+    background:var(--bg-alt);border:1px solid var(--border);
+    border-radius:4px 18px 18px 18px;
+    padding:.65rem .95rem;max-width:52ch;
+  }
+  .tt-dialog li strong{display:block;font-size:.8rem;letter-spacing:.01em;}
+  .tt-dialog li span{display:block;font-size:.95rem;line-height:1.45;margin-top:.15rem;}
+  .tt-dialog li em{display:inline-block;font-style:normal;font-size:.75rem;color:var(--text-2);margin-top:.3rem;}
+  .tt-dialog__fuss{margin-top:var(--space-2);font-size:.8rem;color:var(--text-2);}
+  @media (max-width:760px){
+    .tt-dialog{grid-template-columns:1fr;}
+    .tt-dialog__post{max-width:320px;margin-inline:auto;}
   }
 
   /* Making-of: ein großes Bild + kleine Motive daneben */
@@ -1234,6 +1296,10 @@
   .pj-case__extra{margin-top:var(--space-2);}
   .pj-case__extra img{width:100%;height:auto;border-radius:var(--radius-sm);border:1px solid var(--border);display:block;}
   .pj-kpis{display:flex;flex-wrap:wrap;gap:clamp(.8rem,1.6vw,1.2rem);margin-top:var(--space-3);}
+  /* Kleinere Ziffern als auf der Startseite: der Verlaufstext
+     (background-clip:text) schneidet alles ab, was über die Kachel
+     hinausragt. (27.08.2026, für Norberts kommende Zahlen) */
+  .pj-kpis .kpi-kachel strong{font-size:clamp(1.6rem,2.3vw,2.3rem);}
   .pj-kpis .kpi-kachel{flex:1 1 140px;min-height:110px;}
   @media (max-width:760px){ .pj-case{grid-template-columns:1fr;} .pj-case__media{max-width:300px;margin-inline:auto;} }
 
@@ -1438,8 +1504,13 @@
           <a class="btn btn--secondary" href="/leistungen/social-media-marketing/">Zur Leistung Social Media</a>
         </div>
       </div>
-      <div class="sm-hero__phone">
-        <img class="sm-hero__video" src="/assets/img/projekte/austrotrucker/profil.webp" alt="Instagram-Profil austro_trucker_ mit Beitragsraster im gelb-schwarzen Austrotrucker-Design" width="900" height="2334">
+      <div class="sm-hero__geraete">
+        <div class="sm-hero__laptop">
+          <img src="/assets/img/projekte/austrotrucker/hero-facebook.webp" alt="Facebook-Seite Austrotrucker in der Desktop-Ansicht mit gelb-schwarzem Titelbild" fetchpriority="high" width="1600" height="830">
+        </div>
+        <div class="sm-hero__phone">
+          <img class="sm-hero__video" src="/assets/img/projekte/austrotrucker/profil.webp" alt="Instagram-Profil austro_trucker_ mit Beitragsraster im gelb-schwarzen Austrotrucker-Design" width="900" height="2334">
+        </div>
       </div>
     </div>
   </section>
@@ -1487,9 +1558,10 @@
           <p>Die Ausgangsmaterialien sind entsprechend unterschiedlich. Sie reichen von fachlichen Informationen und Veranstaltungstexten bis zu Fotos, Videos und Einblicken aus der Community.</p>
           <p>Unsere Aufgabe ist es, diese Inhalte zu prüfen, zu strukturieren und in eine Social-Media-Form zu übersetzen, die verständlich, aktuell und als Teil des Austrotrucker-Auftritts erkennbar ist.</p>
         </div>
-        <div class="pj-bilder reveal" data-delay="1">
+        <div class="pj-bilder pj-bilder--reel reveal" data-delay="1">
           <img src="/assets/img/projekte/austrotrucker/post-16.webp" alt="Austrotrucker-Instagram-Profil mit Story-Highlights und einheitlich gestaltetem Beitragsraster" loading="lazy" width="900" height="2410">
           <img src="/assets/img/projekte/austrotrucker/post-08.webp" alt="Community-Beitrag: Schwertransport von Transporte A. Eder Richtung Liezen" loading="lazy" width="900" height="1375">
+          <video controls playsinline preload="none" width="720" height="1280" src="/assets/img/projekte/austrotrucker/reel-wissen.mp4" poster="/assets/img/projekte/austrotrucker/reel-wissen-poster.webp" aria-label="Reel aus dem Format Wissen für unterwegs mit Anja Krenn"></video>
         </div>
       </div>
     </div>
@@ -1555,6 +1627,30 @@
         </article>
       </div>
       <p class="lead reveal" style="max-width:820px;margin:clamp(2rem,4vw,3rem) auto 0;text-align:center;">Jedes Format erfüllt eine eigene Aufgabe. Gestaltung, Tonalität und redaktionelle Linie sorgen dennoch dafür, dass alle Inhalte als Teil eines gemeinsamen Auftritts wahrgenommen werden.</p>
+
+      <!-- Truckertalk in Aktion (27.08.2026, Lamas Änderungsliste): der
+           echte Facebook-Beitrag samt echter Kommentare aus der Community.
+           Kommentare wortgetreu aus dem Original-Thread übernommen
+           (Datei Kommentare.png), Nachnamen aus Datenschutzgründen
+           abgekürzt. -->
+      <div class="tt-dialog reveal">
+        <figure class="tt-dialog__post">
+          <img src="/assets/img/projekte/austrotrucker/post-18.webp" alt="Facebook-Beitrag des Formats Truckertalk mit der Frage nach der Lieblings-Lkw-Marke" loading="lazy" width="900" height="2333">
+          <figcaption>#TRUCKERTALK auf Facebook: „Lieblings-Lkw-Marke?“</figcaption>
+        </figure>
+        <div class="tt-dialog__kommentare">
+          <p class="tt-dialog__titel">… und die Community antwortet:</p>
+          <ul>
+            <li><strong>Jörg T.</strong><span>Guten Abend, seit 25 Jahren Mercedes NG, SK, Actros Bigspace mit Spiegel-L-Kabine. 1851</span><em>👍 1</em></li>
+            <li><strong>Wolfgang B.</strong><span>Alles nur keinen Benz</span><em>👍 4</em></li>
+            <li><strong>Harald S.</strong><span>DAF was sonst?!</span><em>👍 2</em></li>
+            <li><strong>Alex B.</strong><span>Völlig egal, wenns Geld stimmt und mich das Auto jeden Abend wieder Nachhause bringt 😉</span><em>👍 2</em></li>
+            <li><strong>Olaf K.</strong><span>Pfurzegal! Die Hauptsache ist doch, dass sich jeder von uns in seinem Auto wohl fühlt und der Job noch einigermaßen Spaß macht!</span><em>👍 1</em></li>
+            <li><strong>Alex S.</strong><span>Ich habe einen SCANIA S560 SUPER Reihensechszylinder und bin mit dem super zufrieden 💪👍</span><em>👍 1</em></li>
+          </ul>
+          <p class="tt-dialog__fuss">Originalkommentare unter dem Beitrag – Nachnamen abgekürzt.</p>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -1590,6 +1686,12 @@
         <div class="kpi-kachel kpi-kachel--offen"><strong>Landingpage-Aufrufe</strong><span>Kampagnen · Wert folgt</span></div>
       </div>
       <p class="reveal" style="text-align:center;margin-top:var(--space-3);"><span class="platzhalter">Kennzahlen werden gemeinsam mit der Fachgruppe festgelegt – bei Community-Kampagnen zählt zusätzlich, wie viele Bilder oder Videos tatsächlich eingereicht wurden.</span></p>
+      <!-- Aufruf-Kampagne (27.08.2026): Kick-off-Creative als Video,
+           die Zahlen dazu folgen von Norbert. -->
+      <figure class="pj-video reveal">
+        <video controls playsinline preload="none" width="720" height="1280" src="/assets/img/projekte/austrotrucker/kampagne-kickoff.mp4" poster="/assets/img/projekte/austrotrucker/kampagne-kickoff-poster.webp" aria-label="Kick-off-Video der Aufruf-Kampagne"></video>
+        <figcaption>Creative der Aufruf-Kampagne zum Kick-off – Ergebnisse folgen</figcaption>
+      </figure>
     </div>
   </section>
 

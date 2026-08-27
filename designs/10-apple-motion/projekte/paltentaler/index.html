@@ -1233,8 +1233,14 @@
   .pj-case__body>p{color:var(--text-2);line-height:1.6;margin-top:.6rem;}
   .pj-case__extra{margin-top:var(--space-2);}
   .pj-case__extra img{width:100%;height:auto;border-radius:var(--radius-sm);border:1px solid var(--border);display:block;}
+  /* Zwei Extra-Creatives nebeneinander (Kampagne Gartenerde, 27.08.2026) */
+  .pj-case__extra--zwei{display:grid;grid-template-columns:1fr 1fr;gap:clamp(.7rem,1.2vw,1rem);max-width:460px;}
   .pj-kpis{display:flex;flex-wrap:wrap;gap:clamp(.8rem,1.6vw,1.2rem);margin-top:var(--space-3);}
-  .pj-kpis .kpi-kachel{flex:1 1 140px;min-height:110px;}
+  .pj-kpis .kpi-kachel{flex:1 1 140px;min-height:110px;padding:var(--space-2);}
+  /* Kleinere Ziffern als auf der Startseite: der Verlaufstext
+     (background-clip:text) schneidet alles ab, was über die Kachel
+     hinausragt — "12.435" braucht Platz. (27.08.2026) */
+  .pj-kpis .kpi-kachel strong{font-size:clamp(1.6rem,2.3vw,2.3rem);}
   @media (max-width:760px){ .pj-case{grid-template-columns:1fr;} .pj-case__media{max-width:300px;margin-inline:auto;} }
 
   /* Ruhiges Testimonial */
@@ -1438,16 +1444,16 @@
           <a class="btn btn--secondary" href="/leistungen/social-media-marketing/">Zur Leistung Social Media</a>
         </div>
       </div>
+      <!-- 27.08.2026 (Lamas Änderungsliste "Header Bild"): statt des
+           Autoplay-Reels zeigt das Handy jetzt das Instagram-Profil –
+           analog zur Austrotrucker-Seite. Das Reel lief ohnehin unten
+           in "Reels & Bewegtbild" weiter. -->
       <div class="sm-hero__phone">
-        <video class="sm-hero__video" autoplay muted loop playsinline preload="metadata" disablepictureinpicture width="720" height="1280" src="/assets/img/projekte/paltentaler/reel-beispiel.mp4" poster="/assets/img/projekte/paltentaler/reel-beispiel-poster.webp" aria-label="Paltentaler-Reel aus der laufenden Content-Produktion"></video>
+        <img class="sm-hero__video" src="/assets/img/projekte/paltentaler/profil.webp" alt="Instagram-Profil paltentaler mit Beitragsraster: Steine fürs Leben" fetchpriority="high" width="900" height="2333">
       </div>
     </div>
   </section>
-  <script>
-  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
-    document.querySelectorAll('.sm-hero__video').forEach(function(v){v.removeAttribute('autoplay');v.pause();});
-  }
-  </script>
+  <!-- (Autoplay-Stopper entfernt, 27.08.2026: im Hero läuft kein Video mehr.) -->
 
   <!-- ===== BREADCRUMB ===== -->
   <nav class="crumbs" aria-label="Brotkrumen-Navigation">
@@ -1573,8 +1579,10 @@
           <video controls playsinline preload="none" width="720" height="1280" src="/assets/img/projekte/paltentaler/reel-beispiel.mp4" poster="/assets/img/projekte/paltentaler/reel-beispiel-poster.webp"></video>
           <figcaption>Reel aus der laufenden Produktion</figcaption>
         </figure>
+        <!-- 27.08.2026: Das Erde-Reel liegt jetzt als echtes Video vor
+             (Erde_E3) und ersetzt das Standbild. -->
         <figure class="pj-phone">
-          <img src="/assets/img/projekte/paltentaler/reel-erde.webp" alt="Reel-Standbild: Gute Erde beginnt mit der richtigen Aufbereitung" loading="lazy" width="900" height="1600">
+          <video controls playsinline preload="none" width="720" height="1280" src="/assets/img/projekte/paltentaler/reel-erde.mp4" poster="/assets/img/projekte/paltentaler/reel-erde-poster.webp" aria-label="Reel Gute Erde beginnt mit der richtigen Aufbereitung"></video>
           <figcaption>Reel „Gute Erde“ – Produkt &amp; Wissen</figcaption>
         </figure>
       </div>
@@ -1599,17 +1607,25 @@
         <div class="pj-case__body">
           <h3>Kampagne Gartenerde</h3>
           <p>Regionale Gartenerde, gesiebt und mit Kompost veredelt – beworben zur Gartensaison mit eigens entwickelten Werbemitteln.</p>
+          <!-- 27.08.2026: Format an Ziersplitt angeglichen (Extra-Creatives)
+               + echte Kampagnenzahlen von Lama. -->
+          <div class="pj-case__extra pj-case__extra--zwei">
+            <img src="/assets/img/projekte/paltentaler/kampagne-erde-1.webp" alt="Kampagnen-Creative: Gute Erde beginnt mit der richtigen Aufbereitung" loading="lazy" width="900" height="1600">
+            <img src="/assets/img/projekte/paltentaler/kampagne-erde-2.webp" alt="Kampagnenmotiv: Radlader bei der Erdaufbereitung" loading="lazy" width="900" height="1600">
+          </div>
           <div class="pj-kpis">
-            <div class="kpi-kachel kpi-kachel--offen"><strong>Erreichte Personen</strong><span>Wert folgt</span></div>
-            <div class="kpi-kachel kpi-kachel--offen"><strong>Landingpage-Aufrufe</strong><span>Wert folgt</span></div>
-            <div class="kpi-kachel kpi-kachel--offen"><strong>Kosten pro Ergebnis</strong><span>Wert folgt</span></div>
+            <div class="kpi-kachel"><strong>12.435</strong><span>erreichte Konten</span></div>
+            <div class="kpi-kachel"><strong>27</strong><span>Leads über das Kampagnen&shy;formular</span></div>
+            <div class="kpi-kachel"><strong>19,12&nbsp;€</strong><span>Kosten pro Lead</span></div>
           </div>
         </div>
       </article>
 
       <article class="pj-case reveal">
         <div class="pj-case__media">
-          <img src="/assets/img/projekte/paltentaler/post-ziersplitt.webp" alt="Kampagnen-Creative Ziersplitt: Natürlich schöne Außenbereiche" loading="lazy" width="900" height="1375">
+          <!-- 27.08.2026: linkes Bild getauscht (Instagram-gerahmtes
+               Ziersplitt-Creative) + echte Kampagnenzahlen von Lama. -->
+          <img src="/assets/img/projekte/paltentaler/post-ziersplitt-insta.webp" alt="Instagram-Beitrag der Ziersplitt-Kampagne: Natürlich schöne Außenbereiche" loading="lazy" width="900" height="1375">
         </div>
         <div class="pj-case__body">
           <h3>Kampagne Ziersplitt</h3>
@@ -1618,9 +1634,9 @@
             <img src="/assets/img/projekte/paltentaler/ad-carousel.webp" alt="Drei Anzeigenvarianten der Ziersplitt-Kampagne im Facebook-Feed" loading="lazy" width="1400" height="705">
           </div>
           <div class="pj-kpis">
-            <div class="kpi-kachel kpi-kachel--offen"><strong>Erreichte Personen</strong><span>Wert folgt</span></div>
-            <div class="kpi-kachel kpi-kachel--offen"><strong>Landingpage-Aufrufe</strong><span>Wert folgt</span></div>
-            <div class="kpi-kachel kpi-kachel--offen"><strong>Kosten pro Ergebnis</strong><span>Wert folgt</span></div>
+            <div class="kpi-kachel"><strong>13.169</strong><span>erreichte Konten</span></div>
+            <div class="kpi-kachel"><strong>389</strong><span>Link-Klicks zur Landingpage</span></div>
+            <div class="kpi-kachel"><strong>1,29&nbsp;€</strong><span>Kosten pro Link-Klick</span></div>
           </div>
         </div>
       </article>
