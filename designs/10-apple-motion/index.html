@@ -1281,10 +1281,10 @@
     color:#fff;
     transition:transform .45s var(--ease),box-shadow .45s var(--ease);
   }
-  .folie:nth-child(1){transform:rotate(-2.4deg) translateY(6px);}
-  .folie:nth-child(2){transform:rotate(-.8deg);}
-  .folie:nth-child(3){transform:rotate(1deg);}
-  .folie:nth-child(4){transform:rotate(2.6deg) translateY(6px);}
+  .folie:nth-child(4n+1){transform:rotate(-2.2deg) translateY(5px);}
+  .folie:nth-child(4n+2){transform:rotate(-.8deg);}
+  .folie:nth-child(4n+3){transform:rotate(1deg);}
+  .folie:nth-child(4n){transform:rotate(2.4deg) translateY(5px);}
   .folie:hover,.folie:focus-within{
     transform:rotate(0) translateY(-8px);
     box-shadow:var(--shadow-lg);
@@ -1308,6 +1308,24 @@
   .folie__info{display:grid;gap:.15rem;}
   .folie__info strong{font-size:clamp(.98rem,1.2vw,1.12rem);letter-spacing:-.01em;}
   .folie__info span{font-size:.8rem;opacity:.8;}
+  /* Gruppen-Zwischentitel im Fächer (Büro / Grafik / Werbetechnik):
+     volle Rasterbreite, dezente Linie – die Karten fächern darunter weiter. */
+  .faecher__gruppe{
+    grid-column:1/-1;
+    display:flex;align-items:center;gap:.9rem;
+    font-size:.78rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--text-2);
+    margin-top:1.1rem;
+  }
+  .faecher__gruppe:first-child{margin-top:0;}
+  .faecher__gruppe::after{content:"";flex:1;height:1px;background:var(--border);}
+  /* Kontaktzeilen auf der Karte: Mail + Durchwahl als echte Links */
+  .folie__kontakt{display:grid;gap:.12rem;margin-top:.5rem;}
+  .folie__kontakt a{
+    font-size:.72rem;color:#fff;opacity:.82;text-decoration:none;
+    overflow-wrap:anywhere;width:fit-content;
+  }
+  .folie__kontakt a:hover,.folie__kontakt a:focus-visible{opacity:1;text-decoration:underline;}
   .folie--offen a{
     position:absolute;inset:0;display:flex;flex-direction:column;
     padding:inherit;padding:clamp(1rem,1.8vw,1.4rem);color:inherit;
@@ -1678,11 +1696,11 @@
        dem Folienfächer – Folienfarbe, geplottete Initialen, Farbcode wie
        auf echten Musterkarten. Die Karten stehen leicht aufgefächert und
        richten sich beim Hover/Fokus auf.
-       Bewusst KEINE erfundenen Namen (Lehre aus den Alt-Zitaten): bis
-       Namen/Fotos vom Team kommen, stehen die beiden Geschäftsführer
-       drin plus Crew- und Recruiting-Karte.
-       TODO Jörn/Norbert: weitere Teammitglieder = weitere <li class="folie">
-       mit --folie/--folie-2 (Folienfarbe), Initialen, Name, Rolle. -->
+       27.08.2026: echte Team-Liste von Jörn eingepflegt (10 Köpfe in drei
+       Gruppen). Martina & Norbert kommen bewusst noch NICHT auf die Seite
+       (machen sich gerade selbstständig, Anbindung offen) – später als
+       weitere <li class="folie"> ergänzen: --folie/--folie-2 (Folienfarbe),
+       Initialen, Name, Rolle, optional .folie__kontakt. -->
   <section class="section" id="team" aria-labelledby="team-title">
     <!-- Echter Folienfächer als Parallax-Hintergrund (26.08.2026, Jörns
          Bild image-upload/final_images/color-fan.jpg): Grundzustand
@@ -1697,10 +1715,11 @@
     <div class="wrap">
       <div class="section-head reveal">
         <p class="eyebrow">Team</p>
-        <h2 class="display" id="team-title">Zwölf Köpfe. Ein Fächer.</h2>
+        <h2 class="display" id="team-title">Zehn Köpfe. Ein Fächer.</h2>
         <p class="lead">Wie in unserem Folienfächer: jede Farbe ein eigener Charakter – zusammen ergeben sie das ganze Spektrum.</p>
       </div>
       <ul class="faecher reveal" data-delay="1">
+        <li class="faecher__gruppe" aria-hidden="true">Geschäftsführung &amp; Büro</li>
         <li class="folie" style="--folie:#FF1C20;--folie-2:#a80d10;">
           <span class="folie__code" aria-hidden="true">K-01 · Hochglanz</span>
           <span class="folie__loch" aria-hidden="true"></span>
@@ -1708,29 +1727,110 @@
           <div class="folie__info">
             <strong>Anja Brandl, B.A.</strong>
             <span>Geschäftsführung</span>
+            <div class="folie__kontakt">
+              <a href="mailto:office@schriften-kortschak.at">office@schriften-kortschak.at</a>
+              <a href="tel:+43384767666">03847 / 67666</a>
+            </div>
           </div>
         </li>
         <li class="folie" style="--folie:#F18700;--folie-2:#b35c00;">
-          <span class="folie__code" aria-hidden="true">K-02 · Matt</span>
+          <span class="folie__code" aria-hidden="true">K-02 · Hochglanz</span>
           <span class="folie__loch" aria-hidden="true"></span>
-          <span class="folie__initialen" aria-hidden="true">KL</span>
+          <span class="folie__initialen" aria-hidden="true">JM</span>
           <div class="folie__info">
-            <strong>Kai Leitner</strong>
-            <span>Geschäftsführung · Meister</span>
+            <strong>Jörn Martin</strong>
+            <span>Ihre Verbindung zu uns</span>
+            <div class="folie__kontakt">
+              <a href="mailto:vertrieb@schriften-kortschak.at">vertrieb@schriften-kortschak.at</a>
+              <a href="tel:+43384767666106">03847 / 67666-106</a>
+            </div>
           </div>
         </li>
-        <li class="folie" style="--folie:#8CD2DC;--folie-2:#4f99ab;">
-          <span class="folie__code" aria-hidden="true">K-03 · Metallic</span>
+        <li class="folie" style="--folie:#9E1B32;--folie-2:#5f0f1d;">
+          <span class="folie__code" aria-hidden="true">K-03 · Matt</span>
           <span class="folie__loch" aria-hidden="true"></span>
-          <span class="folie__initialen" aria-hidden="true">+10</span>
+          <span class="folie__initialen" aria-hidden="true">EB</span>
           <div class="folie__info">
-            <strong>Die Crew</strong>
-            <span>Grafik · Fertigung · Montage</span>
+            <strong>Elisa Bugajewa</strong>
+            <span>Buchhaltung</span>
+            <div class="folie__kontakt">
+              <a href="mailto:buchhaltung@schriften-kortschak.at">buchhaltung@schriften-kortschak.at</a>
+              <a href="tel:+43384767666">03847 / 67666</a>
+            </div>
+          </div>
+        </li>
+        <li class="faecher__gruppe" aria-hidden="true">Grafik &amp; Social Media</li>
+        <li class="folie" style="--folie:#7A4FC9;--folie-2:#4a2b86;">
+          <span class="folie__code" aria-hidden="true">K-04 · Metallic</span>
+          <span class="folie__loch" aria-hidden="true"></span>
+          <span class="folie__initialen" aria-hidden="true">LE</span>
+          <div class="folie__info">
+            <strong>Lama El Shafie</strong>
+            <span>Social Media Management &amp; Grafikdesign</span>
+            <div class="folie__kontakt">
+              <a href="mailto:grafik@schriften-kortschak.at">grafik@schriften-kortschak.at</a>
+              <a href="tel:+43384767666">03847 / 67666</a>
+            </div>
+          </div>
+        </li>
+        <li class="folie" style="--folie:#D9538F;--folie-2:#963059;">
+          <span class="folie__code" aria-hidden="true">K-05 · Satin</span>
+          <span class="folie__loch" aria-hidden="true"></span>
+          <span class="folie__initialen" aria-hidden="true">OA</span>
+          <div class="folie__info">
+            <strong>Olha Anisimova</strong>
+            <span>Lehrling Medienfachfrau</span>
+          </div>
+        </li>
+        <li class="faecher__gruppe" aria-hidden="true">Werbetechnik</li>
+        <li class="folie" style="--folie:#1F5FBF;--folie-2:#123a75;">
+          <span class="folie__code" aria-hidden="true">K-06 · Hochglanz</span>
+          <span class="folie__loch" aria-hidden="true"></span>
+          <span class="folie__initialen" aria-hidden="true">CR</span>
+          <div class="folie__info">
+            <strong>Colin Rieger</strong>
+            <span>Beschriftungsdesigner &amp; Werbetechniker</span>
+          </div>
+        </li>
+        <li class="folie" style="--folie:#0E7C86;--folie-2:#07474d;">
+          <span class="folie__code" aria-hidden="true">K-07 · Matt</span>
+          <span class="folie__loch" aria-hidden="true"></span>
+          <span class="folie__initialen" aria-hidden="true">AG</span>
+          <div class="folie__info">
+            <strong>Alina Greistorfer</strong>
+            <span>Beschriftungsdesignerin &amp; Werbetechnikerin</span>
+          </div>
+        </li>
+        <li class="folie" style="--folie:#6fbecb;--folie-2:#33717f;">
+          <span class="folie__code" aria-hidden="true">K-08 · Metallic</span>
+          <span class="folie__loch" aria-hidden="true"></span>
+          <span class="folie__initialen" aria-hidden="true">IK</span>
+          <div class="folie__info">
+            <strong>Istvan Kiss</strong>
+            <span>Assistenz Beschriftungsdesign &amp; Werbetechnik</span>
+          </div>
+        </li>
+        <li class="folie" style="--folie:#3FA34D;--folie-2:#25662f;">
+          <span class="folie__code" aria-hidden="true">K-09 · Satin</span>
+          <span class="folie__loch" aria-hidden="true"></span>
+          <span class="folie__initialen" aria-hidden="true">DR</span>
+          <div class="folie__info">
+            <strong>Denise Reinwald</strong>
+            <span>Lehrling Beschriftungsdesignerin &amp; Werbetechnikerin</span>
+          </div>
+        </li>
+        <li class="folie" style="--folie:#8C5A2B;--folie-2:#573517;">
+          <span class="folie__code" aria-hidden="true">K-10 · Struktur</span>
+          <span class="folie__loch" aria-hidden="true"></span>
+          <span class="folie__initialen" aria-hidden="true">LB</span>
+          <div class="folie__info">
+            <strong>Lean Brus</strong>
+            <span>Lehrling Beschriftungsdesign &amp; Werbetechnik</span>
           </div>
         </li>
         <li class="folie folie--offen" style="--folie:#2c2c2e;--folie-2:#121214;">
           <a href="#kontakt">
-            <span class="folie__code" aria-hidden="true">K-13 · Noch frei</span>
+            <span class="folie__code" aria-hidden="true">K-11 · Noch frei</span>
             <span class="folie__loch" aria-hidden="true"></span>
             <span class="folie__initialen" aria-hidden="true">DU?</span>
             <div class="folie__info">
@@ -1756,7 +1856,7 @@
           <div class="stat__label">Jahre Erfahrung</div>
         </div>
         <div class="stat reveal" data-delay="1">
-          <div class="stat__value gradient-text" data-count="12">12</div>
+          <div class="stat__value gradient-text" data-count="10">10</div>
           <div class="stat__label">Köpfe im Team</div>
         </div>
         <div class="stat reveal" data-delay="2">
