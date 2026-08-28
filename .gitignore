@@ -28,3 +28,6 @@ norbert-input/
 
 # Formular-Zugangsdaten (Passwort!) nie ins oeffentliche Repo
 designs/10-apple-motion/api/anfrage-config.php
+
+# Umzugsunterlagen mit Auth-Code — nie ins oeffentliche Repo
+umzug/
