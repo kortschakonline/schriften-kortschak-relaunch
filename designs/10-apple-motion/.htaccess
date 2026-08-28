@@ -4,3 +4,56 @@
 # X-Content-Type-Options: nosniff gesetzt wird, waere jede Scroll-Buehne
 # schwarz. (woff2/webp/svg liefert der Server bereits korrekt.)
 AddType image/avif .avif
+
+# ============================================================ Go-Live 28.08.2026
+# Dieselbe .htaccess laeuft auf Produktion (www.schriften-kortschak.at) UND
+# Staging (view.kortschak.online). Die Seiten stehen auf "index, follow" —
+# Staging wird deshalb hier per Header auf noindex gehalten:
+<IfModule mod_setenvif.c>
+  SetEnvIfNoCase Host "view\.kortschak\.online" STAGING
+</IfModule>
+<IfModule mod_headers.c>
+  Header set X-Robots-Tag "noindex, nofollow" env=STAGING
+</IfModule>
+
+# Kanonisierung: ohne-www -> www, http -> https (greift nur auf der
+# Produktionsdomain, Staging bleibt unberuehrt).
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTP_HOST} ^schriften-kortschak\.at$ [NC]
+  RewriteRule ^(.*)$ https://www.schriften-kortschak.at/$1 [R=301,L]
+  RewriteCond %{HTTP_HOST} ^www\.schriften-kortschak\.at$ [NC]
+  RewriteCond %{HTTPS} !on
+  RewriteRule ^(.*)$ https://www.schriften-kortschak.at/$1 [R=301,L]
+</IfModule>
+
+# 301-Weiterleitungen der alten WordPress-URLs auf die neue Struktur
+# (Rankings/Backlinks erhalten). Anker-Ziele zeigen auf Startseiten-Sektionen.
+RedirectMatch 301 ^/kontakt/?$ https://www.schriften-kortschak.at/#kontakt
+RedirectMatch 301 ^/unternehmen/?$ https://www.schriften-kortschak.at/#unternehmen
+RedirectMatch 301 ^/team/?$ https://www.schriften-kortschak.at/#team
+RedirectMatch 301 ^/technische-ausstattung/?$ https://www.schriften-kortschak.at/#unternehmen
+RedirectMatch 301 ^/stundensaetze/?$ https://www.schriften-kortschak.at/#faq
+RedirectMatch 301 ^/anfrage-danke/?$ https://www.schriften-kortschak.at/
+RedirectMatch 301 ^/termin-danke/?$ https://www.schriften-kortschak.at/
+RedirectMatch 301 ^/amelia-mitarbeiter-board/?$ https://www.schriften-kortschak.at/
+RedirectMatch 301 ^/leistungen/?$ https://www.schriften-kortschak.at/#leistungen
+RedirectMatch 301 ^/leistungen/autofolierung/?$ https://www.schriften-kortschak.at/leistungen/car-wrapping/
+RedirectMatch 301 ^/leistungen/autofolierung/car-wrapping/?$ https://www.schriften-kortschak.at/leistungen/car-wrapping/
+RedirectMatch 301 ^/leistungen/autofolierung/fahrzeugbeschriftungen/?$ https://www.schriften-kortschak.at/leistungen/fahrzeugbeschriftung/
+RedirectMatch 301 ^/leistungen/autofolierung/sonnenschutz/?$ https://www.schriften-kortschak.at/leistungen/sonnen-steinschlagschutz/
+RedirectMatch 301 ^/leistungen/autofolierung/steinschlagschutz/?$ https://www.schriften-kortschak.at/leistungen/sonnen-steinschlagschutz/
+RedirectMatch 301 ^/leistungen/beschriftungen-aller-art/?$ https://www.schriften-kortschak.at/leistungen/beschriftungen/
+RedirectMatch 301 ^/leistungen/beschriftungen-aller-art/aufkleber/?$ https://www.schriften-kortschak.at/leistungen/aufkleber-grossauflagen/
+RedirectMatch 301 ^/leistungen/beschriftungen-aller-art/grossauflagen/?$ https://www.schriften-kortschak.at/leistungen/aufkleber-grossauflagen/
+RedirectMatch 301 ^/leistungen/beschriftungen-aller-art/aussenbeschriftungen/?$ https://www.schriften-kortschak.at/leistungen/beschriftungen/
+RedirectMatch 301 ^/leistungen/beschriftungen-aller-art/innenbeschriftungen/?$ https://www.schriften-kortschak.at/leistungen/beschriftungen/
+RedirectMatch 301 ^/leistungen/beschriftungen-aller-art/pop-up-display/?$ https://www.schriften-kortschak.at/leistungen/beschriftungen/
+RedirectMatch 301 ^/leistungen/beschriftungen-aller-art/schilder-fuer-aussen-innen/?$ https://www.schriften-kortschak.at/leistungen/beschriftungen/
+RedirectMatch 301 ^/leistungen/beschriftungen-aller-art/schriftenmalerei/?$ https://www.schriften-kortschak.at/leistungen/beschriftungen/
+RedirectMatch 301 ^/leistungen/moebelfolierung/?$ https://www.schriften-kortschak.at/
+RedirectMatch 301 ^/leistungen/online-marketing/newsletter-marketing/?$ https://www.schriften-kortschak.at/leistungen/online-marketing/
+RedirectMatch 301 ^/leistungen/online-marketing/personal-recruiting/?$ https://www.schriften-kortschak.at/leistungen/social-media-marketing/
+RedirectMatch 301 ^/leistungen/online-marketing/social-media-marketing/?$ https://www.schriften-kortschak.at/leistungen/social-media-marketing/
+RedirectMatch 301 ^/leistungen/online-marketing/suchmaschinenmarketing-sem/?$ https://www.schriften-kortschak.at/leistungen/online-marketing/
+RedirectMatch 301 ^/leistungen/online-marketing/suchmaschinenoptimierung-seo/?$ https://www.schriften-kortschak.at/leistungen/online-marketing/
