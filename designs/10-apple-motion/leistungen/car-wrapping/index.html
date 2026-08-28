@@ -11,7 +11,9 @@
 <link rel="canonical" href="https://www.schriften-kortschak.at/leistungen/car-wrapping/">
 <meta name="author" content="Kortschak Schriften GmbH">
 <meta name="theme-color" content="#FF1C20">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230d0d0b'/%3E%3Ctext x='50%25' y='52%25' text-anchor='middle' dominant-baseline='middle' font-family='Arial Black,Arial,sans-serif' font-weight='900' font-size='48' fill='%23FF1C20'%3EK%3C/text%3E%3C/svg%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/icons/favicon-192.png">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
 
 <!-- Lokales SEO -->
 <meta name="geo.region" content="AT-6">
@@ -26,11 +28,11 @@
 <meta property="og:title" content="Car Wrapping &amp; Vollfolierung in Trofaiach | Kortschak Schriften">
 <meta property="og:description" content="Folieren statt lackieren: Car Wrapping &amp; Vollfolierung in Trofaiach, Steiermark – reversibel, lackschonend und individuell. Matt, Glanz, Carbon, Perlfarben &amp; mehr.">
 <meta property="og:url" content="https://www.schriften-kortschak.at/leistungen/car-wrapping/">
-<meta property="og:image" content="https://www.schriften-kortschak.at/wp-content/uploads/2022/10/Headerbild_Car_Wrapping-1920x600-2.jpg">
+<meta property="og:image" content="https://www.schriften-kortschak.at/assets/img/carwrapping/car-wrapping-og.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Car Wrapping &amp; Vollfolierung in Trofaiach | Kortschak Schriften">
 <meta name="twitter:description" content="Folieren statt lackieren – Car Wrapping &amp; Vollfolierung aus Trofaiach, Steiermark. Reversibel, lackschonend, individuell.">
-<meta name="twitter:image" content="https://www.schriften-kortschak.at/wp-content/uploads/2022/10/Headerbild_Car_Wrapping-1920x600-2.jpg">
+<meta name="twitter:image" content="https://www.schriften-kortschak.at/assets/img/carwrapping/car-wrapping-og.jpg">
 
 <!-- Structured Data: Service + BreadcrumbList + FAQPage -->
 <script type="application/ld+json">
@@ -39,7 +41,7 @@
   "name":"Car Wrapping & Vollfolierung","serviceType":"Car Wrapping / Vollfolierung",
   "url":"https://www.schriften-kortschak.at/leistungen/car-wrapping/",
   "description":"Professionelles Car Wrapping und Vollfolierung in Trofaiach, Steiermark – reversibel, lackschonend und individuell. Matt, Glanz, Brushed, Carbon-Style, Perlfarben sowie Farbwechsel- und Chrome-Optiken.",
-  "image":"https://www.schriften-kortschak.at/wp-content/uploads/2022/10/Headerbild_Car_Wrapping-1920x600-2.jpg",
+  "image":"https://www.schriften-kortschak.at/assets/img/carwrapping/car-wrapping-og.jpg",
   "provider":{"@type":["LocalBusiness","ProfessionalService"],"@id":"https://www.schriften-kortschak.at/#org",
     "name":"Kortschak Schriften GmbH","legalName":"Kortschak Schriften GmbH","url":"https://www.schriften-kortschak.at/",
     "telephone":"+43384767666","email":"office@schriften-kortschak.at",
@@ -556,6 +558,100 @@
   .gallery figure:hover img{transform:scale(1.05);}
   @media (max-width:880px){.gallery{grid-template-columns:1fr 1fr;}}
   @media (max-width:520px){.gallery{grid-template-columns:1fr;}}
+
+  /* ===== Werkstatt-Galerie als Bento-Reihen (Muster der Projektseiten):
+     Reihenhöhe fix, jedes Foto behält sein Seitenverhältnis, den Restplatz
+     jeder Reihe füllt genau eine Text-Kachel (flex:1). Anders als bei den
+     Social-Arbeitsproben bleiben die Fotos farbig – die Folie ist hier das
+     Produkt. Klick öffnet die Lightbox. ===== */
+  .content-grid{display:flex;flex-direction:column;gap:clamp(12px,1.4vw,18px);}
+  .content-reihe{display:flex;gap:clamp(12px,1.4vw,18px);}
+  .content-reihe--gross{height:clamp(240px,30vw,380px);}
+  .content-reihe--klein{height:clamp(170px,22vw,270px);}
+  .tile{
+    padding:0;border:0;background:none;cursor:pointer;
+    position:relative;overflow:hidden;border-radius:var(--radius-md);
+    box-shadow:var(--shadow-sm);
+    flex:0 0 auto;height:100%;
+  }
+  .tile img{height:100%;width:auto;display:block;transition:transform .6s var(--ease);}
+  .tile:hover img,.tile:focus-visible img{transform:scale(1.05);}
+  .kpi-kachel{
+    flex:1 1 0;min-width:140px;
+    display:flex;flex-direction:column;justify-content:center;gap:.35rem;
+    padding:var(--space-3);
+    border-radius:var(--radius-md);
+  }
+  .kpi-kachel strong{
+    font-size:clamp(2.4rem,3.6vw,3.6rem);font-weight:800;line-height:1;
+    letter-spacing:-.03em;font-variant-numeric:tabular-nums;
+    background:linear-gradient(100deg,var(--accent) 10%,var(--accent-2) 90%);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+  }
+  .kpi-kachel span{color:var(--text-2);font-size:.95rem;line-height:1.4;}
+  @media (max-width:780px){
+    .content-reihe{flex-wrap:wrap;height:auto;}
+    .content-reihe .tile{flex:1 1 calc(50% - clamp(12px,1.4vw,18px));height:auto;}
+    .content-reihe .tile img{width:100%;height:auto;}
+    .kpi-kachel{flex:1 1 calc(50% - clamp(12px,1.4vw,18px));min-height:150px;}
+  }
+  /* Farbschein hinter dem Grid, damit die Text-Kacheln Grund bekommen. */
+  #galerie{overflow:hidden;}
+  .content-buehne{position:relative;}
+  .content-buehne::before,
+  .content-buehne::after{
+    content:"";position:absolute;z-index:0;border-radius:50%;
+    filter:blur(120px);pointer-events:none;
+  }
+  .content-buehne::before{
+    width:49%;padding-top:49%;left:-4%;bottom:-12%;
+    background:radial-gradient(circle,color-mix(in srgb,var(--accent) 18%,transparent),transparent 72%);
+  }
+  .content-buehne::after{
+    width:44%;padding-top:44%;left:42%;top:-10%;
+    background:radial-gradient(circle,color-mix(in srgb,var(--eis) 16%,transparent),transparent 72%);
+  }
+  .content-buehne .content-grid{position:relative;z-index:1;}
+
+  /* ===== Lightbox: dunkler Glas-Vorhang, durchblätterbar (Pfeile,
+     Pfeiltasten, Escape, Klick auf den Hintergrund schließt) ===== */
+  .lightbox{
+    position:fixed;inset:0;z-index:2000;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(8,9,12,.88);
+    -webkit-backdrop-filter:blur(18px) saturate(140%);
+    backdrop-filter:blur(18px) saturate(140%);
+    padding:clamp(1rem,5vw,4rem);
+  }
+  .lightbox[hidden]{display:none;}
+  .lightbox__inhalt{margin:0;display:grid;place-items:center;max-width:100%;}
+  .lightbox__inhalt img,.lightbox__inhalt video{
+    max-width:min(90vw,1000px);max-height:84vh;width:auto;height:auto;
+    border-radius:var(--radius-md);
+    box-shadow:0 40px 120px rgba(0,0,0,.6);
+    background:#000;
+  }
+  .lightbox__knopf{
+    position:absolute;z-index:1;
+    width:48px;height:48px;border-radius:50%;
+    border:1px solid rgba(255,255,255,.3);
+    background:rgba(255,255,255,.12);
+    -webkit-backdrop-filter:blur(16px);
+    backdrop-filter:blur(16px);
+    display:grid;place-items:center;color:#fff;
+    transition:background .3s var(--ease),transform .3s var(--ease);
+  }
+  .lightbox__knopf:hover{background:rgba(255,255,255,.24);}
+  .lightbox__knopf svg{width:20px;height:20px;}
+  .lightbox__schliessen{top:18px;right:18px;}
+  .lightbox__pfeil--links{left:18px;top:50%;transform:translateY(-50%);}
+  .lightbox__pfeil--rechts{right:18px;top:50%;transform:translateY(-50%);}
+  .lightbox__zaehler{
+    position:absolute;bottom:16px;left:50%;transform:translateX(-50%);
+    color:rgba(255,255,255,.75);font-size:.85rem;letter-spacing:.04em;
+    font-variant-numeric:tabular-nums;
+  }
 
   /* ===== FAQ ===== */
   .faq{display:grid;gap:0;}
@@ -1277,16 +1373,131 @@
         <h2 class="display" id="galerie-title">Folierungen aus der Werkstatt.</h2>
         <p class="lead">Ein Einblick in umgesetzte Car-Wrapping-Projekte aus Trofaiach.</p>
       </div>
-      <div class="gallery">
-        <figure class="reveal"><img src="/assets/img/Car_Wrapping-Gallery-3.jpg" alt="Frisch foliertes Fahrzeug mit glänzender Folie nach dem Car Wrapping" loading="lazy"></figure>
-        <figure class="reveal" data-delay="1"><img src="/assets/img/Car_Wrapping-Gallery-4.jpg" alt="Vollfolierung eines Fahrzeugs in mattem Finish in der Werkstatt" loading="lazy"></figure>
-        <figure class="reveal" data-delay="2"><img src="/assets/img/Car_Wrapping-Gallery-5.jpg" alt="Detailaufnahme einer sauber verlegten Fahrzeugfolie an der Karosseriekante" loading="lazy"></figure>
-        <figure class="reveal"><img src="/assets/img/Car_Wrapping-Gallery-6.jpg" alt="Teilfolierung an Motorhaube und Dach eines Pkw" loading="lazy"></figure>
-        <figure class="reveal" data-delay="1"><img src="/assets/img/Car_Wrapping-Gallery-7.jpg" alt="Foliertes Firmenfahrzeug mit individueller Wunschoptik" loading="lazy"></figure>
-        <figure class="reveal" data-delay="2"><img src="/assets/img/Car_Wrapping-Gallery-8.jpg" alt="Fahrzeug während des Folierens in der Werkstatt von Kortschak Schriften" loading="lazy"></figure>
+      <div class="content-buehne">
+        <div class="content-grid reveal">
+          <div class="content-reihe content-reihe--gross">
+            <button class="tile" type="button" data-typ="bild" data-src="/assets/img/carwrapping/troc-eigenbranding.webp" aria-label="Bild in Großansicht öffnen: VW T-Roc im zweifarbigen Kortschak-Design">
+              <img src="/assets/img/carwrapping/troc-eigenbranding.webp" alt="" loading="lazy" width="1280" height="854">
+            </button>
+            <button class="tile" type="button" data-typ="bild" data-src="/assets/img/carwrapping/rakeln-chromfolie.webp" aria-label="Bild in Großansicht öffnen: Rakeln einer grünen Chromfolie auf der Motorhaube">
+              <img src="/assets/img/carwrapping/rakeln-chromfolie.webp" alt="" loading="lazy" width="854" height="1280">
+            </button>
+            <div class="kpi-kachel"><strong>68</strong><span>Jahre Handwerk – Beschriftung und Folierung aus Trofaiach</span></div>
+          </div>
+          <div class="content-reihe content-reihe--klein">
+            <button class="tile" type="button" data-typ="bild" data-src="/assets/img/carwrapping/mokka-drohne.webp" aria-label="Bild in Großansicht öffnen: Beklebter Opel Mokka der Aktion Friends on the Road aus der Vogelperspektive">
+              <img src="/assets/img/carwrapping/mokka-drohne.webp" alt="" loading="lazy" width="1280" height="720">
+            </button>
+            <button class="tile" type="button" data-typ="bild" data-src="/assets/img/carwrapping/tiguan-orange-gruen.webp" aria-label="Bild in Großansicht öffnen: Frontdetail mit Orange- und Grün-Metallic-Folie">
+              <img src="/assets/img/carwrapping/tiguan-orange-gruen.webp" alt="" loading="lazy" width="1280" height="1600">
+            </button>
+            <div class="kpi-kachel"><strong>3D</strong><span>Design-Vorschau am eigenen Fahrzeugmodell</span></div>
+            <button class="tile" type="button" data-typ="bild" data-src="/assets/img/carwrapping/flip-folie-front.webp" aria-label="Bild in Großansicht öffnen: Front in Flip-Folie, changierend von Violett nach Türkis">
+              <img src="/assets/img/carwrapping/flip-folie-front.webp" alt="" loading="lazy" width="1280" height="1600">
+            </button>
+          </div>
+          <div class="content-reihe content-reihe--gross">
+            <button class="tile" type="button" data-typ="bild" data-src="/assets/img/carwrapping/dachfolierung-arbeit.webp" aria-label="Bild in Großansicht öffnen: Anlegen der Folienbahn bei einer Dachfolierung">
+              <img src="/assets/img/carwrapping/dachfolierung-arbeit.webp" alt="" loading="lazy" width="1280" height="1600">
+            </button>
+            <div class="kpi-kachel"><strong>A–Z</strong><span>Beratung, Design, Druck und Montage im eigenen Haus</span></div>
+            <button class="tile" type="button" data-typ="bild" data-src="/assets/img/carwrapping/ledvertize-flip.webp" aria-label="Bild in Großansicht öffnen: Firmenfahrzeug von LEDvertize in Flip-Folie mit Logobeschriftung">
+              <img src="/assets/img/carwrapping/ledvertize-flip.webp" alt="" loading="lazy" width="1600" height="1066">
+            </button>
+          </div>
+          <div class="content-reihe content-reihe--klein">
+            <button class="tile" type="button" data-typ="bild" data-src="/assets/img/carwrapping/t6-front-gruen.webp" aria-label="Bild in Großansicht öffnen: VW T6 in Grün-Metallic, Frontansicht">
+              <img src="/assets/img/carwrapping/t6-front-gruen.webp" alt="" loading="lazy" width="1280" height="1600">
+            </button>
+            <button class="tile" type="button" data-typ="bild" data-src="/assets/img/carwrapping/bmw-render-studio.webp" aria-label="Bild in Großansicht öffnen: 3D-Visualisierung eines BMW Touring im Kortschak-Design">
+              <img src="/assets/img/carwrapping/bmw-render-studio.webp" alt="" loading="lazy" width="1600" height="900">
+            </button>
+            <div class="kpi-kachel"><strong>12</strong><span>Köpfe im Team der Werbeagentur</span></div>
+            <button class="tile" type="button" data-typ="bild" data-src="/assets/img/carwrapping/mokka-heck.webp" aria-label="Bild in Großansicht öffnen: Heck des beklebten Opel Mokka mit Logo und Webadresse">
+              <img src="/assets/img/carwrapping/mokka-heck.webp" alt="" loading="lazy" width="1066" height="1600">
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </section>
+
+  <!-- ===== LIGHTBOX für die Galerie (Muster der Projektseiten) ===== -->
+  <div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Galerie in Großansicht">
+    <button class="lightbox__knopf lightbox__schliessen" type="button" aria-label="Großansicht schließen">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <button class="lightbox__knopf lightbox__pfeil--links" type="button" aria-label="Vorheriges Bild">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+    </button>
+    <figure class="lightbox__inhalt"></figure>
+    <button class="lightbox__knopf lightbox__pfeil--rechts" type="button" aria-label="Nächstes Bild">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+    </button>
+    <p class="lightbox__zaehler" aria-live="polite"></p>
+  </div>
+
+  <script>
+  /* Galerie-Lightbox – identisch zum Muster der Social-Media-Seite. */
+  (function(){
+    function start(){ init(); }
+    if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', start); } else { start(); }
+    function init(){
+    var grid = document.querySelector('.content-grid');
+    var lb = document.getElementById('lightbox');
+    if(!grid || !lb) return;
+    var kacheln = [].slice.call(grid.querySelectorAll('.tile'));
+    var inhalt = lb.querySelector('.lightbox__inhalt');
+    var zaehler = lb.querySelector('.lightbox__zaehler');
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var aktiv = -1, zuletzt = null;
+
+    function zeigen(i){
+      aktiv = (i + kacheln.length) % kacheln.length;
+      var k = kacheln[aktiv];
+      inhalt.innerHTML = '';
+      var el;
+      if(k.dataset.typ === 'video'){
+        el = document.createElement('video');
+        el.src = k.dataset.src;
+        el.controls = true;
+        el.playsInline = true;
+        el.autoplay = !reduce;
+      } else {
+        el = document.createElement('img');
+        el.src = k.dataset.src;
+        el.alt = k.getAttribute('aria-label') || '';
+      }
+      inhalt.appendChild(el);
+      zaehler.textContent = (aktiv + 1) + ' / ' + kacheln.length;
+    }
+    function oeffnen(i){
+      zuletzt = document.activeElement;
+      lb.hidden = false;
+      document.body.style.overflow = 'hidden';
+      zeigen(i);
+      lb.querySelector('.lightbox__schliessen').focus();
+    }
+    function schliessen(){
+      lb.hidden = true;
+      inhalt.innerHTML = '';
+      document.body.style.overflow = '';
+      if(zuletzt){ zuletzt.focus(); }
+    }
+    kacheln.forEach(function(k, i){ k.addEventListener('click', function(){ oeffnen(i); }); });
+    lb.querySelector('.lightbox__schliessen').addEventListener('click', schliessen);
+    lb.querySelector('.lightbox__pfeil--links').addEventListener('click', function(){ zeigen(aktiv - 1); });
+    lb.querySelector('.lightbox__pfeil--rechts').addEventListener('click', function(){ zeigen(aktiv + 1); });
+    lb.addEventListener('click', function(e){ if(e.target === lb){ schliessen(); } });
+    document.addEventListener('keydown', function(e){
+      if(lb.hidden) return;
+      if(e.key === 'Escape'){ schliessen(); }
+      if(e.key === 'ArrowLeft'){ zeigen(aktiv - 1); }
+      if(e.key === 'ArrowRight'){ zeigen(aktiv + 1); }
+    });
+    }
+  })();
+  </script>
 
   <!-- ===== FAQ ===== -->
   <section class="section section--alt" id="faq-wrapping" aria-labelledby="faq-title">
