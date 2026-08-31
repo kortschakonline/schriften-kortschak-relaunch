@@ -223,10 +223,10 @@ function mail_html(string $titel, string $introHtml, array $zeilen, string $nach
         . '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#f5f5f7;padding:28px 12px;"><tr><td align="center">'
         . '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px;width:100%;">'
 
-        // Kopf: dunkle Marke
+        // Kopf: dunkle Marke mit dem echten Logo (weisses PNG @2x, auf der
+        // Website gehostet – SVG koennen Mail-Clients nicht)
         . '<tr><td style="background:' . $ink . ';border-radius:20px 20px 0 0;padding:26px 36px;">'
-        . '<span style="font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif;font-size:21px;font-weight:800;letter-spacing:.02em;color:#ffffff;">KORTSCHAK<span style="color:' . $rot . ';">.</span></span>'
-        . '<span style="font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif;font-size:11px;letter-spacing:.28em;color:#9a9aa1;padding-left:14px;">WERBEAGENTUR</span>'
+        . '<img src="https://www.schriften-kortschak.at/assets/img/kortschak-logo-mail.png" width="200" height="49" alt="Kortschak Werbeagentur" style="display:block;border:0;width:200px;height:49px;">'
         . '</td></tr>'
 
         // Akzentlinie Rot -> Orange
