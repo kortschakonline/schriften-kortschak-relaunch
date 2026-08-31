@@ -1801,9 +1801,9 @@
     </div>
   </section>
 
-  <!-- ===== ANFRAGE (Formular wie die alte Seite: Unternehmen Pflicht,
-       Paketauswahl ohne Preise – die 390/990/1490 der alten Aktionsseite
-       sind Stand Ende 2024 und deshalb bewusst nicht übernommen) ===== -->
+  <!-- ===== ANFRAGE (Formular wie die alte Seite: Unternehmen Pflicht.
+       Paketauswahl 08/2026 entfernt – Interessenten beschreiben ihr
+       Anliegen frei; api/anfrage.php behandelt 'paket' weiter optional) ===== -->
   <section class="section section--alt" id="anfrage" aria-labelledby="contact-title">
     <div class="wrap schein schein--c">
       <div class="contact-panel reveal">
@@ -1857,17 +1857,8 @@
             <input type="tel" id="telefon" name="telefon" autocomplete="tel">
           </div>
           <div class="field">
-            <label for="paket">Ich interessiere mich für</label>
-            <select id="paket" name="paket">
-              <option>Starter-Paket</option>
-              <option>Medium-Paket</option>
-              <option>Large-Paket</option>
-              <option>Individuelle Betreuung</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="nachricht">Nachricht <span class="req" aria-hidden="true">*</span></label>
-            <textarea id="nachricht" name="nachricht" required></textarea>
+            <label for="nachricht">Was können wir für Sie tun? <span class="req" aria-hidden="true">*</span></label>
+            <textarea id="nachricht" name="nachricht" required placeholder="Beschreiben Sie einfach kurz, was Sie sich vorstellen – wir melden uns mit einem Vorschlag."></textarea>
           </div>
           <label class="check" for="datenschutz">
             <input type="checkbox" id="datenschutz" name="datenschutz" required>
