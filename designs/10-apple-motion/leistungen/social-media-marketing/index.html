@@ -1828,6 +1828,7 @@
         </div>
         <form action="/api/anfrage.php" method="post" data-anfrage>
           <input type="hidden" name="formular" value="social-media">
+          <input type="hidden" name="fz" value="">
           <div class="hp-feld" aria-hidden="true">
             <label for="webseite">Webseite (bitte leer lassen)</label>
             <input type="text" id="webseite" name="webseite" tabindex="-1" autocomplete="off">
@@ -2138,7 +2139,17 @@ if(reduce || !('IntersectionObserver' in window)){
 /* ===== Formularversand ===== (siehe Startseite) */
 (function(){
   'use strict';
+  /* Spam-Schutz: signierter Zeit-Token, Details siehe Startseite */
+  function tokenHolen(formular){
+    var feld = formular.querySelector('input[name="fz"]');
+    if (!feld || feld.value) return Promise.resolve();
+    return fetch(formular.action + '?token', { headers: { 'Accept': 'application/json' } })
+      .then(function(a){ return a.json(); })
+      .then(function(d){ if (d && d.token) feld.value = d.token; })
+      .catch(function(){});
+  }
   document.querySelectorAll('form[data-anfrage]').forEach(function(formular){
+    tokenHolen(formular);
     formular.addEventListener('submit', function(ereignis){
       ereignis.preventDefault();
       var knopf  = formular.querySelector('button[type="submit"]');
@@ -2147,10 +2158,12 @@ if(reduce || !('IntersectionObserver' in window)){
       knopf.disabled = true;
       knopf.textContent = 'Wird gesendet…';
       status.hidden = true;
-      fetch(formular.action, {
-        method: 'POST',
-        body: new FormData(formular),
-        headers: { 'Accept': 'application/json', 'X-Requested-With': 'fetch' }
+      tokenHolen(formular).then(function(){
+        return fetch(formular.action, {
+          method: 'POST',
+          body: new FormData(formular),
+          headers: { 'Accept': 'application/json', 'X-Requested-With': 'fetch' }
+        });
       })
       .then(function(antwort){ return antwort.json().catch(function(){ return null; }); })
       .then(function(daten){
