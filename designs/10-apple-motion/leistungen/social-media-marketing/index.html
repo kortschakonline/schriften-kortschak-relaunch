@@ -1362,11 +1362,11 @@
 <main id="main">
 
   <!-- ===== VOLLBILD-HERO: Foto mit Parallax, schwebendes Handy mit Reel.
-       Social_Hero_Screen.mp4 ist der per ffmpeg ausgeschnittene innere
-       Bildschirm aus Video_enger_Rahmen.mp4 (dort ist ein Handy-Rahmen samt
-       blauem Hintergrund einbelichtet – der CSS-Rahmen ersetzt ihn).
-       Hintergrundfoto: KI-generierter Platzhalter (19.08.2026, GPT Image 2)
-       – gegen echtes Foto tauschen, sobald vorhanden. ===== -->
+       02.09.2026 (Lama, Ordner SocialMediaUpdate): Reel LP_Video_E1
+       (Lkw-Beschriftung, 9:16) – per ffmpeg auf 720x1280 ohne Ton
+       verkleinert, Poster aus Sekunde 1,5. Hintergrundfoto: KI-generierter
+       Platzhalter (19.08.2026, GPT Image 2) – gegen echtes Foto tauschen,
+       sobald vorhanden. ===== -->
   <section class="sm-hero" aria-labelledby="hero-title">
     <img class="sm-hero__bg" src="/assets/img/Social_Media_Hero.jpg" alt="" fetchpriority="high" width="1920" height="1074">
     <div class="sm-hero__scrim" aria-hidden="true"></div>
@@ -1381,7 +1381,7 @@
         </div>
       </div>
       <div class="sm-hero__phone">
-        <video class="sm-hero__video" autoplay muted loop playsinline preload="metadata" disablepictureinpicture width="644" height="1360" src="/assets/video/Social_Hero_Screen.mp4" aria-label="Social-Media-Reel aus der Kortschak-Produktion"></video>
+        <video class="sm-hero__video" autoplay muted loop playsinline preload="metadata" disablepictureinpicture width="720" height="1280" src="/assets/video/Social_Hero_Truck.mp4" poster="/assets/img/Social_Hero_Truck-poster.webp" aria-label="Social-Media-Reel aus der Kortschak-Produktion: Lkw-Beschriftung"></video>
       </div>
     </div>
   </section>
@@ -1489,35 +1489,38 @@
         <h2 class="display" id="content-title">Content-Produktionen.</h2>
         <p class="lead">Reels und Beiträge, wie wir sie für unsere Kunden produzieren – im Haus, abgestimmt auf Kanal und Zielgruppe.</p>
       </div>
-      <!-- Bento-Grid in vier Spalten, nichts wird beschnitten. Die
-           Glas-Kacheln tragen die echten Kennzahlen der Startseite.
-           Die vier Bild-Kacheln sind KI-generierte Platzhalter
-           (19.08.2026) – gegen echte Beiträge tauschen. Klick öffnet die
-           Lightbox weiter unten. -->
+      <!-- Bento-Grid, nichts wird beschnitten. Die Glas-Kacheln tragen
+           die echten Kennzahlen der Startseite. 02.09.2026: echte
+           Arbeitsproben aus Lamas Ordner SocialMediaUpdate statt der
+           KI-Platzhalter – Reels auf 720px verkleinert (Ton bleibt für
+           die Lightbox), Fotos als WebP. Klick öffnet die Lightbox. -->
       <div class="content-buehne">
         <div class="content-grid reveal">
           <div class="content-reihe content-reihe--gross">
-            <button class="tile" type="button" data-typ="video" data-src="/assets/video/KW45_Hoch.mp4" aria-label="Video in Großansicht öffnen: Social-Media-Reel Wochenbeitrag">
-              <video muted loop playsinline preload="metadata" src="/assets/video/KW45_Hoch.mp4" width="1080" height="1350" aria-hidden="true" tabindex="-1"></video>
+            <button class="tile" type="button" data-typ="video" data-src="/assets/video/Social_Reel_SocialMedia.mp4" aria-label="Video in Großansicht öffnen: Reel „Sie wissen, dass Social Media wichtig ist“">
+              <video muted loop playsinline preload="metadata" src="/assets/video/Social_Reel_SocialMedia.mp4" poster="/assets/img/Social_Reel_SocialMedia-poster.webp" width="720" height="1280" aria-hidden="true" tabindex="-1"></video>
+            </button>
+            <button class="tile" type="button" data-typ="bild" data-src="/assets/img/Social_Post_Firmengebaeude.webp" aria-label="Bild in Großansicht öffnen: Foto-Beitrag Kortschak-Firmengebäude mit foliertem VW T-Roc">
+              <img src="/assets/img/Social_Post_Firmengebaeude.webp" alt="" loading="lazy" width="1080" height="1350">
             </button>
             <div class="kpi-kachel"><strong>68</strong><span>Jahre Erfahrung</span></div>
-            <button class="tile" type="button" data-typ="bild" data-src="/assets/img/Social_Post_Carwrapping.jpg" aria-label="Bild in Großansicht öffnen: Post-Design Car Wrapping">
-              <img src="/assets/img/Social_Post_Carwrapping.jpg" alt="" loading="lazy" width="771" height="1024">
-            </button>
-            <button class="tile" type="button" data-typ="bild" data-src="/assets/img/Social_Post_Textildruck.jpg" aria-label="Bild in Großansicht öffnen: Post-Design Textildruck">
-              <img src="/assets/img/Social_Post_Textildruck.jpg" alt="" loading="lazy" width="771" height="1024">
+            <button class="tile" type="button" data-typ="video" data-src="/assets/video/Social_Post_KeineZeit.mp4" aria-label="Video in Großansicht öffnen: animierter Beitrag „Keine Zeit für Social Media?“">
+              <video muted loop playsinline preload="metadata" src="/assets/video/Social_Post_KeineZeit.mp4" poster="/assets/img/Social_Post_KeineZeit-poster.webp" width="720" height="900" aria-hidden="true" tabindex="-1"></video>
             </button>
           </div>
           <div class="content-reihe content-reihe--klein">
-            <button class="tile" type="button" data-typ="bild" data-src="/assets/img/Social_Post_Werbetechnik.jpg" aria-label="Bild in Großansicht öffnen: Post-Design Werbetechnik">
-              <img src="/assets/img/Social_Post_Werbetechnik.jpg" alt="" loading="lazy" width="771" height="1024">
+            <button class="tile" type="button" data-typ="bild" data-src="/assets/img/Social_Post_Folierung.webp" aria-label="Bild in Großansicht öffnen: Foto-Beitrag Folierung in der Werkstatt">
+              <img src="/assets/img/Social_Post_Folierung.webp" alt="" loading="lazy" width="1080" height="1350">
             </button>
-            <button class="tile" type="button" data-typ="video" data-src="/assets/video/Grossauflage_2.mp4" aria-label="Video in Großansicht öffnen: Social-Media-Animation Aufkleber-Großauflagen">
-              <video muted loop playsinline preload="metadata" src="/assets/video/Grossauflage_2.mp4" width="1080" height="1350" aria-hidden="true" tabindex="-1"></video>
+            <button class="tile" type="button" data-typ="video" data-src="/assets/video/Social_Reel_Drucker.mp4" aria-label="Video in Großansicht öffnen: Reel „Was kann beim Drucken eigentlich schiefgehen?“">
+              <video muted loop playsinline preload="metadata" src="/assets/video/Social_Reel_Drucker.mp4" poster="/assets/img/Social_Reel_Drucker-poster.webp" width="720" height="1280" aria-hidden="true" tabindex="-1"></video>
             </button>
             <div class="kpi-kachel"><strong>12</strong><span>Köpfe im Team</span></div>
-            <button class="tile" type="button" data-typ="bild" data-src="/assets/img/Social_Post_BehindTheScenes.jpg" aria-label="Bild in Großansicht öffnen: Post-Design Behind the Scenes">
-              <img src="/assets/img/Social_Post_BehindTheScenes.jpg" alt="" loading="lazy" width="771" height="1024">
+            <button class="tile" type="button" data-typ="bild" data-src="/assets/img/Social_Post_Flyer.webp" aria-label="Bild in Großansicht öffnen: Post-Design „Deine Botschaft im Blick“ zu Flyern">
+              <img src="/assets/img/Social_Post_Flyer.webp" alt="" loading="lazy" width="1080" height="1350">
+            </button>
+            <button class="tile" type="button" data-typ="bild" data-src="/assets/img/Social_Post_Kortex_NewLook.webp" aria-label="Bild in Großansicht öffnen: Post-Design „New Year, New Look“ für Kortex">
+              <img src="/assets/img/Social_Post_Kortex_NewLook.webp" alt="" loading="lazy" width="1080" height="1080">
             </button>
           </div>
         </div>
