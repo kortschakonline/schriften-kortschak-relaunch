@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Druck-Meister">
+<meta name="theme-color" content="#1A1D1A">
+<meta name="robots" content="noindex, nofollow">
+<title>Druck-Meister</title>
+<style>
+  html, body {
+    margin: 0; padding: 0; height: 100%; overflow: hidden;
+    background: #1A1D1A;
+    touch-action: none;
+    user-select: none; -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    overscroll-behavior: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+  /* Hochformat-Hinweis */
+  #rotate {
+    display: none; position: fixed; inset: 0; z-index: 10;
+    background: #1A1D1A; color: #fff;
+    font: 900 34px "Arial Rounded MT Bold", "Arial Black", "Helvetica Neue", Roboto, system-ui, sans-serif;
+    align-items: center; justify-content: center; text-align: center; padding: 40px;
+  }
+  #rotate span { display: block; font-size: 96px; margin-bottom: 24px; }
+  @media (orientation: portrait) { #rotate { display: flex; } }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="rotate"><div><span>🔄</span>Bitte das Tablet drehen!</div></div>
+<script>
+'use strict';
+
+/* =====================================================================
+   DRUCK-MEISTER – Browser-Game für den Kortschak-Stand (Stadtparkfest Trofaiach)
+   Alles Tuning steht hier oben. Farben und Motive: siehe die drei Blöcke darunter.
+   ===================================================================== */
+
+const CONFIG = {
+  MODE: "lives",              // "lives" (3 Leben) | "timer" (60 Sekunden)
+  LIVES: 3,
+  TIMER_SECONDS: 60,
+
+  BELT_SPEED: 230,            // Bandgeschwindigkeit Start (px/s, logische Einheiten)
+  SPEED_STEP: 0.12,           // +12 % pro Level
+  SPEED_MAX: 640,
+  SHIRTS_PER_LEVEL: 5,        // alle 5 Shirts ein Level höher
+
+  ZONE_WIDTH: 160,            // Zielzone Start (px)
+  ZONE_SHRINK: 10,            // pro Level schmaler …
+  ZONE_MIN: 100,              // … aber nie unter dieses Minimum
+  TOLERANCE: 60,              // zusätzliche "Okay"-Breite je Seite
+  SMEAR_RANGE: 90,            // darüber hinaus: Druck verschmiert (Leben weg)
+  SPAWN_GAP: 560,             // Abstand zwischen zwei Shirts (px)
+
+  POINTS_PERFECT: 100,
+  POINTS_OKAY: 50,
+  COMBO_X2: 3,                // ab 3 Perfekt in Folge ×2
+  COMBO_X3: 6,                // ab 6 Perfekt in Folge ×3
+
+  MIX_LEVEL: 2,               // ab diesem Level fahren auch Hoodies und Kappen mit
+  HOODIE_SHARE: 0.3,          // Anteil Hoodies (Rest: Shirts)
+  CAP_SHARE: 0.25,            // Anteil Kappen
+  BONUS_LEVEL: 4,             // ab diesem Level kommen Sticker als Bonus
+  BONUS_CHANCE: 0.25,         // Wahrscheinlichkeit je Item
+  BONUS_MULT: 2,              // doppelte Punkte für Bonus-Items
+
+  EMPTY_PRESS_COSTS_LIFE: false, // Presse auf leeres Band: nur Combo weg (true = auch Leben)
+
+  PRESS_DOWN_MS: 110, PRESS_HOLD_MS: 110, PRESS_UP_MS: 240,
+  GAMEOVER_DELAY: 1.2,        // Sekunden "GAME OVER"-Banner vor dem nächsten Screen
+  IDLE_TO_ATTRACT_MS: 45000,  // Inaktivität → Attract-Mode
+
+  NAME_MAX: 8,
+  TOP_LIST: 10,
+  SCORES_KEY: "druckmeister_scores",
+  MUTE_KEY: "druckmeister_muted",
+  ADMIN_TAPS: 5, ADMIN_TAP_WINDOW_MS: 2000,
+};
+
+/* ---------- FARBEN – Farbdesign shop.trofaiach.at (Kunden 2026/Trofaiach Webshop 2026/Farbdesign) ---------- */
+const COLOR_PRIMARY      = "#A4C72C";   // Brand Primary – Limettengrün (Buttons, Zone, Highlights)
+const COLOR_PRIMARY_DARK = "#7DA01F";   // Brand Dark – Schatten, Hover
+const COLOR_ACCENT       = "#EA580C";   // CTA Orange – sparsam: Combo, Bonus, "Okay"
+const COLOR_KORTSCHAK    = "#C8102E";   // Kortschak-Rot (Presse, K-Logo, Herzen)
+const COLOR_BG           = "#FAFAF7";   // Surface – Wand
+const COLOR_FLOOR        = "#E8E8E2";   // Border – Boden, graue Buttons
+const COLOR_INK          = "#1A1D1A";   // Foreground – Outlines, Text
+const COLOR_DARK         = "#1A1D1A";   // dunkle Screens (HUD, Game Over)
+const COLOR_MUTED        = "#6B6F68";   // Sekundärtext
+const COLOR_MUTED_LIGHT  = "#B4B8B0";   // Sekundärtext auf dunklem Grund
+const COLOR_HOODIE       = "#2F3A24";   // Hoodie- und Kappen-Stoff (dunkles Olivgrün)
+const COLOR_GOOD         = "#A4C72C";   // "Perfekt"
+const COLOR_OK           = "#EA580C";   // "Okay"
+const COLOR_BAD          = "#D93025";   // "Ups"
+
+/* ---------- LOGO & MERCH-MOTIVE ----------
+   logo = Original-Logo aus src/trofaiach-logo.svg (Base64-SVG, komplett offline).
+   Es erscheint auf dem Start-Screen und ist das Standard-Druckmotiv auf Shirt, Hoodie,
+   Kappe und Sticker. Wer je Artikel ein eigenes Motiv will, trägt hier ein Base64-PNG ein:
+     shirt: "data:image/png;base64,iVBORw0KGgo…"
+   Leer lassen = Logo. Empfehlung: transparente PNGs, breit (ca. 3:1) für Shirt/Hoodie. */
+const LOGO_SVG_B64 = "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4gPHN2ZyBpZD0iRWJlbmVfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCA5NjAgMzEyIiB3aWR0aD0iOTYwIiBoZWlnaHQ9IjMxMiI+IDxkZWZzPiA8c3R5bGU+IC5zdDAgeyBmaWxsOiAjYzJkMTA2OyB9IC5zdDEgeyBmaWxsOiAjODA4OTkyOyB9IDwvc3R5bGU+IDwvZGVmcz4gPGc+IDxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik03NTEuMSwyODUuMjhsLTMwLjEyLjMzLjAyLTcuOTgsMjYuOC0uMTVjMy40LS4wMiw2LjUzLTEuNTcsNy45LTQuNjUsMS4xOS0yLjY3LDEuMTItNS42Ny40Ny04LjQ3LS43My0zLjE5LTMuMjYtNS40Ni02LjUxLTUuNTZsLTEwLjQ3LS4zMmMtNy44NC0uMjQtMTYuMDQtLjY4LTE4Ljk5LTkuMDktMy4zNC05LjUzLjUxLTIxLjU3LDkuODQtMjQuMjdsMTEuMDktMS4yNmgyMi4yOXMuMDIsNy45Ni4wMiw3Ljk2bC0yNi4xLjExYy0yLjY0LjAxLTUuNDEuOTItNi45OSwzLjExLTIuNCwzLjMyLTIuNiw4LjU1LjE2LDExLjcxLDEuODcsMi4xNCw1LjEzLDIuNTcsNy44MywyLjY4bDE1LjI1LjY0YzkuOTYuNDIsMTQuNTQsMTMuMzksMTEuNywyNC4yNS0xLjcsNi41LTcuMjcsMTAuODktMTQuMTgsMTAuOTdaIi8+IDxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik01MjEuNzYsMjQ3LjY5bC4wMiwzNy44Ny04LjEyLS4wNnYtMzcuODNzLTE0Ljk3LDAtMTQuOTcsMGwuMDQsMzcuOTItOC4xMS0uMDUtLjA1LTQ1LjA2aDQxLjcyYzcuNDMuMDIsMTIuNTUsNC42LDEyLjgsMTIuMjVsLjI0LDMyLjgzLTguMTUuMDItLjE2LTMwLjU1Yy0uMDItNC4wNS0yLjc0LTcuMjEtNi43My03LjI1bC04LjU0LS4wOVoiLz4gPHBhdGggY2xhc3M9InN0MSIgZD0iTTg0OC45OCwyNzUuOGMtMy4yMS04Ljc5LTIuODItMTguMzYsMS4wNi0yNi43NSwyLjM2LTUuMSw3LjI3LTcuNywxMi43NC04LjMxbDEzLjc2LS4yNy0uMDYtMTYuNjJoOC4xN3MwLDYxLjc1LDAsNjEuNzVsLTIyLjMxLS4yNWMtNi4xOS0uMDctMTEuMDgtMy40NS0xMy4zNS05LjU2Wk04NjQuMzksMjc4LjIybDEyLjEuMTkuMDItMzAuNzMtMTEuMDEuMDhjLTQuNTMuMDMtNy44MywyLjkxLTkuMTYsNy4yNi0xLjU4LDUuNTEtMS4zNSwxMS4zOC4wNiwxNi45OCwxLjEsMy42MSw0LDYuMTYsNy45OSw2LjIyWiIvPiA8cGF0aCBjbGFzcz0ic3QxIiBkPSJNODAyLjIzLDI2NC44N2MxLjY4LTQuNDUsNS40NC02LjY0LDkuOTctNi42OWwxOC40My0uMi0uNDgtNi4yYy0uMi0yLjU1LTIuNTUtMy45Ni01LjE3LTMuOThsLTIyLjQ2LS4xNXYtNy4yczI0Ljg5LjE1LDI0Ljg5LjE1YzYuNzkuMDQsMTEuMjMsNC42MywxMS4yNiwxMS40OWwuMTcsMzMuNDktMjYuNDMtLjI1Yy00LjQ5LS4wNC04LjQxLTIuNTUtMTAuMTktNi41OS0xLjc3LTQuNDItMS43My05LjI3LjAxLTEzLjg3Wk04MzAuNywyNzguMzhsLS4wNC0xMy4yMS0xNS42NS4xMWMtMy43NC4wMy01Ljc5LDIuNzQtNS42NSw2LjQ1LjA2LDEuNzkuMTgsMy41NiwxLjUsNC44NS45NC45MiwyLjU2LDEuNjcsNC4yNCwxLjY4bDE1LjYxLjExWiIvPiA8cGF0aCBjbGFzcz0ic3QxIiBkPSJNNjQyLjM1LDI1OC40OGMwLTIuOTYtLjQzLTUuNDYtMS43LTcuNzgtMS4zMS0xLjcxLTMuNC0yLjkyLTUuNjUtMi45NGwtMTEuNS0uMDcuMDQsMzcuODZoLTguMjlzMC00NS4xMSwwLTQ1LjExbDIyLjU0LjJjNiwuMDUsMTAuNjcsMy44OSwxMS43OSw5LjczLjY2LDIuNTYuOTEsNS4xNi45MSw3Ljg4bC4wMiwyNy4zMWgtOC4xMXMtLjA3LTI3LjA4LS4wNy0yNy4wOFoiLz4gPHBhdGggY2xhc3M9InN0MSIgZD0iTTY2Ny4zLDI2Ni4wMmMtLjM2LDYuNDQsMy4wMSwxMi4xMyw5LjI5LDEyLjIxbDE0LjgzLjE3djcuMTlzLTE3LjQ1LS4xNi0xNy40NS0uMTZjLTYuMDctLjA1LTEwLjkyLTMuNS0xMy4yMi05LjM3LTIuOTQtNy41LTMtMTYuMzEtLjE5LTIzLjk1LDIuNjEtNy4wOCw4Ljg0LTExLjQ0LDE2LjI0LTExLjUxbDE0LjY5LS4xM3Y3LjE4cy0xNC4wOS4xNC0xNC4wOS4xNGMtMy44Ni4wNC03LjUsMi4xNi04LjYyLDUuOGwtMS42MSw1LjI1LDI0LjI2LjA3LjA0LDcuMDctMjQuMTcuMDNaIi8+IDxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik01NjIuMSwyNjZjLS40OSw2LjY1LDIuOTYsMTIuMjIsOS43NiwxMi4yOGwxNC4zNC4xMy4wOSw3LjEzLTE4LjE1LS4yNWMtNy42My0uMTEtMTIuNzQtNi4zNC0xNC4wMS0xMy43NC0xLjA3LTYuMjItMS4xMi0xMi41My44My0xOC40NSwyLjUtNy41Niw4LjgyLTEyLjQ2LDE2LjczLTEyLjUybDE0LjU5LS4xMS4wMiw3LjEtMTQuMDEuMjFjLTYuMDIuMDktOS4zNyw0Ljg3LTEwLjMyLDExLjA2bDI0LjE2LjAyLjA4LDcuMTNoLTI0LjFaIi8+IDxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik03OTUuNzgsMjc4LjM5bC4wMyw3LjE5LTExLjAxLS4xYy01LjMtLjA1LTguNzgtNC4wMi04LjgxLTkuMzhsLS4xOS0yOC4zOS03LjY4LS4wNS4wMy03LjEzLDcuNjcuMDYtLjA0LTE2Ljc0aDguMTNzMCwxNi43MiwwLDE2LjcybDExLjkyLS4wNy0uMDMsNy4xMy0xMiwuMDIuMjQsMjYuNDNjLjAyLDIuMjMsMS4yOCwzLjgzLDMuNSw0LjAybDguMjIuMjlaIi8+IDxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik05MTkuMzYsMjc4LjM1bC4wOSw3LjIzLTEzLjItLjVjLTQuMTEtLjcyLTYuNTItNC42My02LjU1LTguNzdsLS4xOS0yOC42Mi03LjczLS4wM3YtNy4xN3M3LjgzLDAsNy44MywwbC0uMDktMTYuNTloOC4xOXMtLjAxLDE2LjU5LS4wMSwxNi41OWwxMS41Ny4wMi4xLDcuMDQtMTEuNy4xNS4wNCwyNi4zM2MwLDIuMjcsMS40NSwzLjk5LDMuNjYsNC4xMWw3Ljk5LjIyWiIvPiA8cmVjdCBjbGFzcz0ic3QxIiB4PSI1OTUuNjkiIHk9IjI0MC40OCIgd2lkdGg9IjguMTUiIGhlaWdodD0iNDUuMSIvPiA8cmVjdCBjbGFzcz0ic3QxIiB4PSI5MjUuMjUiIHk9IjI3Ni4zMSIgd2lkdGg9IjEwLjIzIiBoZWlnaHQ9IjguMzkiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDY0Ny4wNCAxMjEwLjAyKSByb3RhdGUoLTg5LjgzKSIvPiA8cmVjdCBjbGFzcz0ic3QxIiB4PSI1OTUuNzIiIHk9IjIyMy44MyIgd2lkdGg9IjguMTEiIGhlaWdodD0iOS40NCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLS40OCAxLjI2KSByb3RhdGUoLS4xMikiLz4gPC9nPiA8Zz4gPGc+IDxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik0xMDMuMDgsMTc4LjU4bC4wOSwyMC41Yy04LjcyLjA0LTE3LjA5LjI4LTI1LjY0LS4xMy05LjYzLS40Ni0xNy43LTUuNjctMjEuNTItMTQuNS0yLjItNS4wOS0yLjkzLTEwLjMxLTMuMjEtMTYuMDJsLS4wMi01MS40MS0xNy4xOC4wNy0uMDctMjAuNjFoMTcuMjdzLS4wNC0zNy4zLS4wNC0zNy4zbDI0LjU5LjA1LjEyLDM3LjIsMjUuNjEuMDguMSwyMC41NC0yNS44NC4wNy4xNSw0NC40M2MuMDIsNC40Ni43Miw4Ljk2LDMuMzEsMTIuNTEsMi4yMSwzLjAzLDYuMDUsMy44Myw5LjYsNC4zN2wxMi42Ni4xNloiLz4gPHBhdGggY2xhc3M9InN0MCIgZD0iTTE2NC41MiwxMzkuNjRsLS4yNS0xNi43MmMtLjA2LTMuODQtMi41OS02LjMxLTYuMzktNi40bC0xMi40My0uMzItLjE1LDYyLjc4LjE1LDIwLjE1LTI0LjctLjEzdi0xMDIuNjNzNDUuMy4yMyw0NS4zLjIzYzUuMS4wMyw5LjY4LDEuMywxMy45NSwzLjcyLDMuMTMsMi4yNCw1LjIxLDUuMzYsNi4zMSw5LjA2LDEuMzIsNC40OCwxLjYxLDksMS42LDEzLjY5bC0uMDQsMTYuNS0yMy4zNC4wNloiLz4gPC9nPiA8Zz4gPGc+IDxnPiA8Zz4gPHJlY3QgY2xhc3M9InN0MCIgeD0iNDI2LjIiIHk9IjEzNC44MSIgd2lkdGg9IjEwMi44IiBoZWlnaHQ9IjI1LjkzIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgzMjkuNzEgNjI1LjM0KSByb3RhdGUoLTg5Ljk4KSIvPiA8cmVjdCBjbGFzcz0ic3QxIiB4PSI0NjQuNjciIHk9IjU5LjI4IiB3aWR0aD0iMjUuOTEiIGhlaWdodD0iMjUuNjIiLz4gPC9nPiA8cGF0aCBjbGFzcz0ic3QwIiBkPSJNNTEyLjA1LDE4MC4zNmMtMi4wMy04LjU2LTEuODQtMTcuMTcuNTYtMjUuMzIsNC40MS0xNS4wNSwxOS4zOC0xOC4zLDM0LjE0LTE4LjNoMzIuODFjLjYtNy44Mi0xLjE4LTE1LjE0LTkuMDktMTcuNDItMy45OC0xLjE1LTcuOTctMS41NC0xMi4yNi0xLjU0aC00MS4zN3MtLjEtMjEuMzEtLjEtMjEuMzFsNTIuOTMuMTJjMTMuNzguMDMsMjYuNTcsNS45MywzMS45OCwxOC45NCwyLjEyLDUuMzIsMy4zLDEwLjgsMy4zMSwxNi43NGwuMTMsNjYuODYtNjcuODctLjA2Yy00LjUzLDAtOC41NC0xLjA5LTEyLjQyLTIuODUtNi40MS0zLjI0LTExLjAxLTguNTYtMTIuNzQtMTUuODZaTTU0Mi45MSwxNzcuODNsMTEuMDIuMzUsMjUuOTEuMTR2LTIwLjkzcy0zMC4yMi0uMDEtMzAuMjItLjAxYy0zLjIyLDAtNi4xNi41NS05LjEyLDEuNTQtNC41MiwyLjY3LTUuNTQsMTAuMzYtMy41MiwxNSwuOTksMi4yOCwzLjM0LDMuNTIsNS45NCwzLjkxWiIvPiA8L2c+IDxnPiA8cGF0aCBjbGFzcz0ic3QwIiBkPSJNNjc1LjQ2LDE3Ni44N2wzMC41NC4wOC4xLDIyLjItMzYuNDctLjFjLTEwLjgxLS4wMy0yMi4xMy0yLjg2LTI5LjgtMTAuNDQtMTcuNDItMTcuMjEtMTkuNTEtNDYuOTctOS4yNi02OC43Miw0LjI3LTkuMDUsMTEuMjEtMTYuMTcsMjAuMzEtMjAsNS41OC0yLjM1LDExLjI2LTIuODcsMTcuMzEtMy40bDM3LjkyLS4wM3YyMi4yOXMtMjguOC4wOC0yOC44LjA4Yy0xMS40MS41OC0yMi4wNSwyLjcyLTI1LjM1LDE0LjM0LTQuMTcsMTQuNjctMywzNi4yNSwxMi4wOSw0Mi4xOSwzLjU5LDEuNDEsNy4zOCwxLjUxLDExLjQyLDEuNTJaIi8+IDxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik03ODUuNTYsMTk5LjExbC0uMTEtNjMuMmMtLjI2LTcuODQtMS40NS0xNC4xNC05LjE5LTE2LjA0LTMtLjY5LTYuMDctLjgzLTkuMjMtLjgzaC0xNy4yMnMuMDIsODAuMDYuMDIsODAuMDZsLTI0LjI4LjAyLjA1LTEzOS45LDI0LjI0LS4wMi0uMDUsMzcuMjcsMjYuMzUuMTJjNC44NS4wMiw5LjMzLjkzLDEzLjg2LDIuMzgsMTUuNjEsNC43NywxOS43OCwxOC40MiwyMC4yLDM0LjA1bC4wNiw2Ni4wOGgtMjQuNzFaIi8+IDwvZz4gPC9nPiA8Zz4gPHBhdGggY2xhc3M9InN0MCIgZD0iTTM1OC41MiwxOTAuNjRjLTcuODktOS4yNC03Ljk3LTI2Ljc5LTMuOS0zNy41OCwyLjY3LTcuMDcsOC4wNC0xMS42MiwxNS4xNC0xMy44MSw1LjktMS44MiwxMS44LTIuNTIsMTguMTEtMi41M2wzMy4wNC0uMDRjLjI5LTcuNjUtLjg3LTE0LjI5LTguMTktMTcuMDgtMy43Mi0xLjMxLTcuNS0yLjE1LTExLjY0LTIuMTVsLTYyLjY3LS4wNi4wMyw4MS43NC0yNi42OC0uMTUuMDItOTUuNjljLjI0LTEyLjA1Ljg2LTMwLjk0LDYuNjMtNDAuMjYsMy44Mi02LjE3LDguNi0xMS41NCwxNC43Ny0xNS40MywxMi45My04LjE2LDMwLjczLTguOTcsNDUuOTYtOC42N2wtLjA0LDIwLjU0Yy02LjA4LjA2LTExLjkzLS4yMy0xNy45My43NS01LjgzLjc1LTExLjI2LDIuNi0xNS45MSw2LjEzLTYuODgsNi4zLTYuNTIsMjAuMjgtNi44OSwzMC4xNWw3MS41LjA2YzUuNDMsMCwxMC4yLjkzLDE1LjE5LDIuNTEsOC44NSwyLjgxLDE1LjQyLDkuMjgsMTguNDcsMTguMSwyLjI4LDUuODQsMi43NiwxMS44MSwyLjc3LDE4LjI3bC4xMyw2My43OS02OC44NC0uMjRjLTcuNTQtLjAzLTE0LjA2LTMuMTItMTkuMDUtOC4zNFpNMzk3LjY5LDE3OC4xM2wyMy4zOC4yMy0uMDQtMjAuOTktMzIuMjIuMDhjLTIuOTkuNDQtNi4xNy42MS04LjQzLDIuNjQtMy4wMSwyLjctMy4yOSw3LjA3LTIuODgsMTAuOXMyLjU3LDYuNzMsNi4zMyw2LjgybDEzLjg2LjMyWiIvPiA8cGF0aCBjbGFzcz0ic3QwIiBkPSJNMjc1LjUxLDE5NC41NGMtMTQuNTcsOC43My0zOC4wMSw4LjM3LTUyLjM2LS41Ni0xMC45NS02LjgyLTE4LTE3LjU0LTIwLjc4LTMwLjEyLTMuOTItMTcuNzYtMS43My0zOC45OSwxMC4xNi01My4wNiw2LjM1LTcuNTEsMTQuNTItMTIuNjQsMjQuMTMtMTQuNzZzMjAuMjYtMi4wMSwzMC4xMywxLjA3YzExLjI3LDMuNTIsMjAuMDYsMTEuNTUsMjUuNiwyMS44NCw3Ljg4LDE0LjY1LDguMzEsMzYuNiwyLjUzLDUyLjE4LTMuNjIsOS43Ni0xMC4zMiwxNy45Ny0xOS40LDIzLjRaTTI0OC40MiwxNzguNzFjOS45NS40OSwxOC4zMi00Ljg2LDIxLjgxLTE0LjIzLDQuOTQtMTMuMjgsNC4yMS0zNS4wNS03LjcxLTQzLjQ5LTkuNDItNi42Ny0yNC40NC01LjE3LTMxLjEzLDUuNjgtMy45OCw2LjQ2LTQuOTYsMTMuNjgtNC45NSwyMS4xNnMuOTIsMTQuMjgsNC41NCwyMC40OCw5LjY5LDEwLjAyLDE3LjQ0LDEwLjRaIi8+IDwvZz4gPC9nPiA8L2c+IDwvc3ZnPg==";
+const MERCH_IMAGES = {
+  logo:    "data:image/svg+xml;base64," + LOGO_SVG_B64,
+  shirt:   "",   // eigenes Motiv fürs T-Shirt (leer = Logo)
+  hoodie:  "",   // eigenes Motiv für den Hoodie (leer = Logo)
+  cap:     "",   // eigenes Motiv für die Kappe (leer = Logo)
+  sticker: "",   // eigenes Sticker-Motiv (leer = Logo)
+  logoK:   "",   // Kortschak-K unten rechts (leer = gezeichnetes rotes K)
+};
+/* ---------- Ende Platzhalter ---------- */
+
+const FONT = '"Arial Rounded MT Bold","Arial Black","Helvetica Neue",Roboto,system-ui,sans-serif';
+
+/* =====================================================================
+   Canvas, Skalierung, Layout
+   ===================================================================== */
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+let W = 1280, H = 720, scale = 1, offX = 0, offY = 0, dpr = 1;
+const L = {}; // Layout-Positionen, abhängig von H
+
+function layout() {
+  L.hud = 76;
+  L.beltY = Math.round(H * 0.74);
+  L.beltH = 64;
+  L.itemY = L.beltY - 62;          // Mittelpunkt der Items
+  L.pressX = W / 2;
+  L.beamY = L.hud + 10;
+  L.plateRest = L.beltY - 250;
+  L.plateDown = L.beltY - 142;
+}
+
+function resize() {
+  const vw = window.innerWidth, vh = window.innerHeight;
+  dpr = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = Math.round(vw * dpr);
+  canvas.height = Math.round(vh * dpr);
+  W = 1280;
+  let s = vw / W;
+  let h = vh / s;
+  if (h < 720) { s = vh / 720; h = 720; }   // sehr breit → Ränder links/rechts
+  if (h > 1000) h = 1000;                   // sehr hoch → Ränder oben/unten
+  H = h; scale = s;
+  offX = (vw - W * s) / 2;
+  offY = (vh - H * s) / 2;
+  layout();
+}
+window.addEventListener('resize', resize);
+window.addEventListener('orientationchange', () => setTimeout(resize, 200));
+resize();
+
+/* =====================================================================
+   Sound – synthetisch über Web Audio API
+   ===================================================================== */
+const Snd = {
+  ctx: null,
+  muted: false,
+  init() {
+    if (!this.ctx) {
+      try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return; }
+    }
+    if (this.ctx.state === 'suspended') this.ctx.resume().catch(() => {});
+  },
+  tone(freq, dur, type = 'square', vol = 0.15, delay = 0, slideTo = null) {
+    if (this.muted || !this.ctx) return;
+    const t0 = this.ctx.currentTime + delay;
+    const o = this.ctx.createOscillator();
+    const g = this.ctx.createGain();
+    o.type = type; o.frequency.setValueAtTime(freq, t0);
+    if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t0 + dur);
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(vol, t0 + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    o.connect(g).connect(this.ctx.destination);
+    o.start(t0); o.stop(t0 + dur + 0.05);
+  },
+  noise(dur, vol = 0.2, delay = 0) {
+    if (this.muted || !this.ctx) return;
+    const t0 = this.ctx.currentTime + delay;
+    const len = Math.floor(this.ctx.sampleRate * dur);
+    const buf = this.ctx.createBuffer(1, len, this.ctx.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len);
+    const src = this.ctx.createBufferSource(); src.buffer = buf;
+    const g = this.ctx.createGain(); g.gain.value = vol;
+    const f = this.ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 900;
+    src.connect(f).connect(g).connect(this.ctx.destination);
+    src.start(t0);
+  },
+  click()   { this.noise(0.06, 0.25); this.tone(140, 0.09, 'sine', 0.3); },
+  thud()    { this.noise(0.09, 0.3); this.tone(90, 0.14, 'sine', 0.35, 0, 50); },
+  perfect() { [523, 659, 784, 1047].forEach((f, i) => this.tone(f, 0.16, 'square', 0.12, i * 0.07)); },
+  okay()    { this.tone(440, 0.12, 'triangle', 0.18); this.tone(554, 0.16, 'triangle', 0.18, 0.1); },
+  fail()    { this.tone(300, 0.35, 'sawtooth', 0.15, 0, 110); },
+  combo()   { [784, 988, 1175, 1568].forEach((f, i) => this.tone(f, 0.12, 'square', 0.1, i * 0.05)); },
+  level()   { [392, 523, 659, 784, 1047].forEach((f, i) => this.tone(f, 0.14, 'triangle', 0.16, i * 0.06)); },
+  key()     { this.tone(900, 0.05, 'square', 0.08); },
+  record()  { [523, 659, 784, 1047, 784, 1047, 1319].forEach((f, i) => this.tone(f, 0.18, 'square', 0.12, i * 0.09)); },
+  toggle() {
+    this.muted = !this.muted;
+    try { localStorage.setItem(CONFIG.MUTE_KEY, this.muted ? '1' : '0'); } catch (e) {}
+  }
+};
+try { Snd.muted = localStorage.getItem(CONFIG.MUTE_KEY) === '1'; } catch (e) {}
+
+/* =====================================================================
+   Bestenliste (localStorage)
+   ===================================================================== */
+function loadScores() {
+  try {
+    const a = JSON.parse(localStorage.getItem(CONFIG.SCORES_KEY) || '[]');
+    return Array.isArray(a) ? a.filter(e => e && typeof e.score === 'number') : [];
+  } catch (e) { return []; }
+}
+function saveScores(a) { try { localStorage.setItem(CONFIG.SCORES_KEY, JSON.stringify(a)); } catch (e) {} }
+function addScoreEntry(name, score) {
+  const a = loadScores();
+  const e = { name, score, time: new Date().toISOString() };
+  a.push(e);
+  a.sort((x, y) => y.score - x.score || x.time.localeCompare(y.time));
+  const idx = a.indexOf(e);
+  a.length = Math.min(a.length, CONFIG.TOP_LIST);
+  saveScores(a);
+  G.scores = a;
+  return idx < CONFIG.TOP_LIST ? idx : -1;
+}
+function qualifies(score) {
+  if (score <= 0) return false;
+  const a = G.scores;
+  return a.length < CONFIG.TOP_LIST || score > a[a.length - 1].score;
+}
+function timeHM(iso) {
+  const d = new Date(iso);
+  if (isNaN(d)) return '';
+  return d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0');
+}
+function exportText() {
+  const lines = ['Druck-Meister – Bestenliste (' + new Date().toLocaleString('de-AT') + ')'];
+  G.scores.forEach((e, i) => lines.push((i + 1) + '. ' + e.name + ' – ' + e.score + ' Punkte (' + timeHM(e.time) + ')'));
+  if (G.scores.length === 0) lines.push('(leer)');
+  return lines.join('\n');
+}
+async function copyToClipboard(text) {
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch (e) {}
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  } catch (e) { return false; }
+}
+
+/* =====================================================================
+   Bilder aus dem Platzhalter-Block laden
+   ===================================================================== */
+const IMG = {};
+for (const k of Object.keys(MERCH_IMAGES)) {
+  if (MERCH_IMAGES[k]) {
+    const im = new Image();
+    im.onload = () => { IMG[k] = im; };
+    im.src = MERCH_IMAGES[k];
+  }
+}
+
+/* =====================================================================
+   Zeichen-Helfer
+   ===================================================================== */
+function rr(x, y, w, h, r) {
+  r = Math.min(r, w / 2, h / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+function txt(s, x, y, o = {}) {
+  const size = o.size || 32;
+  ctx.font = `${o.weight || 900} ${size}px ${FONT}`;
+  ctx.textAlign = o.align || 'center';
+  ctx.textBaseline = o.baseline || 'middle';
+  if (o.stroke) {
+    ctx.lineJoin = 'round';
+    ctx.lineWidth = o.strokeW || Math.max(3, size * 0.18);
+    ctx.strokeStyle = o.stroke;
+    ctx.strokeText(s, x, y);
+  }
+  ctx.fillStyle = o.color || '#fff';
+  ctx.fillText(s, x, y);
+}
+function textWidth(s, size, weight = 900) {
+  ctx.font = `${weight} ${size}px ${FONT}`;
+  return ctx.measureText(s).width;
+}
+// Fetter Retro-Titel mit Versatz-Schatten
+function bigTitle(s, x, y, size, color = '#fff', shadow = COLOR_PRIMARY_DARK) {
+  txt(s, x + size * 0.06, y + size * 0.06, { size, color: shadow, stroke: COLOR_INK, strokeW: size * 0.2 });
+  txt(s, x, y, { size, color, stroke: COLOR_INK, strokeW: size * 0.2 });
+}
+
+let hits = []; // Touch-Ziele des aktuellen Frames
+function addHit(x, y, w, h, fn) { hits.push({ x, y, w, h, fn }); }
+
+// Button, (x,y) = Mittelpunkt. Mindestens 64 px hoch.
+function button(x, y, w, h, label, fn, o = {}) {
+  h = Math.max(h, 64);
+  const col = o.color || COLOR_PRIMARY;
+  const r = o.radius || 18;
+  ctx.fillStyle = COLOR_INK;
+  rr(x - w / 2, y - h / 2 + 7, w, h, r); ctx.fill();
+  ctx.fillStyle = col;
+  rr(x - w / 2, y - h / 2, w, h, r); ctx.fill();
+  ctx.lineWidth = 4; ctx.strokeStyle = COLOR_INK; ctx.stroke();
+  txt(label, x, y + 1, { size: o.size || Math.round(h * 0.42), color: o.textColor || COLOR_INK });
+  addHit(x - w / 2, y - h / 2, w, h + 7, fn);
+}
+
+function drawHeart(x, y, s, filled) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(s / 20, s / 20);
+  ctx.beginPath();
+  ctx.moveTo(0, 6);
+  ctx.bezierCurveTo(-12, -6, -4, -16, 0, -9);
+  ctx.bezierCurveTo(4, -16, 12, -6, 0, 6);
+  ctx.closePath();
+  ctx.fillStyle = filled ? COLOR_KORTSCHAK : '#C9CCC6';
+  ctx.fill();
+  ctx.lineWidth = 2.5; ctx.strokeStyle = COLOR_INK; ctx.stroke();
+  ctx.restore();
+}
+
+function drawMuteButton() {
+  const x = W - 46, y = 44, s = 64;
+  ctx.fillStyle = 'rgba(0,0,0,0.35)';
+  rr(x - s / 2, y - s / 2, s, s, 14); ctx.fill();
+  ctx.save(); ctx.translate(x - 6, y);
+  ctx.fillStyle = '#fff'; ctx.strokeStyle = '#fff'; ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(-12, -6); ctx.lineTo(-4, -6); ctx.lineTo(6, -15); ctx.lineTo(6, 15); ctx.lineTo(-4, 6); ctx.lineTo(-12, 6); ctx.closePath(); ctx.fill();
+  if (Snd.muted) {
+    ctx.strokeStyle = COLOR_BAD; ctx.lineWidth = 4;
+    ctx.beginPath(); ctx.moveTo(11, -8); ctx.lineTo(23, 8); ctx.moveTo(23, -8); ctx.lineTo(11, 8); ctx.stroke();
+  } else {
+    ctx.beginPath(); ctx.arc(8, 0, 10, -0.9, 0.9); ctx.stroke();
+    ctx.beginPath(); ctx.arc(8, 0, 17, -0.9, 0.9); ctx.stroke();
+  }
+  ctx.restore();
+  addHit(x - s / 2 - 8, y - s / 2 - 8, s + 16, s + 16, () => { Snd.toggle(); if (!Snd.muted) Snd.key(); });
+}
+
+// Trofaiach-Logo auf weißer Karte. (x,y) = linke obere Ecke, w = Kartenbreite.
+function drawLogoCard(x, y, w) {
+  const pad = w * 0.07, h = Math.round(w * 0.36);
+  ctx.fillStyle = '#fff'; rr(x, y, w, h, 14); ctx.fill();
+  ctx.lineWidth = 4; ctx.strokeStyle = COLOR_INK; ctx.stroke();
+  if (IMG.logo) {
+    const lw = w - pad * 2, lh = lw * 312 / 960;
+    ctx.drawImage(IMG.logo, x + pad, y + (h - lh) / 2, lw, lh);
+  } else {
+    txt('TROFAIACH', x + w / 2, y + h / 2, { size: w * 0.13, color: COLOR_PRIMARY });
+  }
+}
+
+function drawKLogo() {
+  const s = 58, x = W - 20 - s, y = H - 20 - s;
+  if (IMG.logoK) { ctx.drawImage(IMG.logoK, x, y, s, s); return; }
+  ctx.fillStyle = COLOR_KORTSCHAK;
+  rr(x, y, s, s, 12); ctx.fill();
+  ctx.lineWidth = 3; ctx.strokeStyle = COLOR_INK; ctx.stroke();
+  txt('K', x + s / 2, y + s / 2 + 2, { size: 42, color: '#fff' });
+}
+
+/* ---------- Motive ---------- */
+// Platzhalter-Motiv: stilisierte Skyline + Schriftzug. Box (w×h) um (cx,cy).
+function drawMotif(kind, cx, cy, w, h, tilt = 0, dx = 0, dy = 0) {
+  ctx.save();
+  ctx.translate(cx + dx, cy + dy);
+  ctx.rotate(tilt * Math.PI / 180);
+  const im = IMG[kind] || IMG.logo;
+  if (im) {
+    const k = Math.min(w / im.width, h / im.height);
+    ctx.drawImage(im, -im.width * k / 2, -im.height * k / 2, im.width * k, im.height * k);
+    ctx.restore(); return;
+  }
+  const u = w / 84; // Einheit
+  ctx.scale(u, u);
+  if (kind !== 'cap') {
+    // Skyline
+    ctx.fillStyle = COLOR_PRIMARY; ctx.strokeStyle = COLOR_INK; ctx.lineWidth = 2; ctx.lineJoin = 'round';
+    const bld = (x, y, bw, bh) => { ctx.beginPath(); ctx.rect(x, y, bw, bh); ctx.fill(); ctx.stroke(); };
+    bld(-40, -4, 16, 20);
+    bld(-24, -12, 14, 28);
+    // Kirchturm
+    ctx.beginPath(); ctx.rect(-6, -18, 14, 34); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(-8, -18); ctx.lineTo(1, -32); ctx.lineTo(10, -18); ctx.closePath();
+    ctx.fillStyle = COLOR_KORTSCHAK; ctx.fill(); ctx.stroke();
+    ctx.fillStyle = COLOR_PRIMARY;
+    bld(10, -8, 14, 24);
+    bld(26, 0, 16, 16);
+    // Fenster
+    ctx.fillStyle = COLOR_PRIMARY;
+    [[-36, 2], [-20, -6], [-2, -10], [14, -2], [30, 4]].forEach(p => ctx.fillRect(p[0], p[1], 5, 5));
+    // Boden
+    ctx.strokeStyle = COLOR_INK; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(-42, 16); ctx.lineTo(42, 16); ctx.stroke();
+    txt('TROFAIACH', 0, 27, { size: 12.5, color: COLOR_PRIMARY });
+  } else if (kind === 'cap') {
+    ctx.fillStyle = '#fff'; ctx.strokeStyle = COLOR_INK; ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.arc(0, 0, 18, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    txt('T', 0, 1, { size: 24, color: COLOR_PRIMARY });
+  }
+  ctx.restore();
+}
+
+function drawSmear(cx, cy, seed) {
+  ctx.save(); ctx.translate(cx, cy);
+  ctx.fillStyle = 'rgba(70,72,84,0.85)';
+  for (let i = 0; i < 6; i++) {
+    const a = seed * 7 + i * 1.7;
+    const ex = Math.sin(a) * 26, ey = Math.cos(a * 1.3) * 14;
+    ctx.beginPath(); ctx.ellipse(ex, ey, 22 + (i % 3) * 6, 12 + (i % 2) * 6, a, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.restore();
+}
+
+function shirtPath() {
+  ctx.beginPath();
+  ctx.moveTo(-22, -60);
+  ctx.lineTo(-56, -60);
+  ctx.lineTo(-80, -28);
+  ctx.lineTo(-58, -14);
+  ctx.lineTo(-50, -20);
+  ctx.lineTo(-50, 62);
+  ctx.lineTo(50, 62);
+  ctx.lineTo(50, -20);
+  ctx.lineTo(58, -14);
+  ctx.lineTo(80, -28);
+  ctx.lineTo(56, -60);
+  ctx.lineTo(22, -60);
+  ctx.quadraticCurveTo(0, -36, -22, -60);
+  ctx.closePath();
+}
+function drawShirt(it) {
+  shirtPath();
+  ctx.fillStyle = '#fff'; ctx.fill();
+  ctx.lineWidth = 5; ctx.lineJoin = 'round'; ctx.strokeStyle = COLOR_INK; ctx.stroke();
+  // Kragen
+  ctx.beginPath(); ctx.moveTo(-22, -60); ctx.quadraticCurveTo(0, -30, 22, -60);
+  ctx.lineWidth = 3; ctx.stroke();
+  if (it.result === 'perfect' || it.result === 'okay') {
+    drawMotif('shirt', 0, 6, 96, 64, it.tilt, it.dx, it.dy);
+  } else if (it.result === 'smear') {
+    drawSmear(0, 12, it.seed);
+  }
+}
+function drawCap(it) {
+  ctx.lineWidth = 5; ctx.lineJoin = 'round'; ctx.strokeStyle = COLOR_INK;
+  // Schirm
+  ctx.fillStyle = COLOR_PRIMARY_DARK;
+  ctx.beginPath();
+  ctx.moveTo(-50, 8); ctx.lineTo(-96, 10); ctx.quadraticCurveTo(-98, 26, -60, 26); ctx.lineTo(48, 26); ctx.closePath();
+  ctx.fill(); ctx.stroke();
+  // Kappe
+  ctx.fillStyle = COLOR_HOODIE;
+  ctx.beginPath(); ctx.moveTo(-50, 24); ctx.quadraticCurveTo(-50, -60, 0, -60); ctx.quadraticCurveTo(50, -60, 50, 24); ctx.closePath();
+  ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0, -60); ctx.lineTo(0, -38); ctx.lineWidth = 3; ctx.stroke();
+  ctx.fillStyle = COLOR_PRIMARY; ctx.beginPath(); ctx.arc(0, -60, 7, 0, Math.PI * 2); ctx.fill(); ctx.lineWidth = 3; ctx.stroke();
+  if (it.result === 'perfect' || it.result === 'okay') drawMotif('cap', 0, -16, 74, 40, it.tilt, it.dx * 0.5, it.dy * 0.5);
+  else if (it.result === 'smear') drawSmear(0, -10, it.seed);
+}
+function drawHoodie(it) {
+  ctx.lineWidth = 5; ctx.lineJoin = 'round'; ctx.strokeStyle = COLOR_INK;
+  ctx.fillStyle = COLOR_HOODIE;
+  // Körper mit langen Ärmeln
+  ctx.beginPath();
+  ctx.moveTo(-26, -56); ctx.lineTo(-60, -54); ctx.lineTo(-86, 30); ctx.lineTo(-60, 38); ctx.lineTo(-52, 6);
+  ctx.lineTo(-52, 64); ctx.lineTo(52, 64); ctx.lineTo(52, 6); ctx.lineTo(60, 38); ctx.lineTo(86, 30);
+  ctx.lineTo(60, -54); ctx.lineTo(26, -56); ctx.quadraticCurveTo(0, -40, -26, -56); ctx.closePath();
+  ctx.fill(); ctx.stroke();
+  // Kapuze
+  ctx.beginPath();
+  ctx.moveTo(-26, -56); ctx.quadraticCurveTo(-34, -88, 0, -90); ctx.quadraticCurveTo(34, -88, 26, -56);
+  ctx.quadraticCurveTo(0, -40, -26, -56); ctx.closePath();
+  ctx.fill(); ctx.stroke();
+  // Kordeln + Bauchtasche
+  ctx.lineWidth = 3; ctx.strokeStyle = COLOR_FLOOR;
+  ctx.beginPath(); ctx.moveTo(-9, -48); ctx.lineTo(-11, -26); ctx.moveTo(9, -48); ctx.lineTo(11, -26); ctx.stroke();
+  ctx.strokeStyle = COLOR_INK;
+  ctx.beginPath(); ctx.moveTo(-38, 34); ctx.lineTo(38, 34); ctx.moveTo(-38, 34); ctx.lineTo(-30, 60); ctx.moveTo(38, 34); ctx.lineTo(30, 60); ctx.stroke();
+  if (it.result === 'perfect' || it.result === 'okay') drawMotif('hoodie', 0, 2, 92, 34, it.tilt, it.dx, it.dy);
+  else if (it.result === 'smear') drawSmear(0, 4, it.seed);
+}
+function drawSticker(it) {
+  ctx.lineWidth = 5; ctx.strokeStyle = COLOR_INK;
+  ctx.fillStyle = '#fff';
+  ctx.beginPath(); ctx.arc(0, 0, 54, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  ctx.strokeStyle = COLOR_PRIMARY; ctx.lineWidth = 4; ctx.setLineDash([8, 8]);
+  ctx.beginPath(); ctx.arc(0, 0, 44, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
+  if (it.result === 'perfect' || it.result === 'okay') drawMotif('sticker', 0, 0, 84, 40, it.tilt, it.dx * 0.6, it.dy * 0.6);
+  else if (it.result === 'smear') drawSmear(0, 0, it.seed);
+}
+function drawItem(it) {
+  let s = 1;
+  if (it.printT != null && it.printT < 0.3) s = 1 + Math.sin(it.printT / 0.3 * Math.PI) * 0.12;
+  ctx.save();
+  ctx.translate(it.x, L.itemY);
+  ctx.scale(s, s);
+  if (it.type === 'shirt') drawShirt(it);
+  else if (it.type === 'hoodie') drawHoodie(it);
+  else if (it.type === 'cap') drawCap(it);
+  else drawSticker(it);
+  ctx.restore();
+  if (it.bonus && !it.judged) {
+    // Bonus-Fähnchen
+    const bx = it.x + 46, by = L.itemY - 78 + Math.sin(performance.now() / 180) * 4;
+    ctx.fillStyle = COLOR_ACCENT; rr(bx - 30, by - 17, 60, 34, 10); ctx.fill();
+    ctx.lineWidth = 3; ctx.strokeStyle = COLOR_INK; ctx.stroke();
+    txt('×' + CONFIG.BONUS_MULT, bx, by + 1, { size: 24, color: '#fff' });
+  }
+}
+
+/* ---------- Szene: Band, Zone, Presse ---------- */
+function drawScene() {
+  // Wand + Boden
+  ctx.fillStyle = COLOR_BG; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = COLOR_FLOOR; ctx.fillRect(0, L.beltY + L.beltH + 40, W, H);
+  // Wandstreifen in Stadtfarbe
+  ctx.fillStyle = COLOR_PRIMARY; ctx.globalAlpha = 0.12;
+  ctx.fillRect(0, L.hud, W, 26); ctx.globalAlpha = 1;
+
+  // Bandgestell
+  ctx.fillStyle = '#8b96a3';
+  ctx.fillRect(60, L.beltY + L.beltH, 26, 60); ctx.fillRect(W - 86, L.beltY + L.beltH, 26, 60);
+  ctx.fillRect(W / 2 - 13, L.beltY + L.beltH, 26, 60);
+  ctx.lineWidth = 4; ctx.strokeStyle = COLOR_INK;
+  ctx.strokeRect(60, L.beltY + L.beltH, 26, 60); ctx.strokeRect(W - 86, L.beltY + L.beltH, 26, 60);
+  ctx.strokeRect(W / 2 - 13, L.beltY + L.beltH, 26, 60);
+
+  // Band
+  ctx.fillStyle = '#3B424C';
+  rr(-40, L.beltY, W + 80, L.beltH, L.beltH / 2); ctx.fill();
+  ctx.save();
+  ctx.beginPath(); ctx.rect(0, L.beltY, W, L.beltH); ctx.clip();
+  ctx.strokeStyle = '#5A6470'; ctx.lineWidth = 6;
+  for (let x = -60 + sim.beltOff; x < W + 60; x += 40) {
+    ctx.beginPath(); ctx.moveTo(x, L.beltY); ctx.lineTo(x - 18, L.beltY + L.beltH); ctx.stroke();
+  }
+  ctx.restore();
+
+  // Zielzone + Toleranz
+  const z = sim.zone, px = L.pressX;
+  ctx.fillStyle = COLOR_PRIMARY; ctx.globalAlpha = 0.3;
+  ctx.fillRect(px - z / 2 - CONFIG.TOLERANCE, L.beltY, z + CONFIG.TOLERANCE * 2, L.beltH);
+  ctx.globalAlpha = 0.85;
+  ctx.fillRect(px - z / 2, L.beltY, z, L.beltH);
+  ctx.globalAlpha = 1;
+  ctx.setLineDash([10, 8]); ctx.lineWidth = 4; ctx.strokeStyle = COLOR_INK;
+  ctx.strokeRect(px - z / 2, L.beltY + 2, z, L.beltH - 4);
+  ctx.setLineDash([]);
+  // Pfeile Zone
+  ctx.fillStyle = COLOR_PRIMARY; ctx.strokeStyle = COLOR_INK; ctx.lineWidth = 3;
+  const ay = L.beltY + L.beltH + 10;
+  ctx.beginPath(); ctx.moveTo(px - z / 2, ay + 18); ctx.lineTo(px - z / 2 - 12, ay + 34); ctx.lineTo(px - z / 2 + 12, ay + 34); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(px + z / 2, ay + 18); ctx.lineTo(px + z / 2 - 12, ay + 34); ctx.lineTo(px + z / 2 + 12, ay + 34); ctx.closePath(); ctx.fill(); ctx.stroke();
+
+  // Bandkante oben
+  ctx.strokeStyle = COLOR_INK; ctx.lineWidth = 5;
+  ctx.beginPath(); ctx.moveTo(0, L.beltY); ctx.lineTo(W, L.beltY); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0, L.beltY + L.beltH); ctx.lineTo(W, L.beltY + L.beltH); ctx.stroke();
+
+  // Items
+  for (const it of sim.items) drawItem(it);
+
+  drawPress();
+}
+
+function pressPlateY() {
+  const p = sim.press;
+  const rest = L.plateRest, down = L.plateDown;
+  if (p.phase === 'down') { const k = Math.min(1, p.t / CONFIG.PRESS_DOWN_MS); return rest + (down - rest) * k * k; }
+  if (p.phase === 'hold') return down;
+  if (p.phase === 'up') { const k = Math.min(1, p.t / CONFIG.PRESS_UP_MS); return down + (rest - down) * (1 - Math.pow(1 - k, 3)); }
+  return rest;
+}
+function drawPress() {
+  const px = L.pressX, p = sim.press;
+  const y = pressPlateY();
+  let sx = 1, sy = 1;
+  if (p.phase === 'hold') { const k = p.t / CONFIG.PRESS_HOLD_MS; sx = 1 + 0.1 * Math.sin(k * Math.PI); sy = 1 - 0.3 * Math.sin(k * Math.PI); }
+  const mult = comboMult();
+
+  // Combo-Glow
+  if (mult > 1 && G.state === 'PLAYING') {
+    const pulse = 0.5 + 0.5 * Math.sin(performance.now() / 120);
+    ctx.save(); ctx.globalAlpha = 0.35 + 0.35 * pulse;
+    ctx.strokeStyle = mult >= 3 ? COLOR_ACCENT : COLOR_PRIMARY; ctx.lineWidth = 14;
+    rr(px - 140, y - 8, 280, 50 * sy + 16, 16); ctx.stroke();
+    ctx.restore();
+  }
+
+  // Querbalken
+  ctx.fillStyle = COLOR_KORTSCHAK; ctx.strokeStyle = COLOR_INK; ctx.lineWidth = 5;
+  rr(px - 180, L.beamY, 360, 48, 12); ctx.fill(); ctx.stroke();
+  txt('KORTSCHAK', px, L.beamY + 25, { size: 24, color: '#fff' });
+  // Kolben
+  ctx.fillStyle = '#9AA4AF';
+  const top = L.beamY + 48;
+  ctx.fillRect(px - 24, top, 48, y - top); ctx.strokeRect(px - 24, top, 48, y - top);
+  ctx.fillStyle = '#C5CDD6'; ctx.fillRect(px - 12, top, 8, y - top);
+  // Platte
+  ctx.fillStyle = COLOR_KORTSCHAK;
+  rr(px - 130 * sx, y, 260 * sx, 40 * sy, 10); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = '#7C0A1E';
+  rr(px - 120 * sx, y + 28 * sy, 240 * sx, 12 * sy, 6); ctx.fill();
+  // Griff
+  ctx.fillStyle = COLOR_ACCENT;
+  rr(px + 140 * sx, y - 6, 34, 28, 8); ctx.fill(); ctx.stroke();
+  // Dampf beim Pressen
+  if (p.phase === 'hold' || (p.phase === 'up' && p.t < 120)) {
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    const k = p.phase === 'hold' ? 0 : p.t / 120;
+    ctx.beginPath(); ctx.arc(px - 140 - k * 30, y + 30, 10 + k * 14, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(px + 140 + k * 30, y + 30, 10 + k * 14, 0, Math.PI * 2); ctx.fill();
+  }
+}
+
+/* =====================================================================
+   Simulation: Band, Items, Presse
+   ===================================================================== */
+const sim = { items: [], speed: 0, zone: 0, press: { phase: 'idle', t: 0, pending: null }, beltOff: 0, nextSpawn: 0, demo: false };
+
+function resetSim(demo) {
+  sim.items.length = 0;
+  sim.press.phase = 'idle'; sim.press.t = 0; sim.press.pending = null;
+  sim.demo = demo; sim.beltOff = 0; sim.nextSpawn = demo ? 0 : 200;
+  applyLevel();
+}
+function applyLevel() {
+  const lvl = sim.demo ? 2 : G.level;
+  sim.speed = Math.min(CONFIG.SPEED_MAX, CONFIG.BELT_SPEED * Math.pow(1 + CONFIG.SPEED_STEP, lvl - 1));
+  sim.zone = Math.max(CONFIG.ZONE_MIN, CONFIG.ZONE_WIDTH - CONFIG.ZONE_SHRINK * (lvl - 1));
+}
+function spawnItem() {
+  const lvl = sim.demo ? 2 : G.level;
+  let type = 'shirt', bonus = false;
+  if (lvl >= CONFIG.MIX_LEVEL) {
+    const r = Math.random();
+    if (r < CONFIG.HOODIE_SHARE) type = 'hoodie';
+    else if (r < CONFIG.HOODIE_SHARE + CONFIG.CAP_SHARE) type = 'cap';
+  }
+  if (!sim.demo && lvl >= CONFIG.BONUS_LEVEL && Math.random() < CONFIG.BONUS_CHANCE) { type = 'sticker'; bonus = true; }
+  sim.items.push({
+    type, bonus, x: -120, judged: false, result: null, printT: null, tilt: 0, dx: 0, dy: 0,
+    seed: Math.random() * 10,
+    demoOff: (Math.random() - 0.5) * sim.zone * 1.1, // Demo trifft mal perfekt, mal okay
+  });
+}
+function nearestUnjudged() {
+  let best = null, bd = Infinity;
+  for (const it of sim.items) {
+    if (it.judged) continue;
+    const d = Math.abs(it.x - L.pressX);
+    if (d < bd) { bd = d; best = it; }
+  }
+  return { item: best, d: bd };
+}
+function judge() {
+  const { item, d } = nearestUnjudged();
+  const half = sim.zone / 2;
+  if (item && d <= half) return { result: 'perfect', item };
+  if (item && d <= half + CONFIG.TOLERANCE) return { result: 'okay', item };
+  if (item && d <= half + CONFIG.TOLERANCE + CONFIG.SMEAR_RANGE) return { result: 'smear', item };
+  return { result: 'empty', item: null };
+}
+function doPress() {
+  const p = sim.press;
+  if (p.phase !== 'idle') return;
+  Snd.click();
+  p.phase = 'down'; p.t = 0;
+  p.pending = judge();
+}
+function land() {
+  const p = sim.press;
+  const r = p.pending; p.pending = null;
+  Snd.thud();
+  if (!r) return;
+  const it = r.item;
+  if (it) {
+    it.judged = true; it.result = r.result; it.printT = 0;
+    if (r.result === 'okay') {
+      const sgn = it.x < L.pressX ? -1 : 1;
+      it.tilt = sgn * (6 + Math.random() * 8);
+      it.dx = sgn * (4 + Math.random() * 6); it.dy = (Math.random() - 0.5) * 8;
+    }
+  }
+  const px = L.pressX, py = L.plateDown + 30;
+  if (sim.demo) {
+    if (r.result === 'perfect') confetti(px, py, 20);
+    return;
+  }
+  G.shake = r.result === 'perfect' ? 9 : (r.result === 'okay' ? 4 : 6);
+  const prevMult = comboMult();
+  if (r.result === 'perfect') {
+    G.combo++; G.shirtsDone++;
+    addPoints(CONFIG.POINTS_PERFECT, it);
+    popup('PERFEKT!', COLOR_GOOD, 74);
+    confetti(px, py, 46);
+    Snd.perfect();
+    const m = comboMult();
+    if (m > prevMult) { setTimeout(() => Snd.combo(), 250); popup('COMBO ×' + m + '!', COLOR_ACCENT, 60, 0.35); }
+  } else if (r.result === 'okay') {
+    G.shirtsDone++;
+    addPoints(CONFIG.POINTS_OKAY, it);
+    popup('Okay', COLOR_OK, 60);
+    confetti(px, py, 10);
+    Snd.okay();
+  } else if (r.result === 'smear') {
+    G.shirtsDone++;
+    smoke(px, py);
+    loseLife('Ups!');
+  } else { // leeres Band
+    G.combo = 0;
+    smoke(px, py);
+    if (CONFIG.EMPTY_PRESS_COSTS_LIFE) loseLife('Ups!');
+    else { popup('Daneben!', COLOR_BAD, 56); Snd.fail(); }
+  }
+  levelCheck();
+}
+function comboMult() {
+  if (G.combo >= CONFIG.COMBO_X3) return 3;
+  if (G.combo >= CONFIG.COMBO_X2) return 2;
+  return 1;
+}
+function addPoints(base, it) {
+  const mult = comboMult();
+  const bonus = it && it.bonus ? CONFIG.BONUS_MULT : 1;
+  const pts = base * mult * bonus;
+  G.score += pts;
+  let s = '+' + pts;
+  if (mult > 1) s += '  ×' + mult;
+  if (bonus > 1) s += '  BONUS';
+  popup(s, '#fff', 40, 0, L.pressX + 250, L.itemY - 70);
+}
+function loseLife(word) {
+  G.combo = 0;
+  popup(word, COLOR_BAD, 70);
+  Snd.fail();
+  if (CONFIG.MODE === 'lives') {
+    G.lives--;
+    G.shake = 8;
+    if (G.lives <= 0 && !G.ending) { G.ending = true; G.endT = CONFIG.GAMEOVER_DELAY; }
+  }
+}
+function levelCheck() {
+  const lvl = Math.floor(G.shirtsDone / CONFIG.SHIRTS_PER_LEVEL) + 1;
+  if (lvl > G.level) {
+    G.level = lvl; applyLevel();
+    popup('LEVEL ' + lvl + '!', COLOR_PRIMARY, 64, 0.6);
+    setTimeout(() => Snd.level(), 500);
+  }
+}
+
+function updateSim(dt) {
+  const p = sim.press;
+  const frozen = p.phase === 'down' || p.phase === 'hold';
+  if (!frozen && !(G.ending && !sim.demo)) {
+    const dx = sim.speed * dt;
+    sim.beltOff = (sim.beltOff + dx) % 40;
+    for (const it of sim.items) it.x += dx;
+    sim.nextSpawn -= dx;
+    if (sim.nextSpawn <= 0) { spawnItem(); sim.nextSpawn = CONFIG.SPAWN_GAP; }
+  }
+  for (let i = sim.items.length - 1; i >= 0; i--) {
+    const it = sim.items[i];
+    if (it.printT != null) it.printT += dt;
+    if (it.x > W + 130) {
+      sim.items.splice(i, 1);
+      if (!it.judged && !sim.demo && !G.ending) {
+        G.shirtsDone++;
+        loseLife('Verpasst!');
+        levelCheck();
+      }
+    }
+  }
+  // Presse-Phasen
+  if (p.phase !== 'idle') {
+    p.t += dt * 1000;
+    if (p.phase === 'down' && p.t >= CONFIG.PRESS_DOWN_MS) { p.phase = 'hold'; p.t = 0; land(); }
+    else if (p.phase === 'hold' && p.t >= CONFIG.PRESS_HOLD_MS) { p.phase = 'up'; p.t = 0; }
+    else if (p.phase === 'up' && p.t >= CONFIG.PRESS_UP_MS) { p.phase = 'idle'; p.t = 0; }
+  }
+  // Demo-Autoplay
+  if (sim.demo && p.phase === 'idle') {
+    const { item, d } = nearestUnjudged();
+    if (item && item.x >= L.pressX + item.demoOff) doPress();
+  }
+}
+
+/* ---------- Partikel & Popups ---------- */
+const particles = [], popups = [];
+const CONF_COLORS = [COLOR_PRIMARY, COLOR_PRIMARY_DARK, COLOR_ACCENT, COLOR_KORTSCHAK, '#ffffff', '#FAFAF7'];
+function confetti(x, y, n) {
+  for (let i = 0; i < n; i++) {
+    const a = -Math.PI / 2 + (Math.random() - 0.5) * 2.2;
+    const v = 260 + Math.random() * 420;
+    particles.push({ kind: 'c', x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, rot: Math.random() * 6, vr: (Math.random() - 0.5) * 14,
+      w: 8 + Math.random() * 8, h: 5 + Math.random() * 6, color: CONF_COLORS[i % CONF_COLORS.length], life: 1.2 + Math.random() * 0.6 });
+  }
+}
+function smoke(x, y) {
+  for (let i = 0; i < 12; i++) {
+    const a = Math.random() * Math.PI * 2;
+    particles.push({ kind: 's', x: x + (Math.random() - 0.5) * 80, y, vx: Math.cos(a) * 60, vy: -40 - Math.random() * 80, r: 10 + Math.random() * 12, life: 0.8 + Math.random() * 0.5, max: 1.3 });
+  }
+}
+function popup(text, color, size, delay = 0, x = L.pressX, y = L.plateRest - 60) {
+  popups.push({ text, color, size, x, y, t: -delay, life: 1.1 });
+}
+function updateFx(dt) {
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const q = particles[i];
+    q.life -= dt;
+    if (q.life <= 0) { particles.splice(i, 1); continue; }
+    if (q.kind === 'c') { q.vy += 900 * dt; q.vx *= 0.99; q.x += q.vx * dt; q.y += q.vy * dt; q.rot += q.vr * dt; }
+    else { q.x += q.vx * dt; q.y += q.vy * dt; q.r += 30 * dt; }
+  }
+  for (let i = popups.length - 1; i >= 0; i--) {
+    const p = popups[i];
+    p.t += dt;
+    if (p.t > p.life) popups.splice(i, 1);
+  }
+  G.shake = Math.max(0, G.shake - 40 * dt);
+}
+function drawFx() {
+  for (const q of particles) {
+    if (q.kind === 'c') {
+      ctx.save(); ctx.translate(q.x, q.y); ctx.rotate(q.rot);
+      ctx.globalAlpha = Math.min(1, q.life * 2);
+      ctx.fillStyle = q.color; ctx.fillRect(-q.w / 2, -q.h / 2, q.w, q.h);
+      ctx.restore();
+    } else {
+      ctx.globalAlpha = Math.max(0, q.life / q.max) * 0.6;
+      ctx.fillStyle = '#6B7280';
+      ctx.beginPath(); ctx.arc(q.x, q.y, q.r, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+  ctx.globalAlpha = 1;
+  for (const p of popups) {
+    if (p.t < 0) continue;
+    const k = p.t / p.life;
+    const pop = p.t < 0.15 ? 0.6 + (p.t / 0.15) * 0.5 : 1.1 - Math.min(0.1, (p.t - 0.15) * 0.3);
+    ctx.save();
+    ctx.globalAlpha = k > 0.7 ? 1 - (k - 0.7) / 0.3 : 1;
+    ctx.translate(p.x, p.y - k * 60);
+    ctx.scale(pop, pop);
+    txt(p.text, 0, 0, { size: p.size, color: p.color, stroke: COLOR_INK, strokeW: p.size * 0.16 });
+    ctx.restore();
+  }
+}
+
+/* =====================================================================
+   Spielzustand / State-Machine
+   ===================================================================== */
+const G = {
+  state: 'START',      // START | PLAYING | ENTER_NAME | GAMEOVER | ATTRACT
+  score: 0, combo: 0, lives: CONFIG.LIVES, timeLeft: CONFIG.TIMER_SECONDS, level: 1, shirtsDone: 0,
+  shake: 0, ending: false, endT: 0,
+  scores: loadScores(), newRecord: false, highlight: -1, name: [], nameFlash: 0,
+  admin: { taps: [], open: false, exportView: null },
+  toast: null,
+};
+
+function setState(s) {
+  G.state = s;
+  hits = [];
+  if (s === 'START' || s === 'ATTRACT') { if (!sim.demo) resetSim(true); }
+}
+function startGame() {
+  G.score = 0; G.combo = 0; G.lives = CONFIG.LIVES; G.timeLeft = CONFIG.TIMER_SECONDS;
+  G.level = 1; G.shirtsDone = 0; G.shake = 0; G.ending = false; G.endT = 0;
+  G.newRecord = false; G.highlight = -1;
+  particles.length = 0; popups.length = 0;
+  resetSim(false);
+  setState('PLAYING');
+  Snd.key();
+}
+function finishGame() {
+  sim.items.length = 0;
+  G.newRecord = G.score > 0 && (G.scores.length === 0 || G.score > G.scores[0].score);
+  if (qualifies(G.score)) {
+    G.name = []; G.nameFlash = 0;
+    setState('ENTER_NAME');
+    if (G.newRecord) Snd.record();
+  } else {
+    G.highlight = -1;
+    setState('GAMEOVER');
+  }
+}
+function confirmName() {
+  let name = G.name.join('').trim();
+  if (!name) name = 'DRUCKER';
+  G.highlight = addScoreEntry(name, G.score);
+  Snd.perfect();
+  setState('GAMEOVER');
+}
+function nameAdd(ch) {
+  if (G.name.length >= CONFIG.NAME_MAX) { G.nameFlash = 0.4; Snd.fail(); return; }
+  G.name.push(ch); Snd.key();
+}
+function nameBack() { if (G.name.length) { G.name.pop(); Snd.key(); } }
+function showToast(text) { G.toast = { text, t: 2.2 }; }
+
+/* =====================================================================
+   Screens
+   ===================================================================== */
+function drawHud() {
+  ctx.fillStyle = 'rgba(26,29,26,0.92)';
+  ctx.fillRect(0, 0, W, L.hud);
+  // Punkte
+  txt('PUNKTE', 24, 22, { size: 18, color: COLOR_MUTED_LIGHT, align: 'left' });
+  txt(String(G.score), 24, 50, { size: 34, color: '#fff', align: 'left' });
+  // Combo
+  const m = comboMult();
+  txt('COMBO', 250, 22, { size: 18, color: COLOR_MUTED_LIGHT, align: 'left' });
+  txt(String(G.combo), 250, 50, { size: 34, color: G.combo >= CONFIG.COMBO_X2 ? COLOR_PRIMARY : '#fff', align: 'left' });
+  if (m > 1) {
+    const pulse = 1 + 0.08 * Math.sin(performance.now() / 110);
+    ctx.save(); ctx.translate(392, 40); ctx.scale(pulse, pulse);
+    ctx.fillStyle = m >= 3 ? COLOR_ACCENT : COLOR_PRIMARY; rr(-34, -22, 68, 44, 12); ctx.fill();
+    ctx.lineWidth = 3; ctx.strokeStyle = '#fff'; ctx.stroke();
+    txt('×' + m, 0, 2, { size: 30, color: m >= 3 ? '#fff' : COLOR_INK });
+    ctx.restore();
+  }
+  // Level
+  txt('LEVEL ' + G.level, W / 2, 38, { size: 30, color: '#fff' });
+  // Leben / Timer
+  if (CONFIG.MODE === 'lives') {
+    for (let i = 0; i < CONFIG.LIVES; i++) drawHeart(W - 260 + i * 46, 38, 44, i < G.lives);
+  } else {
+    const t = Math.max(0, Math.ceil(G.timeLeft));
+    txt('⏱ ' + t + ' s', W - 200, 40, { size: 36, color: t <= 10 ? COLOR_BAD : '#fff' });
+  }
+  drawMuteButton();
+}
+
+function drawPlaying() {
+  ctx.save();
+  if (G.shake > 0) ctx.translate((Math.random() - 0.5) * G.shake, (Math.random() - 0.5) * G.shake);
+  drawScene();
+  drawFx();
+  ctx.restore();
+  drawHud();
+  drawKLogo();
+  drawLogoCard(24, H - 20 - Math.round(200 * 0.36), 200);
+  // Hinweis am Anfang
+  if (G.shirtsDone === 0 && sim.items.length && sim.items[0].x < L.pressX - 200 && !sim.items[0].judged) {
+    const pulse = 1 + 0.05 * Math.sin(performance.now() / 150);
+    ctx.save(); ctx.translate(L.pressX, L.beltY - 300); ctx.scale(pulse, pulse);
+    txt('👆 Tippen, wenn das Shirt in der Zone ist!', 0, 0, { size: 30, color: '#fff', stroke: COLOR_INK });
+    ctx.restore();
+  }
+  if (G.ending) {
+    ctx.fillStyle = 'rgba(0,0,0,0.45)'; ctx.fillRect(0, 0, W, H);
+    bigTitle('GAME OVER', W / 2, H / 2 - 20, 110, '#fff', COLOR_KORTSCHAK);
+  }
+}
+
+function drawInstructionIcons(y) {
+  const xs = [W / 2 - 400, W / 2, W / 2 + 400];
+  const labels = ['Shirt kommt', 'Tippen!', 'Fertig!'];
+  for (let i = 0; i < 3; i++) {
+    const x = xs[i];
+    ctx.fillStyle = '#fff'; rr(x - 130, y - 70, 260, 150, 20); ctx.fill();
+    ctx.lineWidth = 5; ctx.strokeStyle = COLOR_INK; ctx.stroke();
+    ctx.save(); ctx.translate(x, y - 6); ctx.scale(0.62, 0.62);
+    if (i === 0) {
+      ctx.translate(-30, 0);
+      drawShirt({ result: null });
+      ctx.fillStyle = COLOR_PRIMARY; ctx.strokeStyle = COLOR_INK; ctx.lineWidth = 6;
+      ctx.beginPath(); ctx.moveTo(90, -10); ctx.lineTo(150, -10); ctx.lineTo(150, -34); ctx.lineTo(200, 4); ctx.lineTo(150, 42); ctx.lineTo(150, 18); ctx.lineTo(90, 18); ctx.closePath(); ctx.fill(); ctx.stroke();
+    } else if (i === 1) {
+      // Mini-Presse
+      ctx.fillStyle = COLOR_KORTSCHAK; ctx.strokeStyle = COLOR_INK; ctx.lineWidth = 6;
+      rr(-110, -90, 220, 36, 10); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#9AA4AF'; ctx.fillRect(-16, -54, 32, 40); ctx.strokeRect(-16, -54, 32, 40);
+      ctx.fillStyle = COLOR_KORTSCHAK; rr(-90, -14, 180, 30, 8); ctx.fill(); ctx.stroke();
+      txt('👆', 60, 50, { size: 90 });
+    } else {
+      ctx.translate(-20, 0);
+      drawShirt({ result: 'perfect', tilt: 0, dx: 0, dy: 0 });
+      ctx.fillStyle = COLOR_GOOD; ctx.beginPath(); ctx.arc(100, -40, 34, 0, Math.PI * 2); ctx.fill();
+      ctx.lineWidth = 6; ctx.strokeStyle = COLOR_INK; ctx.stroke();
+      ctx.strokeStyle = '#fff'; ctx.lineWidth = 9; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(84, -40); ctx.lineTo(96, -28); ctx.lineTo(118, -56); ctx.stroke();
+    }
+    ctx.restore();
+    txt(labels[i], x, y + 58, { size: 26, color: COLOR_INK });
+    if (i < 2) txt('➜', x + 200, y, { size: 44, color: '#fff', stroke: COLOR_INK });
+  }
+}
+
+function drawLogo(y, size) {
+  bigTitle('DRUCK-MEISTER', W / 2, y, size);
+}
+
+function drawStart() {
+  drawScene();
+  ctx.fillStyle = 'rgba(26,29,26,0.62)'; ctx.fillRect(0, 0, W, H);
+  const logoY = H * 0.12;
+  drawLogo(logoY, 92);
+  txt('Drucke Trofaiach-Shirts wie ein Profi!', W / 2, H * 0.21, { size: 28, color: COLOR_PRIMARY, stroke: COLOR_INK });
+  // Admin: 5× auf das Logo tippen
+  addHit(W / 2 - 420, logoY - 60, 840, 120, adminTap);
+
+  drawLogoCard(24, 20, 230);
+  drawInstructionIcons(H * 0.38);
+  button(W / 2, H * 0.575, 440, 100, "Los geht's!  👉", startGame, { size: 44 });
+
+  // Top 5
+  const ty = H * 0.70;
+  txt('🏆 Bestenliste', W / 2, ty, { size: 30, color: '#fff', stroke: COLOR_INK });
+  const top = G.scores.slice(0, 5);
+  const rowH = Math.min(36, (H - ty - 40) / 5.2);
+  if (top.length === 0) txt('Noch keine Einträge – sei der Erste!', W / 2, ty + rowH * 1.2, { size: 24, color: COLOR_FLOOR });
+  top.forEach((e, i) => {
+    const y = ty + rowH * (i + 1.3);
+    txt((i + 1) + '.', W / 2 - 220, y, { size: 24, color: COLOR_PRIMARY, align: 'right' });
+    txt(e.name, W / 2 - 200, y, { size: 24, color: '#fff', align: 'left' });
+    txt(e.score + ' Punkte', W / 2 + 220, y, { size: 24, color: '#fff', align: 'right' });
+  });
+  drawMuteButton();
+  drawKLogo();
+}
+
+function drawAttract() {
+  drawScene();
+  drawFx();
+  ctx.fillStyle = 'rgba(26,29,26,0.35)'; ctx.fillRect(0, 0, W, H);
+  drawLogo(H * 0.16, 100);
+  drawLogoCard(24, 20, 230);
+  const pulse = 1 + 0.06 * Math.sin(performance.now() / 200);
+  ctx.save(); ctx.translate(W / 2, H * 0.40); ctx.scale(pulse, pulse);
+  txt('👆 Tippen zum Spielen!', 0, 0, { size: 60, color: COLOR_PRIMARY, stroke: COLOR_INK });
+  ctx.restore();
+  if (G.scores.length) {
+    txt('Rekord: ' + G.scores[0].name + ' – ' + G.scores[0].score + ' Punkte', W / 2, H * 0.52, { size: 30, color: '#fff', stroke: COLOR_INK });
+  }
+  drawKLogo();
+}
+
+const KEY_ROWS = [
+  ['Q', 'W', 'E', 'R', 'T', 'Z', 'U', 'I', 'O', 'P', 'Ü'],
+  ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ö', 'Ä'],
+  ['Y', 'X', 'C', 'V', 'B', 'N', 'M', '🦊', '🚀', '⚽', '🐸'],
+  ['🦄', '🍕', '⭐', '🐱', '🌈', '🎈', { k: '⌫', w: 1.5 }, { k: 'OK', w: 2 }],
+];
+const KB = { pitch: 106, kh: 74, rowH: 84 };
+
+function drawKeyboard(top) {
+  KEY_ROWS.forEach((row, ri) => {
+    const total = row.reduce((s, k) => s + (k.w || 1), 0) * KB.pitch;
+    let x = (W - total) / 2 + 5;
+    const y = top + ri * KB.rowH;
+    row.forEach(k => {
+      const key = typeof k === 'string' ? k : k.k;
+      const w = (k.w || 1) * KB.pitch - 10;
+      const isOk = key === 'OK', isBack = key === '⌫';
+      const col = isOk ? COLOR_GOOD : isBack ? COLOR_FLOOR : '#fff';
+      ctx.fillStyle = COLOR_INK; rr(x, y + 5, w, KB.kh, 12); ctx.fill();
+      ctx.fillStyle = col; rr(x, y, w, KB.kh, 12); ctx.fill();
+      ctx.lineWidth = 3; ctx.strokeStyle = COLOR_INK; ctx.stroke();
+      txt(key, x + w / 2, y + KB.kh / 2 + 2, { size: isOk ? 34 : 36, color: isOk ? '#fff' : COLOR_INK });
+      const fn = isOk ? confirmName : isBack ? nameBack : () => nameAdd(key);
+      addHit(x, y, w, KB.kh + 5, fn);
+      x += (k.w || 1) * KB.pitch;
+    });
+  });
+}
+
+function drawEnterName() {
+  ctx.fillStyle = COLOR_DARK; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = COLOR_PRIMARY; ctx.globalAlpha = 0.12; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1;
+  const kbTop = H - KEY_ROWS.length * KB.rowH - 14;
+  const boxY = kbTop - 58;
+  const labelY = boxY - 62;
+  const recordY = Math.min(labelY - 56, H * 0.2);
+  const scoreY = recordY - 58;
+  const titleY = scoreY - 50;
+
+  drawLogoCard(24, 20, 200);
+  txt('GAME OVER', W / 2, titleY, { size: 30, color: COLOR_MUTED_LIGHT });
+  bigTitle(G.score + ' Punkte', W / 2, scoreY, 62, '#fff', COLOR_PRIMARY);
+  if (G.newRecord) {
+    const pulse = 1 + 0.06 * Math.sin(performance.now() / 150);
+    ctx.save(); ctx.translate(W / 2, recordY); ctx.scale(pulse, pulse);
+    txt('🏆 NEUER REKORD! 🏆', 0, 0, { size: 40, color: COLOR_PRIMARY, stroke: COLOR_INK });
+    ctx.restore();
+  } else {
+    txt('Super gemacht! Du bist in der Bestenliste!', W / 2, recordY, { size: 30, color: COLOR_PRIMARY });
+  }
+  txt('Dein Name:', W / 2, labelY, { size: 28, color: '#fff' });
+  // Eingabefeld
+  const bw = 600, bh = 78;
+  ctx.fillStyle = G.nameFlash > 0 ? COLOR_BAD : '#fff';
+  rr(W / 2 - bw / 2, boxY - bh / 2, bw, bh, 16); ctx.fill();
+  ctx.lineWidth = 5; ctx.strokeStyle = COLOR_INK; ctx.stroke();
+  const shown = G.name.join('');
+  const blink = Math.floor(performance.now() / 500) % 2 === 0;
+  txt(shown + (blink && G.name.length < CONFIG.NAME_MAX ? '|' : ''), W / 2, boxY + 2, { size: 44, color: COLOR_INK });
+  txt(G.name.length + '/' + CONFIG.NAME_MAX, W / 2 + bw / 2 + 50, boxY, { size: 22, color: COLOR_MUTED_LIGHT, align: 'left' });
+
+  drawKeyboard(kbTop);
+  drawMuteButton();
+}
+
+function drawGameOver() {
+  ctx.fillStyle = COLOR_DARK; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = COLOR_PRIMARY; ctx.globalAlpha = 0.12; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1;
+  drawLogoCard(24, 20, 200);
+  txt('🏆 BESTENLISTE 🏆', W / 2, 52, { size: 44, color: COLOR_PRIMARY, stroke: COLOR_INK });
+  txt('Deine Punkte: ' + G.score, W / 2, 108, { size: 30, color: '#fff' });
+  const listTop = 150;
+  const rowH = Math.min(58, (H - listTop - 130) / 5);
+  const cols = [W / 2 - 300, W / 2 + 300];
+  if (G.scores.length === 0) txt('Noch keine Einträge.', W / 2, listTop + 60, { size: 28, color: COLOR_FLOOR });
+  G.scores.slice(0, 10).forEach((e, i) => {
+    const cx = cols[i < 5 ? 0 : 1];
+    const y = listTop + (i % 5) * rowH + rowH / 2;
+    const hl = i === G.highlight;
+    if (hl) {
+      const pulse = 0.85 + 0.15 * Math.sin(performance.now() / 150);
+      ctx.fillStyle = COLOR_PRIMARY; ctx.globalAlpha = pulse;
+      rr(cx - 280, y - rowH / 2 + 3, 560, rowH - 6, 14); ctx.fill(); ctx.globalAlpha = 1;
+      ctx.lineWidth = 3; ctx.strokeStyle = '#fff'; ctx.stroke();
+    }
+    const c = hl ? COLOR_INK : '#fff';
+    txt((i + 1) + '.', cx - 250, y, { size: 28, color: hl ? COLOR_INK : COLOR_PRIMARY, align: 'right' });
+    txt(e.name, cx - 225, y, { size: 28, color: c, align: 'left' });
+    txt(String(e.score), cx + 200, y, { size: 28, color: c, align: 'right' });
+    txt(timeHM(e.time), cx + 265, y, { size: 18, color: hl ? COLOR_INK : COLOR_MUTED_LIGHT, align: 'right', weight: 700 });
+  });
+  button(W / 2, H - 70, 420, 96, 'Nochmal!  🔁', startGame, { size: 42 });
+  button(150, H - 70, 220, 72, 'Start', () => setState('START'), { color: COLOR_FLOOR, size: 30 });
+  drawMuteButton();
+  drawKLogo();
+}
+
+/* ---------- Admin (5× Logo) ---------- */
+function adminTap() {
+  const now = performance.now();
+  G.admin.taps = G.admin.taps.filter(t => now - t < CONFIG.ADMIN_TAP_WINDOW_MS);
+  G.admin.taps.push(now);
+  if (G.admin.taps.length >= CONFIG.ADMIN_TAPS) { G.admin.taps = []; G.admin.open = true; Snd.key(); }
+}
+function drawAdmin() {
+  hits = [];
+  ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(0, 0, W, H);
+  if (G.admin.exportView) {
+    ctx.fillStyle = '#fff'; rr(80, 40, W - 160, H - 80, 20); ctx.fill();
+    txt('Zwischenablage nicht verfügbar – bitte abfotografieren', W / 2, 80, { size: 26, color: COLOR_INK });
+    const lines = G.admin.exportView.split('\n');
+    lines.forEach((l, i) => txt(l, 120, 130 + i * 40, { size: 26, color: COLOR_INK, align: 'left', weight: 700 }));
+    button(W / 2, H - 90, 300, 72, 'Schließen', () => { G.admin.exportView = null; G.admin.open = false; }, { color: COLOR_FLOOR });
+    return;
+  }
+  const bw = 820, bh = 320, bx = W / 2 - bw / 2, by = H / 2 - bh / 2;
+  ctx.fillStyle = '#fff'; rr(bx, by, bw, bh, 24); ctx.fill();
+  ctx.lineWidth = 5; ctx.strokeStyle = COLOR_INK; ctx.stroke();
+  txt('Bestenliste löschen?', W / 2, by + 70, { size: 44, color: COLOR_INK });
+  txt(G.scores.length + ' Einträge gespeichert', W / 2, by + 125, { size: 26, color: '#556270' });
+  button(W / 2 - 260, by + 230, 230, 76, 'Löschen', () => {
+    saveScores([]); G.scores = []; G.admin.open = false; showToast('Bestenliste gelöscht');
+  }, { color: COLOR_BAD, textColor: '#fff', size: 30 });
+  button(W / 2, by + 230, 250, 76, 'Exportieren', async () => {
+    const t = exportText();
+    const ok = await copyToClipboard(t);
+    if (ok) { G.admin.open = false; showToast('Bestenliste kopiert ✔'); }
+    else G.admin.exportView = t;
+  }, { color: COLOR_PRIMARY, textColor: '#fff', size: 30 });
+  button(W / 2 + 260, by + 230, 230, 76, 'Abbrechen', () => { G.admin.open = false; }, { color: COLOR_FLOOR, size: 30 });
+}
+function drawToast() {
+  if (!G.toast) return;
+  const a = Math.min(1, G.toast.t * 3);
+  ctx.save(); ctx.globalAlpha = a;
+  const w = textWidth(G.toast.text, 28) + 60;
+  ctx.fillStyle = COLOR_INK; rr(W / 2 - w / 2, H - 150, w, 60, 16); ctx.fill();
+  txt(G.toast.text, W / 2, H - 120, { size: 28, color: '#fff' });
+  ctx.restore();
+}
+
+/* =====================================================================
+   Update & Draw
+   ===================================================================== */
+let lastInput = performance.now();
+
+function update(dt, now) {
+  if (G.toast) { G.toast.t -= dt; if (G.toast.t <= 0) G.toast = null; }
+  if (G.nameFlash > 0) G.nameFlash -= dt;
+
+  // Inaktivität → Attract
+  if (G.state !== 'ATTRACT' && !G.admin.open && now - lastInput > CONFIG.IDLE_TO_ATTRACT_MS) {
+    G.admin.open = false;
+    setState('ATTRACT');
+  }
+
+  switch (G.state) {
+    case 'PLAYING':
+      if (CONFIG.MODE === 'timer' && !G.ending) {
+        G.timeLeft -= dt;
+        if (G.timeLeft <= 0) { G.timeLeft = 0; G.ending = true; G.endT = CONFIG.GAMEOVER_DELAY; }
+      }
+      updateSim(dt);
+      updateFx(dt);
+      if (G.ending) { G.endT -= dt; if (G.endT <= 0) finishGame(); }
+      break;
+    case 'START':
+    case 'ATTRACT':
+      updateSim(dt);
+      updateFx(dt);
+      break;
+  }
+}
+
+function draw() {
+  hits = [];
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.fillStyle = COLOR_DARK; ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.setTransform(dpr * scale, 0, 0, dpr * scale, offX * dpr, offY * dpr);
+  ctx.save();
+  ctx.beginPath(); ctx.rect(0, 0, W, H); ctx.clip();
+  switch (G.state) {
+    case 'START': drawStart(); break;
+    case 'PLAYING': drawPlaying(); break;
+    case 'ENTER_NAME': drawEnterName(); break;
+    case 'GAMEOVER': drawGameOver(); break;
+    case 'ATTRACT': drawAttract(); break;
+  }
+  if (G.admin.open) drawAdmin();
+  drawToast();
+  ctx.restore();
+}
+
+let lastT = performance.now();
+function loop(now) {
+  let dt = (now - lastT) / 1000; lastT = now;
+  if (dt > 0.05) dt = 0.05;  // Tab-Wechsel etc. nicht als Riesen-Sprung
+  update(dt, now);
+  draw();
+  requestAnimationFrame(loop);
+}
+
+/* =====================================================================
+   Input, Fullscreen, Wake-Lock
+   ===================================================================== */
+let firstDone = false, wakeLock = null;
+async function requestWakeLock() {
+  try { if ('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen'); } catch (e) {}
+}
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && firstDone) requestWakeLock(); });
+function firstInteraction() {
+  Snd.init();
+  if (firstDone) return;
+  firstDone = true;
+  try {
+    const el = document.documentElement;
+    const fs = el.requestFullscreen || el.webkitRequestFullscreen;
+    if (fs) { const r = fs.call(el, { navigationUI: 'hide' }); if (r && r.catch) r.catch(() => {}); }
+  } catch (e) {}
+  requestWakeLock();
+}
+
+function handleTap(x, y) {
+  for (let i = hits.length - 1; i >= 0; i--) {
+    const h = hits[i];
+    if (x >= h.x && x <= h.x + h.w && y >= h.y && y <= h.y + h.h) { h.fn(); return; }
+  }
+  if (G.admin.open) return;
+  defaultAction();
+}
+function defaultAction() {
+  switch (G.state) {
+    case 'PLAYING': if (!G.ending) doPress(); break;
+    case 'ATTRACT': setState('START'); Snd.key(); break;
+  }
+}
+
+canvas.addEventListener('pointerdown', e => {
+  e.preventDefault();
+  if (e.isPrimary === false) return;
+  firstInteraction();
+  lastInput = performance.now();
+  handleTap((e.clientX - offX) / scale, (e.clientY - offY) / scale);
+}, { passive: false });
+['touchstart', 'touchmove', 'gesturestart', 'dblclick', 'contextmenu'].forEach(ev =>
+  document.addEventListener(ev, e => e.preventDefault(), { passive: false }));
+
+window.addEventListener('keydown', e => {
+  lastInput = performance.now();
+  Snd.init();
+  if (G.admin.open) { if (e.key === 'Escape') G.admin.open = false; return; }
+  if (G.state === 'ENTER_NAME') {
+    if (e.key === 'Backspace') nameBack();
+    else if (e.key === 'Enter') confirmName();
+    else if (/^[a-zA-ZäöüÄÖÜ]$/.test(e.key)) nameAdd(e.key.toUpperCase());
+    e.preventDefault();
+    return;
+  }
+  if (e.code === 'Space' || e.key === 'Enter') {
+    e.preventDefault();
+    if (G.state === 'START' || G.state === 'GAMEOVER') startGame();
+    else defaultAction();
+  }
+  if (e.key === 'm' || e.key === 'M') Snd.toggle();
+});
+
+resetSim(true);
+requestAnimationFrame(loop);
+</script>
+<!--
+=====================================================================
+README – Druck-Meister am Messestand
+=====================================================================
+
+DATEI
+  Eine einzige index.html, komplett offline. Kein Build, keine Fonts,
+  keine CDNs. Einfach öffnen.
+
+iPAD (Safari)
+  1. index.html aufs iPad bringen (AirDrop, Dateien-App, iCloud, USB).
+  2. In der Dateien-App antippen → öffnet in Safari. Alternativ: einen
+     lokalen Server am Laptop starten (siehe unten) und die URL im Safari
+     öffnen – dann kann man auch "Zum Home-Bildschirm" nutzen:
+     Teilen-Symbol → "Zum Home-Bildschirm". Das Icon startet dann ohne
+     Safari-Leisten (Vollbild, Meta-Tags sind gesetzt).
+  3. Empfohlen: Einstellungen → Bedienungshilfen → "Geführter Zugriff"
+     einschalten (dreifach Seitentaste). Damit können Kinder die App
+     nicht verlassen. Auto-Sperre auf "Nie" stellen (Wake-Lock ist
+     unter iOS Safari nicht immer verfügbar).
+
+ANDROID (Chrome)
+  1. Datei kopieren und in Chrome öffnen: file:///sdcard/Download/index.html
+     oder über einen lokalen Server (siehe unten).
+  2. Chrome-Menü → "Zum Startbildschirm hinzufügen" → startet als
+     Vollbild-App. Der erste Tap fordert außerdem Fullscreen an.
+  3. Einstellungen → "Bildschirm anheften" (App-Pinning) aktivieren,
+     damit niemand aus dem Spiel herauskommt.
+
+LOKALER SERVER (zum Testen im WLAN)
+  Im Ordner der Datei:   python3 -m http.server 8080
+  Dann am Tablet:        http://<IP-des-Laptops>:8080/
+  (IP am Mac: System­einstellungen → WLAN → Details, oder `ipconfig getifaddr en0`)
+
+BEDIENUNG
+  Tap / Klick / Leertaste = Presse.  M = Ton an/aus.
+  Admin: 5× schnell auf das Logo im Start-Screen tippen → Bestenliste
+  löschen oder als Text in die Zwischenablage exportieren.
+  Nach 45 s ohne Eingabe: Attract-Mode, Tap = zurück zum Start.
+
+TUNING
+  Alles im CONFIG-Objekt ganz oben im Script: MODE ("lives"/"timer"),
+  Geschwindigkeit, Zonenbreite, Punkte, Combo-Schwellen, Bonus ab Level.
+  Farben: COLOR_* – Palette aus dem Farbdesign shop.trofaiach.at
+  (Limette #A4C72C, Dunkelgrün #7DA01F, Orange #EA580C), COLOR_KORTSCHAK.
+  Logo: LOGO_SVG_B64 (src/trofaiach-logo.svg). Neues Logo → SVG minimieren,
+  Base64 einsetzen; Seitenverhältnis 960:312 in drawLogoCard anpassen.
+  Motive: MERCH_IMAGES – leer = Logo, sonst Base64-PNG je Artikel.
+=====================================================================
+-->
+</body>
+</html>
