@@ -788,9 +788,38 @@
     50%{transform:translateY(-14px) rotate(-2deg);}
   }
   .sm-hero__video{display:block;width:100%;height:auto;border-radius:clamp(30px,3.2vw,40px);background:#000;}
+  /* Laptop-Mockup neben dem Handy (02.09.2026, Lamas Änderungsliste —
+     analog Austrotrucker): die Facebook-Desktop-Ansicht im schlanken
+     Notebook-Rahmen, das Handy rückt überlappend davor. */
+  .sm-hero__geraete{
+    position:relative;justify-self:center;
+    display:flex;align-items:center;justify-content:center;
+    width:100%;
+  }
+  .sm-hero__laptop{
+    width:clamp(300px,30vw,520px);position:relative;
+    background:#0b0b0d;border:1px solid rgba(255,255,255,.16);
+    border-radius:14px;padding:10px 10px 12px;
+    box-shadow:0 40px 80px rgba(0,0,0,.55);
+  }
+  .sm-hero__laptop img{display:block;width:100%;height:auto;border-radius:8px;}
+  .sm-hero__laptop::after{
+    content:"";position:absolute;left:-7%;right:-7%;bottom:-12px;height:12px;
+    background:linear-gradient(#48484c,#1d1d1f);
+    border-radius:2px 2px 14px 14px;
+  }
+  .sm-hero__geraete .sm-hero__phone{
+    width:clamp(150px,13vw,190px);
+    margin-left:calc(clamp(150px,13vw,190px)*-.4);
+    margin-bottom:-2.5rem;
+    z-index:2;
+  }
   @media (max-width:860px){
     .sm-hero__inner{grid-template-columns:1fr;}
     .sm-hero__phone{width:min(62vw,250px);margin-top:var(--space-2);}
+    .sm-hero__geraete{margin-top:var(--space-2);}
+    .sm-hero__laptop{width:min(74vw,440px);}
+    .sm-hero__geraete .sm-hero__phone{width:min(32vw,170px);margin-top:0;margin-bottom:-1.6rem;}
   }
 
   /* ===== Arbeitsproben als Bento aus zwei Reihen unterschiedlicher Höhe:
@@ -1464,8 +1493,16 @@
            Autoplay-Reels zeigt das Handy jetzt das Instagram-Profil –
            analog zur Austrotrucker-Seite. Das Reel lief ohnehin unten
            in "Reels & Bewegtbild" weiter. -->
-      <div class="sm-hero__phone">
-        <img class="sm-hero__video" src="/assets/img/projekte/paltentaler/profil.webp" alt="Instagram-Profil paltentaler mit Beitragsraster: Steine fürs Leben" fetchpriority="high" width="900" height="2333">
+      <!-- 02.09.2026 (Lamas Änderungsliste): Laptop-Mockup mit der
+           Facebook-Seite (Datei Facebook.png) neben dem Handy — wie auf
+           der Austrotrucker-Seite. -->
+      <div class="sm-hero__geraete">
+        <div class="sm-hero__laptop">
+          <img src="/assets/img/projekte/paltentaler/hero-facebook.webp" alt="Facebook-Seite Paltentaler in der Desktop-Ansicht mit dem Titelbild Steine fürs Leben" fetchpriority="high" width="1600" height="830">
+        </div>
+        <div class="sm-hero__phone">
+          <img class="sm-hero__video" src="/assets/img/projekte/paltentaler/profil.webp" alt="Instagram-Profil paltentaler mit Beitragsraster: Steine fürs Leben" width="900" height="2333">
+        </div>
       </div>
     </div>
   </section>
