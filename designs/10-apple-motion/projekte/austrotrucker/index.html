@@ -1223,8 +1223,8 @@
      eine Reihe fester Höhe wie im Arbeitsproben-Bento — jedes Medium
      behält sein Seitenverhältnis, alle enden auf gleicher Kante. */
   .pj-bilder--reel{
-    display:flex;align-items:stretch;justify-content:flex-start;
-    height:clamp(260px,26vw,350px);
+    display:flex;align-items:stretch;justify-content:center;
+    height:clamp(360px,36vw,500px); /* 02.09.2026: ein Reel, gross */
   }
   .pj-bilder--reel img,.pj-bilder--reel video{height:100%;width:auto;}
   .pj-bilder--reel img:last-child{transform:none;}
@@ -1232,7 +1232,7 @@
   @media (max-width:860px){
     .pj-split{grid-template-columns:1fr;}
     .pj-bilder img:last-child{transform:none;}
-    .pj-bilder--reel{height:clamp(220px,52vw,300px);justify-content:center;}
+    .pj-bilder--reel{height:clamp(300px,80vw,440px);justify-content:center;}
   }
   /* Kampagnen-Video in den Kennzahlen (Aufruf-Kampagne) */
   .pj-video{margin:var(--space-4) auto 0;width:clamp(230px,26vw,300px);}
@@ -1584,9 +1584,11 @@
           <p>Die Ausgangsmaterialien sind entsprechend unterschiedlich. Sie reichen von fachlichen Informationen und Veranstaltungstexten bis zu Fotos, Videos und Einblicken aus der Community.</p>
           <p>Unsere Aufgabe ist es, diese Inhalte zu prüfen, zu strukturieren und in eine Social-Media-Form zu übersetzen, die verständlich, aktuell und als Teil des Austrotrucker-Auftritts erkennbar ist.</p>
         </div>
+        <!-- 02.09.2026 (Jörn): nur noch das Reel, deutlich grösser – die
+             beiden kleinen Bilder (Profilraster post-16, Community-Post
+             post-08) sind raus; das Profil zeigt ohnehin schon das Hero-
+             Handy. -->
         <div class="pj-bilder pj-bilder--reel reveal" data-delay="1">
-          <img src="/assets/img/projekte/austrotrucker/post-16.webp" alt="Austrotrucker-Instagram-Profil mit Story-Highlights und einheitlich gestaltetem Beitragsraster" loading="lazy" width="900" height="2410">
-          <img src="/assets/img/projekte/austrotrucker/post-08.webp" alt="Community-Beitrag: Schwertransport von Transporte A. Eder Richtung Liezen" loading="lazy" width="900" height="1375">
           <video controls playsinline preload="none" width="720" height="1280" src="/assets/img/projekte/austrotrucker/reel-wissen.mp4" poster="/assets/img/projekte/austrotrucker/reel-wissen-poster.webp" aria-label="Reel aus dem Format Wissen für unterwegs mit Anja Krenn"></video>
         </div>
       </div>
