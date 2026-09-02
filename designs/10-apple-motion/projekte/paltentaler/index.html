@@ -937,6 +937,9 @@
     color:rgba(255,255,255,.75);font-size:.85rem;letter-spacing:.04em;
     font-variant-numeric:tabular-nums;
   }
+  /* Klickbare Inhaltsbilder (projekt-lightbox.js haengt .lb-bild an) */
+  .lb-bild{cursor:zoom-in;}
+  .lb-bild:focus-visible{outline:3px solid var(--accent);outline-offset:3px;}
 
   /* ===== Kundenstimmen als Liquid-Glass-Slider: transluzente Kacheln mit
      Blur und Lichtkante über einem Farbschein, horizontal scroll- UND
@@ -1216,6 +1219,14 @@
   .pj-bilder{display:grid;grid-template-columns:1.25fr .9fr;gap:clamp(.9rem,1.6vw,1.3rem);align-items:end;}
   .pj-bilder img{width:100%;height:auto;border-radius:var(--radius-md);box-shadow:var(--shadow-md);display:block;}
   .pj-bilder img:last-child{transform:translateY(clamp(1rem,3vw,2.2rem));}
+  /* Recruiting (02.09.2026, Lamas Wunsch "Bilder groesser"): Text oben,
+     beide Anzeigen-Haelften darunter in voller Breite nebeneinander –
+     jede Platzierung ist damit rund doppelt so gross wie in der Spalte. */
+  .pj-split--stapel{grid-template-columns:1fr;gap:clamp(1.8rem,4vw,3rem);}
+  .pj-split--stapel .pj-split__text{max-width:72ch;}
+  .pj-bilder--breit{grid-template-columns:1fr 1fr;align-items:start;}
+  .pj-bilder--breit img:last-child{transform:none;}
+  @media (max-width:700px){ .pj-bilder--breit{grid-template-columns:1fr;} }
   @media (max-width:860px){
     .pj-split{grid-template-columns:1fr;}
     .pj-bilder img:last-child{transform:none;}
@@ -1702,7 +1713,7 @@
   <!-- ===== SEKTION 09: RECRUITING-KAMPAGNE ===== -->
   <section class="section section--alt" id="recruiting" aria-labelledby="recruiting-title">
     <div class="wrap schein schein--b">
-      <div class="pj-split">
+      <div class="pj-split pj-split--stapel">
         <div class="pj-split__text reveal">
           <p class="eyebrow">Recruiting</p>
           <h2 class="display" id="recruiting-title">Social Media auch für die <span class="gradient-text">Mitarbeitersuche.</span></h2>
@@ -1718,7 +1729,7 @@
         <!-- 28.08.2026 nachgereicht (LP_Paltentaler_Stelle): die Kampagne
              "Produktionsmitarbeiter:in Rohstoffaufbereitung" in allen vier
              Platzierungen, als zwei Haelften geschnitten. -->
-        <div class="pj-bilder reveal" data-delay="1">
+        <div class="pj-bilder pj-bilder--breit reveal" data-delay="1">
           <img src="/assets/img/projekte/paltentaler/kampagne-stelle-1.webp" alt="Recruiting-Anzeige Produktionsmitarbeiter:in Rohstoffaufbereitung im Facebook- und Instagram-Feed" loading="lazy" width="1696" height="1594">
           <img src="/assets/img/projekte/paltentaler/kampagne-stelle-2.webp" alt="Dieselbe Stellenanzeige als Instagram- und Facebook-Story" loading="lazy" width="1696" height="1594">
         </div>
@@ -1743,6 +1754,22 @@
       </div>
     </div>
   </section>
+
+  <!-- ===== LIGHTBOX (02.09.2026): alle Inhaltsbilder der Seite, Skript
+       /assets/js/projekt-lightbox.js ===== -->
+  <div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Bilder in Großansicht">
+    <button class="lightbox__knopf lightbox__schliessen" type="button" aria-label="Großansicht schließen">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <button class="lightbox__knopf lightbox__pfeil--links" type="button" aria-label="Vorheriges Bild">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+    </button>
+    <figure class="lightbox__inhalt"></figure>
+    <button class="lightbox__knopf lightbox__pfeil--rechts" type="button" aria-label="Nächstes Bild">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+    </button>
+    <p class="lightbox__zaehler" aria-live="polite"></p>
+  </div>
 
 </main>
 
@@ -2007,6 +2034,7 @@ if(reduce || !('IntersectionObserver' in window)){
   });
 })();
 </script>
+<script src="/assets/js/projekt-lightbox.js" defer></script>
 <script src="/assets/js/tracking-consent.js" defer></script>
 </body>
 </html>

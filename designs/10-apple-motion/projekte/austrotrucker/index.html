@@ -937,6 +937,9 @@
     color:rgba(255,255,255,.75);font-size:.85rem;letter-spacing:.04em;
     font-variant-numeric:tabular-nums;
   }
+  /* Klickbare Inhaltsbilder (projekt-lightbox.js haengt .lb-bild an) */
+  .lb-bild{cursor:zoom-in;}
+  .lb-bild:focus-visible{outline:3px solid var(--accent);outline-offset:3px;}
 
   /* ===== Kundenstimmen als Liquid-Glass-Slider: transluzente Kacheln mit
      Blur und Lichtkante über einem Farbschein, horizontal scroll- UND
@@ -2009,6 +2012,7 @@ if(reduce || !('IntersectionObserver' in window)){
   });
 })();
 </script>
+<script src="/assets/js/projekt-lightbox.js" defer></script>
 <script src="/assets/js/tracking-consent.js" defer></script>
 </body>
 </html>
