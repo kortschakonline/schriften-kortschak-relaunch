@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="facebook-domain-verification" content="aji0gosd6o3e8igiwgcxy3gctlwhg6">
 <title>Werbetechnik &amp; Beschriftung in Trofaiach | Kortschak Schriften GmbH</title>
 <meta name="description" content="Werbeagentur in Trofaiach, Steiermark: Fahrzeugbeschriftung, Car Wrapping, Werbeschilder, Textildruck, Grafik, Online-Marketing &amp; Webdesign – alles aus einer Hand, seit 1958. Jetzt unverbindlich anfragen.">
 
@@ -1570,18 +1571,22 @@
               </div>
               <div class="mega__fuss">
                 <a href="/leistungen/montage/"><strong>Montage &amp; Anbringung</strong> – wir montieren selbst, was wir fertigen <span class="arr" aria-hidden="true">→</span></a>
-                <span class="mega__fuss-trenn" aria-hidden="true"></span>
+                <!-- Projekte vorerst ausgeblendet:
+<span class="mega__fuss-trenn" aria-hidden="true"></span>
                 <span class="mega__fuss-label">Projekte</span>
                 <a href="/projekte/austrotrucker/">Austrotrucker</a>
                 <span class="mega__fuss-punkt" aria-hidden="true">·</span>
                 <a href="/projekte/paltentaler/">Paltentaler</a>
                 <span class="mega__fuss-punkt" aria-hidden="true">·</span>
                 <a class="mega__fuss-alle" href="/projekte/">Alle Projekte <span class="arr" aria-hidden="true">→</span></a>
+-->
               </div>
             </div>
           </div>
         </li>
-        <li><a href="/projekte/">Projekte</a></li>
+        <!-- Projekte vorerst ausgeblendet:
+<li><a href="/projekte/">Projekte</a></li>
+-->
         <li class="nav-mega nav-mega--mini">
           <a class="nav-mega__ausloeser" href="#unternehmen" aria-expanded="false" aria-controls="mini-unternehmen">Unternehmen<span class="nav-mega__pfeil" aria-hidden="true"></span></a>
           <div class="mega" id="mini-unternehmen">
@@ -1614,7 +1619,9 @@
 <nav class="mobile-menu" id="mobile-menu" aria-label="Mobile Navigation" data-open="false">
   <ul>
     <li><a href="#leistungen">Leistungen</a></li>
-    <li><a href="/projekte/">Projekte</a></li>
+    <!-- Projekte vorerst ausgeblendet:
+<li><a href="/projekte/">Projekte</a></li>
+-->
     <li><a href="#unternehmen">Unternehmen</a></li>
     <li><a href="#team">Team</a></li>
     <li><a href="#referenzen">Referenzen</a></li>
@@ -1652,13 +1659,15 @@
         <li><a href="/leistungen/montage/">Montage &amp; Anbringung</a></li>
         </ul>
       </li>
-      <li class="mobile-menu__feld"><span>Projekte</span>
+      <!-- Projekte vorerst ausgeblendet:
+<li class="mobile-menu__feld"><span>Projekte</span>
         <ul>
         <li><a href="/projekte/">Alle Projekte</a></li>
         <li><a href="/projekte/austrotrucker/">Austrotrucker</a></li>
         <li><a href="/projekte/paltentaler/">Paltentaler</a></li>
         </ul>
       </li>
+-->
     </ul>
   <a class="btn btn--primary" href="#kontakt">Angebot anfragen</a>
 </nav>
@@ -2257,6 +2266,7 @@
         </div>
         <form action="/api/anfrage.php" method="post" data-anfrage>
           <input type="hidden" name="formular" value="kontakt">
+          <input type="hidden" name="fz" value="">
           <div class="hp-feld" aria-hidden="true">
             <label for="webseite">Webseite (bitte leer lassen)</label>
             <input type="text" id="webseite" name="webseite" tabindex="-1" autocomplete="off">
@@ -2979,7 +2989,20 @@ if(zeitTrack && !reduce && 'IntersectionObserver' in window){
    normaler POST — der Endpoint rendert dann eine eigene Antwortseite. */
 (function(){
   'use strict';
+  /* Spam-Schutz: signierten Zeit-Token vom Server holen (Feld "fz").
+     Der Server akzeptiert die Anfrage erst ein paar Sekunden nach
+     Token-Ausgabe — Bots, die direkt posten oder sofort abschicken,
+     kommen nicht durch. */
+  function tokenHolen(formular){
+    var feld = formular.querySelector('input[name="fz"]');
+    if (!feld || feld.value) return Promise.resolve();
+    return fetch(formular.action + '?token', { headers: { 'Accept': 'application/json' } })
+      .then(function(a){ return a.json(); })
+      .then(function(d){ if (d && d.token) feld.value = d.token; })
+      .catch(function(){});
+  }
   document.querySelectorAll('form[data-anfrage]').forEach(function(formular){
+    tokenHolen(formular);
     formular.addEventListener('submit', function(ereignis){
       ereignis.preventDefault();
       var knopf  = formular.querySelector('button[type="submit"]');
@@ -2988,10 +3011,12 @@ if(zeitTrack && !reduce && 'IntersectionObserver' in window){
       knopf.disabled = true;
       knopf.textContent = 'Wird gesendet…';
       status.hidden = true;
-      fetch(formular.action, {
-        method: 'POST',
-        body: new FormData(formular),
-        headers: { 'Accept': 'application/json', 'X-Requested-With': 'fetch' }
+      tokenHolen(formular).then(function(){
+        return fetch(formular.action, {
+          method: 'POST',
+          body: new FormData(formular),
+          headers: { 'Accept': 'application/json', 'X-Requested-With': 'fetch' }
+        });
       })
       .then(function(antwort){ return antwort.json().catch(function(){ return null; }); })
       .then(function(daten){

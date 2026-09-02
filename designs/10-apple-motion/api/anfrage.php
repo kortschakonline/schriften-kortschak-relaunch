@@ -16,6 +16,18 @@ if (!is_file($configDatei)) {
 }
 require $configDatei;
 
+// Token-Ausgabe: GET /api/anfrage.php?token
+// Das Formular-JS holt sich beim Laden einen signierten Zeitstempel und
+// schickt ihn beim Absenden mit (Feld "fz"). Ein Token ist erst nach ein
+// paar Sekunden gueltig — Bots, die direkt posten oder sofort abschicken,
+// fallen durch.
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'GET' && isset($_GET['token'])) {
+    header('Content-Type: application/json; charset=utf-8');
+    header('Cache-Control: no-store');
+    echo json_encode(['ok' => true, 'token' => token_bauen('js')], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
 if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
     antwort(false, 'Nur POST-Anfragen sind erlaubt.', 405);
 }
@@ -74,6 +86,28 @@ if ($fehler) {
     antwort(false, implode(' ', $fehler), 422);
 }
 
+// ------------------------------------------------------------ Spam-Filter
+
+// 1) Inhalts-Heuristik: eindeutige Bot-Muster bekommen einen stillen
+//    "Erfolg" zurueck (wie beim Honeypot) — es wird aber nichts verschickt.
+if (($spamGrund = spam_grund($name, $nachricht)) !== null) {
+    error_log('[anfrage.php] Spam verworfen (' . $spamGrund . ') von ' . ($_SERVER['REMOTE_ADDR'] ?? '?')
+        . ': ' . mb_substr($nachricht, 0, 120));
+    antwort(true, 'Vielen Dank! Ihre Anfrage ist bei uns angekommen.');
+}
+
+// 2) Zeit-Token: ohne gueltigen, mindestens ein paar Sekunden alten Token
+//    kommt keine Anfrage durch. Menschen ohne JavaScript bekommen eine
+//    Bestaetigungsseite mit frischem Token (ein Klick), Bots posten ins Leere.
+if (!token_gueltig(feld('fz', 200))) {
+    $istFetch = str_contains($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json')
+        || ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'fetch';
+    if ($istFetch) {
+        antwort(false, 'Das hat gerade nicht geklappt. Bitte laden Sie die Seite neu und senden Sie die Anfrage noch einmal — oder schreiben Sie direkt an ' . MAIL_EMPFAENGER . '.', 400);
+    }
+    bestaetigungsseite();
+}
+
 // ------------------------------------------------------------- Rate-Limit
 
 if (MAIL_TRANSPORT !== 'log' && !rate_limit_ok()) {
@@ -84,6 +118,14 @@ if (MAIL_TRANSPORT !== 'log' && !rate_limit_ok()) {
 
 $istKontakt  = $formular === 'kontakt';
 $formularOrt = $istKontakt ? 'Kontaktformular Startseite' : 'Formular Social-Media-Marketing';
+
+// Enthaelt die Nachricht Links, gibt es keine Bestaetigungsmail an die
+// (moeglicherweise gefaelschte) Absenderadresse — sonst werden wir zum
+// Spam-Versender fuer fremde Postfaecher. Die Anfrage selbst kommt normal an.
+$mitLink = (bool)preg_match('~https?://|www\.~i', $nachricht . ' ' . $name);
+if ($mitLink) {
+    $zeilen[] = ['Hinweis', 'Nachricht enthält Links — es wurde keine automatische Bestätigung an den Absender geschickt.'];
+}
 $betreff     = ($istKontakt ? 'Website-Anfrage von ' : 'Social-Media-Anfrage von ') . $name
              . ($betreffThema !== '' && $istKontakt ? ' · ' . $betreffThema : '');
 $vorname     = preg_split('/\s+/', trim($name))[0] ?? $name;
@@ -99,7 +141,7 @@ $mailBuero = mail_html(
 $textBuero = mail_text('Neue Anfrage ueber die Website (' . $formularOrt . ')', $zeilen, $nachricht);
 
 // 2) Bestaetigung an den Kunden
-$zeilenKunde = array_values(array_filter($zeilen, fn($z) => !in_array($z[0], ['Name', 'E-Mail'], true)));
+$zeilenKunde = array_values(array_filter($zeilen, fn($z) => !in_array($z[0], ['Name', 'E-Mail', 'Hinweis'], true)));
 $mailKunde = mail_html(
     'Ihre Anfrage ist bei uns angekommen',
     'Hallo ' . e($vorname) . ', vielen Dank für Ihre Nachricht! Wir haben Ihre Anfrage erhalten und melden uns so schnell wie möglich — in der Regel innerhalb eines Werktags. Zur Sicherheit fassen wir hier noch einmal zusammen, was Sie uns geschickt haben.',
@@ -118,11 +160,13 @@ try {
     antwort(false, 'Ihre Anfrage konnte gerade nicht übermittelt werden. Bitte versuchen Sie es später noch einmal — oder schreiben Sie direkt an ' . MAIL_EMPFAENGER . '.', 502);
 }
 
-try {
-    mail_senden($email, $name, 'Ihre Anfrage bei Kortschak — wir melden uns!', $mailKunde, $textKunde, [MAIL_ANTWORT_AN, 'Kortschak Werbeagentur']);
-} catch (Throwable $t) {
-    // Anfrage ist beim Buero angekommen — Bestaetigungsfehler nicht dem Kunden anlasten.
-    error_log('[anfrage.php] Bestaetigung an Kunden fehlgeschlagen: ' . $t->getMessage());
+if (!$mitLink) {
+    try {
+        mail_senden($email, $name, 'Ihre Anfrage bei Kortschak — wir melden uns!', $mailKunde, $textKunde, [MAIL_ANTWORT_AN, 'Kortschak Werbeagentur']);
+    } catch (Throwable $t) {
+        // Anfrage ist beim Buero angekommen — Bestaetigungsfehler nicht dem Kunden anlasten.
+        error_log('[anfrage.php] Bestaetigung an Kunden fehlgeschlagen: ' . $t->getMessage());
+    }
 }
 
 antwort(true, 'Vielen Dank, ' . $vorname . '! Ihre Anfrage ist unterwegs — eine Bestätigung ist auf dem Weg in Ihr Postfach.');
@@ -174,6 +218,79 @@ function antwort(bool $ok, string $meldung, int $status = 200): never {
             . '<body><div class="karte"><div class="punkt"></div><h1>' . e($titel) . '</h1><p>' . e($meldung) . '</p>'
             . '<a class="btn" href="/">Zurück zur Website</a></div></body></html>';
     }
+    exit;
+}
+
+// ------------------------------------------------------------ Spam-Abwehr
+
+// Signierter Zeitstempel als Formular-Token. Zwei Sorten:
+//   'js' — vom Formular-JS beim Seitenaufruf geholt, fruehestens nach
+//          4 Sekunden gueltig (Sofort-Submit-Bots fallen durch)
+//   'ok' — von der Bestaetigungsseite (No-JS-Weg), fruehestens nach
+//          2 Sekunden gueltig (Lesezeit; Parse-und-Repost-Bots sind schneller)
+// Der Schluessel wird aus dem SMTP-Passwort abgeleitet — kein neuer
+// Konfigurationswert noetig, und er steht nie im Repo.
+function token_schluessel(): string {
+    return hash_hmac('sha256', 'anfrage-token-v1', SMTP_PASS);
+}
+
+function token_bauen(string $typ): string {
+    $zeit = (string)time();
+    return $typ . '.' . $zeit . '.' . hash_hmac('sha256', $typ . '.' . $zeit, token_schluessel());
+}
+
+function token_gueltig(string $token): bool {
+    $teile = explode('.', $token);
+    if (count($teile) !== 3) { return false; }
+    [$typ, $zeit, $signatur] = $teile;
+    $minAlter = ['js' => 4, 'ok' => 2][$typ] ?? null;
+    if ($minAlter === null || !ctype_digit($zeit)) { return false; }
+    if (!hash_equals(hash_hmac('sha256', $typ . '.' . $zeit, token_schluessel()), $signatur)) { return false; }
+    $alter = time() - (int)$zeit;
+    return $alter >= $minAlter && $alter <= 21600;   // maximal 6 Stunden
+}
+
+// Eindeutige Bot-Muster. Bewusst konservativ: ein einzelner Link in der
+// Nachricht ist erlaubt (Kunden nennen ihre Website), erst Haeufung und
+// Markup sind verdaechtig.
+function spam_grund(string $name, string $nachricht): ?string {
+    if (preg_match('~https?://|www\.~i', $name)) { return 'Link im Namen'; }
+    if (preg_match('~\[/?(url|link)\b|<a\s~i', $nachricht)) { return 'Markup in der Nachricht'; }
+    if (preg_match_all('~https?://|www\.~i', $nachricht) >= 3) { return 'Link-Haeufung'; }
+    if (preg_match('/[\x{0400}-\x{04FF}\x{4E00}-\x{9FFF}\x{3040}-\x{30FF}\x{AC00}-\x{D7AF}]/u', $name . ' ' . $nachricht)) {
+        return 'fremdes Schriftsystem';
+    }
+    return null;
+}
+
+// No-JS-Weg: Anfrage kam ohne Token an (JavaScript aus oder Direkt-POST).
+// Wir zeigen die Eingaben noch einmal und lassen den Versand mit einem
+// frischen Token per Klick bestaetigen. Menschen kostet das einen Klick,
+// Direkt-POST-Bots kommen hier nicht weiter.
+function bestaetigungsseite(): never {
+    $felder = '';
+    foreach ($_POST as $feldName => $wert) {
+        if (!is_string($feldName) || $feldName === 'fz' || !preg_match('/^[a-z_][a-z0-9_\-]{0,40}$/i', $feldName)) { continue; }
+        foreach (is_array($wert) ? $wert : [$wert] as $einzeln) {
+            if (!is_string($einzeln)) { continue; }
+            $felder .= '<input type="hidden" name="' . e($feldName . (is_array($wert) ? '[]' : '')) . '" value="' . e(mb_substr($einzeln, 0, 8000)) . '">';
+        }
+    }
+    $felder .= '<input type="hidden" name="fz" value="' . e(token_bauen('ok')) . '">';
+
+    http_response_code(200);
+    header('Content-Type: text/html; charset=utf-8');
+    echo '<!doctype html><html lang="de"><head><meta charset="utf-8">'
+        . '<meta name="viewport" content="width=device-width,initial-scale=1">'
+        . '<meta name="robots" content="noindex,nofollow"><title>Anfrage bestätigen — Kortschak</title>'
+        . '<style>body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:#fbfbfd;color:#1d1d1f;display:grid;min-height:100vh;place-items:center;padding:24px}'
+        . '.karte{max-width:520px;background:#fff;border:1px solid rgba(0,0,0,.09);border-radius:28px;padding:40px;box-shadow:0 12px 48px rgba(0,0,0,.10);text-align:center}'
+        . 'h1{font-size:1.5rem;margin:0 0 10px}p{color:#515154;line-height:1.5;margin:0 0 24px}'
+        . 'button{display:inline-block;background:#FF1C20;color:#fff;border:0;cursor:pointer;padding:12px 26px;border-radius:980px;font-weight:600;font-size:1rem}</style></head>'
+        . '<body><div class="karte"><h1>Fast geschafft!</h1>'
+        . '<p>Bitte bestätigen Sie noch kurz den Versand Ihrer Anfrage an die Kortschak Werbeagentur.</p>'
+        . '<form action="/api/anfrage.php" method="post">' . $felder
+        . '<button type="submit">Anfrage jetzt absenden</button></form></div></body></html>';
     exit;
 }
 
