@@ -5,16 +5,14 @@
 # schwarz. (woff2/webp/svg liefert der Server bereits korrekt.)
 AddType image/avif .avif
 
+# .js liefert der Server als veraltetes application/x-javascript aus —
+# funktioniert, aber pruef-assets.py meldet es. Sauber nachgeruestet:
+AddType application/javascript .js
+
 # ============================================================ Go-Live 28.08.2026
-# Dieselbe .htaccess laeuft auf Produktion (www.schriften-kortschak.at) UND
-# Staging (view.kortschak.online). Die Seiten stehen auf "index, follow" —
-# Staging wird deshalb hier per Header auf noindex gehalten:
-<IfModule mod_setenvif.c>
-  SetEnvIfNoCase Host "view\.kortschak\.online" STAGING
-</IfModule>
-<IfModule mod_headers.c>
-  Header set X-Robots-Tag "noindex, nofollow" env=STAGING
-</IfModule>
+# (Der fruehere Staging-noindex-Block fuer view.kortschak.online wurde am
+# 03.09.2026 entfernt — das Staging gibt es nicht mehr, einzige Domain ist
+# www.schriften-kortschak.at.)
 
 # Kanonisierung: ohne-www -> www, http -> https (greift nur auf der
 # Produktionsdomain, Staging bleibt unberuehrt).
