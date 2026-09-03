@@ -112,10 +112,17 @@ schriften-kortschak/
 
 ---
 
-## 5. Deploy-Rezept `view.kortschak.online` (Stand 20.08.2026)
+## 5. Deploy-Rezept `www.schriften-kortschak.at` — DIE einzige Domain (Stand 03.09.2026)
 
-**Ziel:** Hostinger, Domain `view.kortschak.online`, User `u578130405`,
-Webroot `/home/u578130405/domains/view.kortschak.online/public_html`.
+**Es gibt nur noch EIN Deploy-Ziel.** Das Staging `view.kortschak.online`
+wurde am 03.09.2026 komplett entfernt (Hostinger-Website gelöscht, DNS-
+Record verwaltete Hostinger automatisch mit). `deploy/paket-bauen.sh`
+(Staging-Paket mit Bühnen 11–14) ist mit entfernt — Rückweg: Git-History.
+Die Entwurfs-Bühnen 11–14 sind damit nirgends mehr online, liegen aber
+weiter in `designs/` und im Repo.
+
+**Ziel:** Hostinger, Domain `schriften-kortschak.at`, User `u578130405`,
+Webroot `/home/u578130405/domains/schriften-kortschak.at/public_html`.
 Werkzeug: Hostinger-MCP **`hosting_deployStaticWebsite`** – lädt das Archiv per
 TUS hoch und entpackt es selbst, kein FTP und kein separater Upload-Aufruf.
 
@@ -124,44 +131,38 @@ TUS hoch und entpackt es selbst, kein FTP und kein separater Upload-Aufruf.
 > Darum immer das ganze Ziel paketieren, nie nur die geänderte Seite.
 > Der Rückweg ist das Git-Repo – **vor dem Deploy committen und pushen.**
 
-### Was ins Paket gehört
+**Quelle der Wahrheit ist `designs/10-apple-motion/`** — die Live-Site als
+statische Dateien (inkl. `api/anfrage-config.php` mit echten Zugangsdaten,
+`games/`, `.htaccess` mit `AddType image/avif`). Das frühere Eleventy-
+Projekt `~/Projekte/kortschak-website` ist archiviert und NICHT mehr
+Quelle (Live-Stand ist dem Repo dort voraus — SEO-Texte, Facebook-
+Verification wurden nur hier gepflegt).
 
-| Im Archiv | Quelle |
-|---|---|
-| Wurzel: `index.html`, `leistungen/`, `impressum/`, `datenschutz/`, `assets/` | `designs/10-apple-motion/` |
-| `11-scroll-hero/`, `12-scroll-hero/`, `13-foil-hero/`, `14-iris-hero/` | `designs/<name>/` |
+### Was bewusst draußen bleibt (Ausschlussliste steckt im Skript)
 
-Die vier Entwurfs-Bühnen waren schon vorher live und müssen mit, sonst
-verschwinden sie.
-
-### Was bewusst draußen bleibt
-
-- `10-apple-motion/assets/Fotos-Lama/` – 219 MB Rohfotos
-- `14-iris-hero/iris-eye-isolated/` + `-2/` – 116 MB Photoshop-Quellen
-- `10-apple-motion/_archiv/` (12 MB), `hero-c/`
+- `assets/Fotos-Lama/` – 219 MB Rohfotos
+- `_archiv/` (12 MB), `hero-c/`
 - `index.html.bak-*` sowie alle `*.md` im Seitenordner (PLAN, PROMPT-\*, BLENDER-SPECS)
 - `.DS_Store`
-
-Ohne diese Ausschlüsse wären es über 300 MB, und Rohmaterial läge öffentlich.
 
 ### Ablauf
 
 ```bash
-# 1. Paket + Archiv bauen (Ausschlussliste steckt im Skript)
-sh deploy/paket-bauen.sh
-#    -> /tmp/kortschak-deploy  +  /tmp/view-kortschak_<zeitstempel>.zip
-#    -> aktuell rund 165 MB / 2.048 Dateien
+# 1. Paket + Archiv bauen (nur Design 10 = die Kundenseite)
+sh deploy/paket-produktion.sh
+#    -> /tmp/kortschak-produktion  +  /tmp/schriften-kortschak_<zeitstempel>.zip
+#    -> aktuell rund 169 MB; prueft selbst, dass api/anfrage-config.php drin ist
 
 # 2. Deploy ueber den Hostinger-MCP:
 #      hosting_deployStaticWebsite
-#      domain      = view.kortschak.online
+#      domain      = schriften-kortschak.at
 #      archivePath = <der ausgegebene ZIP-Pfad>
 #      removeArchive = true
 #    Nach rund 15 Sekunden ist der neue Stand live.
 
-# 3. CDN-Cache leeren – der Deploy tauscht nur den Origin:
+# 3. CDN-Cache leeren – PFLICHT, der Deploy tauscht nur den Origin:
 #      hosting_clearWebsiteCacheV1
-#      username = u578130405, domain = view.kortschak.online
+#      username = u578130405, domain = schriften-kortschak.at
 #    Hostingers Edge (server: hcdn) liefert sonst weiter gecachte Antworten
 #    mit alten Inhalten/Headern aus – je Edge-Node verschieden alt, darum
 #    koennen Stichproben "schon ok" zeigen, waehrend andere Dateien alt
@@ -169,7 +170,7 @@ sh deploy/paket-bauen.sh
 #    den Deploy als Cache-HITs). Nach dem Purge greift alles binnen ~1 Minute.
 
 # 4. Verifizieren – nicht klicken, messen:
-python3 deploy/pruef-assets.py /tmp/kortschak-deploy https://view.kortschak.online
+python3 deploy/pruef-assets.py /tmp/kortschak-produktion https://www.schriften-kortschak.at
 ```
 
 `pruef-assets.py` zieht jede `src`/`href`/`content`- und CSS-`url()`-Referenz aus
@@ -205,7 +206,7 @@ Die Entwürfe 01–03 öffnet man jeweils direkt als `designs/0X-…/index.html`
 
 ---
 
-## 7. Offen – Checkliste fürs echte Go-Live
+## 7. Checkliste fürs Go-Live (Go-Live war am 28.08.2026 — Punkte teils erledigt, vor Abhaken einzeln gegenprüfen)
 
 - [ ] **Rechtsseiten**: Impressum-Seite + **neue DSGVO-Datenschutzerklärung** (alte ist veraltet/unvollständig → war 🔴 in der Analyse)
 - [ ] **Kontaktformular-Backend** (aktuell nur Frontend, kein Versand)
