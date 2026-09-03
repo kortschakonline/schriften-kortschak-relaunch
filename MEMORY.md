@@ -14,9 +14,11 @@ Neubau der Website der eigenen Werbeagentur **Kortschak Schriften GmbH** (Bestan
 - GF: Anja Brandl, B.A. · gegründet 1958 · Bezirk Leoben, Obersteiermark
 - Tagline: **Kreation. Klarheit. Fokus.**
 
-**Live-Vorschau (Demo, bewusst `noindex`):** https://view.kortschak.online
-(Startseite = finaler Entwurf „Bold Studio" + 10 Leistungs-Unterseiten)
-**Entwürfe-Übersicht:** https://view.kortschak.online/entwuerfe/ — alle Entwürfe 01–10 als Unterordner (zuletzt ergänzt: `10-apple-motion` mit scrollgesteuerter BMW-G21-Sequenz aus eigenem Blender-Rendering, Juli 2026)
+**LIVE:** https://www.schriften-kortschak.at (Go-Live 28.08.2026, `index, follow`)
+— einziges Deploy-Ziel, Rezept in Abschnitt 5.
+**Die frühere Vorschau view.kortschak.online wurde am 03.09.2026 komplett
+gelöscht** (Hostinger-Website entfernt). Alle „live:"-URLs mit view.… weiter
+unten sind damit historisch — die Entwürfe liegen nur noch in `designs/`.
 
 **Entwurf 13 (`13-foil-hero/`, 17.08.2026, live: https://view.kortschak.online/13-foil-hero/):**
 NOTHIN'-Nachbau (noth.in als Referenz): dunkle Studiobühne mit Vignette + Filmkorn,
