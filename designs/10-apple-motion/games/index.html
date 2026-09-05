@@ -8,7 +8,6 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Druck-Meister">
 <meta name="theme-color" content="#1A1D1A">
-<meta name="robots" content="noindex, nofollow">
 <title>Druck-Meister</title>
 <style>
   html, body {
@@ -1078,7 +1077,7 @@ function drawKeyboard(top) {
     const total = row.reduce((s, k) => s + (k.w || 1), 0) * KB.pitch;
     let x = (W - total) / 2 + 5;
     const y = top + ri * KB.rowH;
-    row.forEach(k => {
+    row.forEach((k, ci) => {
       const key = typeof k === 'string' ? k : k.k;
       const w = (k.w || 1) * KB.pitch - 10;
       const isOk = key === 'OK', isBack = key === '⌫';
@@ -1087,6 +1086,12 @@ function drawKeyboard(top) {
       ctx.fillStyle = col; rr(x, y, w, KB.kh, 12); ctx.fill();
       ctx.lineWidth = 3; ctx.strokeStyle = COLOR_INK; ctx.stroke();
       txt(key, x + w / 2, y + KB.kh / 2 + 2, { size: isOk ? 34 : 36, color: isOk ? '#fff' : COLOR_INK });
+      // Gamepad-Cursor: pulsierender Rahmen um die gewählte Taste
+      if (pad.connected && ri === pad.navRow && ci === Math.min(pad.navCol, row.length - 1)) {
+        ctx.lineWidth = 5 + Math.sin(performance.now() / 160) * 1.5;
+        ctx.strokeStyle = COLOR_ACCENT;
+        rr(x - 5, y - 5, w + 10, KB.kh + 10, 14); ctx.stroke();
+      }
       const fn = isOk ? confirmName : isBack ? nameBack : () => nameAdd(key);
       addHit(x, y, w, KB.kh + 5, fn);
       x += (k.w || 1) * KB.pitch;
@@ -1262,6 +1267,7 @@ let lastT = performance.now();
 function loop(now) {
   let dt = (now - lastT) / 1000; lastT = now;
   if (dt > 0.05) dt = 0.05;  // Tab-Wechsel etc. nicht als Riesen-Sprung
+  pollGamepad();
   update(dt, now);
   draw();
   requestAnimationFrame(loop);
@@ -1331,6 +1337,81 @@ window.addEventListener('keydown', e => {
   if (e.key === 'm' || e.key === 'M') Snd.toggle();
 });
 
+/* ---------- Gamepad (wie beim Trofaiach-Runner) --------------------
+   A/B/X/Y, Schultern, Trigger, Start, Steuerkreuz/Stick hoch = Pressen bzw.
+   Start/Weiter, Select/Back = Ton an/aus. Namenseingabe: Steuerkreuz/Stick
+   bewegt den Cursor über die Tastatur (Auto-Repeat beim Halten), A = Taste,
+   B = löschen, Start = OK. Wird jeden Frame gepollt (Gamepad API hat keine
+   Events pro Taste). */
+const PAD_BUTTONS = [0, 1, 2, 3, 4, 5, 6, 7, 9, 12];
+const pad = {
+  connected: false, wasDown: false, wasMute: false,
+  inName: false, navRow: 0, navCol: 0,
+  dirX: 0, dirY: 0, dirRepeatAt: 0, wasA: false, wasB: false, wasStart: false,
+};
+function pollGamepad() {
+  if (!navigator.getGamepads) return;
+  let gp = null;
+  try {
+    const list = navigator.getGamepads();
+    for (let i = 0; i < list.length; i++) if (list[i] && list[i].connected) { gp = list[i]; break; }
+  } catch (e) { return; }
+  if (!gp) { pad.connected = false; pad.inName = false; pad.wasDown = false; return; }
+  if (!pad.connected) { pad.connected = true; showToast('🎮 Controller verbunden'); }
+  const btn = i => !!(gp.buttons[i] && gp.buttons[i].pressed);
+  const mute = btn(8);
+  if (mute && !pad.wasMute) Snd.toggle();
+  pad.wasMute = mute;
+  if (G.state === 'ENTER_NAME' && !G.admin.open) { padNameEntry(gp, btn); return; }
+  pad.inName = false;
+  const down = (gp.axes.length > 1 && gp.axes[1] < -0.6) || PAD_BUTTONS.some(i => btn(i));
+  if (down && !pad.wasDown) {
+    lastInput = performance.now();
+    Snd.init();
+    if (!G.admin.open) {
+      if (G.state === 'START' || G.state === 'GAMEOVER') startGame();
+      else defaultAction();
+    }
+  }
+  pad.wasDown = down;
+}
+function padNameEntry(gp, btn) {
+  const a = btn(0), b = btn(1), start = btn(9);
+  if (!pad.inName) {
+    // Noch gehaltene Tasten vom vorigen Screen übernehmen, damit sie hier nichts auslösen
+    pad.inName = true; pad.navRow = 0; pad.navCol = 0;
+    pad.wasA = a; pad.wasB = b; pad.wasStart = start; pad.dirX = 0; pad.dirY = 0;
+  }
+  const ax0 = gp.axes.length > 0 ? gp.axes[0] : 0, ax1 = gp.axes.length > 1 ? gp.axes[1] : 0;
+  const dx = btn(15) ? 1 : btn(14) ? -1 : ax0 > 0.5 ? 1 : ax0 < -0.5 ? -1 : 0;
+  const dy = btn(13) ? 1 : btn(12) ? -1 : ax1 > 0.5 ? 1 : ax1 < -0.5 ? -1 : 0;
+  const now = performance.now();
+  let moved = false;
+  if (dx !== pad.dirX || dy !== pad.dirY) {
+    pad.dirX = dx; pad.dirY = dy; pad.dirRepeatAt = now + 350;
+    moved = !!(dx || dy);
+  } else if ((dx || dy) && now >= pad.dirRepeatAt) {
+    pad.dirRepeatAt = now + 130; moved = true;
+  }
+  if (moved) {
+    lastInput = now;
+    if (dy) pad.navRow = (pad.navRow + dy + KEY_ROWS.length) % KEY_ROWS.length;
+    const len = KEY_ROWS[pad.navRow].length;
+    if (pad.navCol >= len) pad.navCol = len - 1;   // Zeilen sind unterschiedlich lang
+    if (dx) pad.navCol = (pad.navCol + dx + len) % len;
+  }
+  const act = k => {
+    const key = typeof k === 'string' ? k : k.k;
+    if (key === 'OK') confirmName(); else if (key === '⌫') nameBack(); else nameAdd(key);
+  };
+  if (a && !pad.wasA) { lastInput = now; act(KEY_ROWS[pad.navRow][pad.navCol]); }
+  if (b && !pad.wasB) { lastInput = now; nameBack(); }
+  if (start && !pad.wasStart) { lastInput = now; confirmName(); }
+  pad.wasA = a; pad.wasB = b; pad.wasStart = start;
+  // Generisches Mapping erst wieder scharf, wenn alles losgelassen wurde
+  pad.wasDown = ax1 < -0.6 || PAD_BUTTONS.some(i => btn(i));
+}
+
 resetSim(true);
 requestAnimationFrame(loop);
 </script>
@@ -1370,6 +1451,9 @@ LOKALER SERVER (zum Testen im WLAN)
 
 BEDIENUNG
   Tap / Klick / Leertaste = Presse.  M = Ton an/aus.
+  Gamepad: A/B/X/Y, Schultern, Trigger, Start, Steuerkreuz/Stick hoch =
+  Presse bzw. Start/Weiter, Select/Back = Ton an/aus. Namenseingabe:
+  Steuerkreuz/Stick = Cursor, A = Taste, B = löschen, Start = OK.
   Admin: 5× schnell auf das Logo im Start-Screen tippen → Bestenliste
   löschen oder als Text in die Zwischenablage exportieren.
   Nach 45 s ohne Eingabe: Attract-Mode, Tap = zurück zum Start.

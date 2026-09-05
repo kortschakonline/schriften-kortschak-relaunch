@@ -8,7 +8,6 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Trofaiach-Runner">
 <meta name="theme-color" content="#1A1D1A">
-<meta name="robots" content="noindex, nofollow">
 <title>Trofaiach-Runner</title>
 <style>
   html, body {
@@ -354,7 +353,7 @@ function resize() {
 function toLogical(e) { return { x: (e.clientX - offX) / scale, y: (e.clientY - offY) / scale }; }
 
 /* =====================================================================
-   Input – ein Tap = Springen, halten = höher. Maus + Leertaste für Tests.
+   Input – ein Tap = Springen, halten = höher. Maus, Leertaste + Gamepad werden auch unterstützt.
    ===================================================================== */
 const input = {
   down: false, downSince: 0, lastActivity: 0,
@@ -373,10 +372,11 @@ const UI = {
   },
 };
 
-function onPress(p) {
+function onPress(p, viaGamepad = false) {
   input.lastActivity = game.now;
   Sound.unlock();
-  tryFullscreen();
+  // Gamepad-Polling zählt nicht als User-Geste – Fullscreen-Versuch für echten Tap aufheben
+  if (!viaGamepad) tryFullscreen();
   tryWakeLock();
   input.down = true; input.downSince = game.now;
   Screens[game.state].press(p);
@@ -404,6 +404,72 @@ function initInput() {
   });
   window.addEventListener('resize', resize);
   window.addEventListener('orientationchange', () => setTimeout(resize, 200));
+}
+
+/* ---------- Gamepad – A/B/X/Y, Schultern, Trigger, Start, Steuerkreuz/Stick hoch = Springen,
+   Select/Back = Ton an/aus. Wird jeden Frame gepollt (Gamepad API liefert keine Events pro Taste). */
+const PAD_JUMP_BUTTONS = [0, 1, 2, 3, 4, 5, 6, 7, 9, 12];
+const pad = {
+  connected: false, wasDown: false, wasMute: false, noticeUntil: 0,
+  // Namenseingabe: Cursor auf der Bildschirmtastatur (Zeile 4 = "Passt!"-Button)
+  inName: false, navRow: 0, navCol: 0,
+  dirX: 0, dirY: 0, dirRepeatAt: 0, wasA: false, wasB: false, wasStart: false,
+};
+function pollGamepad() {
+  if (!navigator.getGamepads) return;
+  let gp = null;
+  try {
+    const list = navigator.getGamepads();
+    for (let i = 0; i < list.length; i++) if (list[i] && list[i].connected) { gp = list[i]; break; }
+  } catch (e) { return; }
+  if (!gp) {
+    if (pad.wasDown) { pad.wasDown = false; onRelease(); }
+    pad.connected = false; pad.inName = false;
+    return;
+  }
+  if (!pad.connected) { pad.connected = true; pad.noticeUntil = game.now + 3500; }
+  const mute = !!(gp.buttons[8] && gp.buttons[8].pressed);
+  if (mute && !pad.wasMute) Sound.toggle();
+  pad.wasMute = mute;
+  if (game.state === ST.ENTER_NAME) { padNameEntry(gp); return; }
+  pad.inName = false;
+  const stickUp = gp.axes.length > 1 && gp.axes[1] < -0.6;
+  const down = stickUp || PAD_JUMP_BUTTONS.some(i => gp.buttons[i] && gp.buttons[i].pressed);
+  if (down && !pad.wasDown) onPress(null, true);
+  else if (!down && pad.wasDown) onRelease();
+  pad.wasDown = down;
+}
+/* Namenseingabe per Steuerkreuz/Stick: navigieren, A = Taste, B = löschen, Start = "Passt!".
+   Mit Auto-Repeat beim Halten einer Richtung. */
+function padNameEntry(gp) {
+  const S = Screens.ENTER_NAME, btn = i => !!(gp.buttons[i] && gp.buttons[i].pressed);
+  const a = btn(0), b = btn(1), start = btn(9);
+  if (!pad.inName) {
+    // Noch gehaltene Tasten vom vorigen Screen übernehmen, damit sie hier nichts auslösen
+    pad.inName = true; pad.wasA = a; pad.wasB = b; pad.wasStart = start;
+    pad.dirX = 0; pad.dirY = 0;
+  }
+  const ax0 = gp.axes.length > 0 ? gp.axes[0] : 0, ax1 = gp.axes.length > 1 ? gp.axes[1] : 0;
+  const dx = btn(15) ? 1 : btn(14) ? -1 : ax0 > 0.5 ? 1 : ax0 < -0.5 ? -1 : 0;
+  const dy = btn(13) ? 1 : btn(12) ? -1 : ax1 > 0.5 ? 1 : ax1 < -0.5 ? -1 : 0;
+  let moved = false;
+  if (dx !== pad.dirX || dy !== pad.dirY) {
+    pad.dirX = dx; pad.dirY = dy; pad.dirRepeatAt = game.now + 350;
+    moved = !!(dx || dy);
+  } else if ((dx || dy) && game.now >= pad.dirRepeatAt) {
+    pad.dirRepeatAt = game.now + 130; moved = true;
+  }
+  if (moved) {
+    input.lastActivity = game.now;
+    if (dy) pad.navRow = (pad.navRow + dy + 5) % 5;
+    if (dx && pad.navRow < 4) pad.navCol = (pad.navCol + dx + 10) % 10;
+  }
+  if (a && !pad.wasA) { input.lastActivity = game.now; S.activate(pad.navRow === 4 ? 'ok' : 'k:' + KEY_ROWS[pad.navRow][pad.navCol]); }
+  if (b && !pad.wasB) { input.lastActivity = game.now; S.activate('k:⌫'); }
+  if (start && !pad.wasStart) { input.lastActivity = game.now; S.activate('ok'); }
+  pad.wasA = a; pad.wasB = b; pad.wasStart = start;
+  // Sprung-Mapping erst wieder scharf, wenn alles losgelassen wurde (sonst springt der nächste Screen sofort)
+  pad.wasDown = ax1 < -0.6 || PAD_JUMP_BUTTONS.some(i => btn(i));
 }
 
 /* ---------- Fullscreen & Wake-Lock (Fallback ohne Fehler) ---------- */
@@ -1861,7 +1927,7 @@ const KEY_ROWS = [
   ['😀', '😎', '🐄', '🦆', '⭐', '🎈', '👕', '🧢', '🍀', '🚀'],
 ];
 Screens.ENTER_NAME = {
-  enter() { game.nameChars = []; },
+  enter() { game.nameChars = []; pad.navRow = 0; pad.navCol = 0; },
   update(dt) { updateEffects(dt); updateEnv(); if (game.now - input.lastActivity > 90000) this.confirm(); },
   draw() {
     drawWorld(true);
@@ -1887,11 +1953,23 @@ Screens.ENTER_NAME = {
       });
     });
     button('ok', W / 2 - 150, ky0 + 4 * (ks + kg) + 6, 300, 82, 'Passt!', { size: 40 });
+    // Gamepad-Cursor: Rahmen um die gewählte Taste + kurze Hilfe
+    if (pad.connected) {
+      let hx, hy, hw, hh;
+      if (pad.navRow === 4) { hx = W / 2 - 150; hy = ky0 + 4 * (ks + kg) + 6; hw = 300; hh = 82; }
+      else { hx = kx0 + pad.navCol * (ks + kg); hy = ky0 + pad.navRow * (ks + kg); hw = ks; hh = ks; }
+      const pulse = 5 + Math.sin(env.t * 6) * 1.5;
+      H.rect(ctx, hx - 7, hy - 7, hw + 14, hh + 14, null, COLOR_ACCENT, pulse, 14);
+      txt('🎮 Steuerkreuz: wählen · A: Taste · B: löschen · Start: Passt!', W / 2, ky0 + 4 * (ks + kg) + 116, { size: 20, color: COLOR_MUTED_LIGHT });
+    }
     drawMuteButton();
   },
   press(p) {
     const id = UI.hit(p);
     if (p === null && !id) { this.confirm(); return; }
+    this.activate(id);
+  },
+  activate(id) {   // auch vom Gamepad genutzt (padNameEntry)
     if (!id) return;
     if (id === 'mute') Sound.toggle();
     else if (id === 'ok') this.confirm();
@@ -1925,6 +2003,7 @@ function frame(t) {
   if (!lastT) lastT = t;
   let dt = (t - lastT) / 1000; lastT = t;
   if (dt > 0.1) dt = 0.1;
+  pollGamepad();
   acc += dt; let n = 0;
   while (acc >= STEP && n < 12) { step(STEP); acc -= STEP; n++; }
   if (n >= 12) acc = 0;
@@ -1938,6 +2017,8 @@ function draw() {
   ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, VH); ctx.clip();
   UI.buttons.length = 0;
   try { Screens[game.state].draw(); } catch (e) { console.error(e); }
+  if (pad.connected && game.now < pad.noticeUntil)
+    txt('🎮 Controller verbunden', W / 2, VH - 30, { size: 24, color: '#FFFFFF', stroke: COLOR_INK });
   ctx.restore();
 }
 function initCanvas() { ctx = canvas.getContext('2d'); resize(); }
@@ -4355,6 +4436,12 @@ LOKALER SERVER (zum Testen im WLAN)
 
 BEDIENUNG
   Tap / Klick / Leertaste = Springen, halten = höher springen.
+  Gamepad: A/B/X/Y, Schultern, Trigger, Start, Steuerkreuz/Stick hoch =
+  Springen (halten = höher), Select/Back = Ton an/aus. Wird automatisch
+  erkannt, sobald eine Taste am Controller gedrückt wird.
+  Namenseingabe mit Gamepad: Steuerkreuz/Stick bewegt den Cursor über die
+  Tastatur (Auto-Repeat beim Halten), A = Taste tippen, B = löschen,
+  Start = "Passt!" bestätigen.
   M = Ton an/aus (Button oben rechts).
   Admin: 5× schnell auf das Logo im Start-Screen tippen → Bestenliste
   löschen oder als Text in die Zwischenablage exportieren.
