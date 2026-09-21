@@ -1290,6 +1290,9 @@
   .pj-zitat blockquote p{font-size:clamp(1.25rem,2.2vw,1.7rem);line-height:1.5;font-weight:500;letter-spacing:-.01em;}
   .pj-zitat cite{display:block;margin-top:var(--space-3);font-style:normal;font-weight:700;}
   .pj-zitat cite small{display:block;font-weight:400;color:var(--text-2);margin-top:.25rem;}
+  /* Testimonial-Headline eine Stufe kleiner, damit sie im schmalen Wrap
+     zweizeilig bleibt ("… über die | Zusammenarbeit sagt.") */
+  h2.display--stimme{font-size:clamp(2.2rem,3.2vw + .5rem,3.4rem);text-wrap:balance;}
   .pj-zitat__foto{display:block;width:128px;height:128px;border-radius:50%;object-fit:cover;margin:0 auto var(--space-3);box-shadow:0 14px 36px rgba(0,0,0,.16);}
   .pj-zitat__credit{margin-top:var(--space-2);font-size:.75rem;color:var(--text-2);letter-spacing:.02em;}
 
@@ -1737,7 +1740,7 @@
     <div class="wrap wrap--narrow">
       <div class="section-head section-head--center reveal">
         <p class="eyebrow">Zusammenarbeit</p>
-        <h2 class="display" id="stimme-title">Was Paltentaler über die<br><span class="gradient-text">Zusammenarbeit</span> sagt.</h2>
+        <h2 class="display display--stimme" id="stimme-title">Was Paltentaler über die <span class="gradient-text">Zusammenarbeit</span> sagt.</h2>
       </div>
       <div class="pj-zitat reveal">
         <img class="pj-zitat__foto" src="/assets/img/projekte/paltentaler/stimme-dina-lesjak.webp" alt="Dina Lesjak, Geschäftsführung Paltentaler Splitt- &amp; Marmorwerke" width="400" height="400" loading="lazy">
