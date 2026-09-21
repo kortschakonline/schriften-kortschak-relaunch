@@ -1320,6 +1320,8 @@
   .pj-zitat blockquote p{font-size:clamp(1.25rem,2.2vw,1.7rem);line-height:1.5;font-weight:500;letter-spacing:-.01em;}
   .pj-zitat cite{display:block;margin-top:var(--space-3);font-style:normal;font-weight:700;}
   .pj-zitat cite small{display:block;font-weight:400;color:var(--text-2);margin-top:.25rem;}
+  .pj-zitat__foto{display:block;width:128px;height:128px;border-radius:50%;object-fit:cover;margin:0 auto var(--space-3);box-shadow:0 14px 36px rgba(0,0,0,.16);}
+  .pj-zitat__credit{margin-top:var(--space-2);font-size:.75rem;color:var(--text-2);letter-spacing:.02em;}
 
   /* Platzhalter für noch offene Inhalte – bewusst sichtbar */
   .platzhalter{
@@ -1410,22 +1412,18 @@
               </div>
               <div class="mega__fuss">
                 <a href="/leistungen/montage/"><strong>Montage &amp; Anbringung</strong> – wir montieren selbst, was wir fertigen <span class="arr" aria-hidden="true">→</span></a>
-                <!-- Projekte vorerst ausgeblendet:
-<span class="mega__fuss-trenn" aria-hidden="true"></span>
+                <span class="mega__fuss-trenn" aria-hidden="true"></span>
                 <span class="mega__fuss-label">Projekte</span>
                 <a href="/projekte/austrotrucker/">Austrotrucker</a>
                 <span class="mega__fuss-punkt" aria-hidden="true">·</span>
                 <a href="/projekte/paltentaler/">Paltentaler</a>
                 <span class="mega__fuss-punkt" aria-hidden="true">·</span>
                 <a class="mega__fuss-alle" href="/projekte/">Alle Projekte <span class="arr" aria-hidden="true">→</span></a>
--->
               </div>
             </div>
           </div>
         </li>
-        <!-- Projekte vorerst ausgeblendet:
-<li><a href="/projekte/">Projekte</a></li>
--->
+        <li><a href="/projekte/">Projekte</a></li>
         <li class="nav-mega nav-mega--mini">
           <a class="nav-mega__ausloeser" href="/#unternehmen" aria-expanded="false" aria-controls="mini-unternehmen">Unternehmen<span class="nav-mega__pfeil" aria-hidden="true"></span></a>
           <div class="mega" id="mini-unternehmen">
@@ -1458,9 +1456,7 @@
 <nav class="mobile-menu" id="mobile-menu" aria-label="Mobile Navigation" data-open="false">
   <ul>
     <li><a href="/#leistungen">Leistungen</a></li>
-    <!-- Projekte vorerst ausgeblendet:
-<li><a href="/projekte/">Projekte</a></li>
--->
+    <li><a href="/projekte/">Projekte</a></li>
     <li><a href="/#unternehmen">Unternehmen</a></li>
     <li><a href="/#team">Team</a></li>
     <li><a href="/#referenzen">Referenzen</a></li>
@@ -1498,15 +1494,13 @@
         <li><a href="/leistungen/montage/">Montage &amp; Anbringung</a></li>
         </ul>
       </li>
-      <!-- Projekte vorerst ausgeblendet:
-<li class="mobile-menu__feld"><span>Projekte</span>
+      <li class="mobile-menu__feld"><span>Projekte</span>
         <ul>
         <li><a href="/projekte/">Alle Projekte</a></li>
         <li><a href="/projekte/austrotrucker/">Austrotrucker</a></li>
         <li><a href="/projekte/paltentaler/">Paltentaler</a></li>
         </ul>
       </li>
--->
     </ul>
   <a class="btn btn--primary" href="/#kontakt">Angebot anfragen</a>
 </nav>
@@ -1731,9 +1725,25 @@
     </div>
   </section>
 
-  <!-- ===== SEKTION 06 TESTIMONIAL: am 28.08.2026 vor dem Go-Live
-       entfernt (Zitat + Freigabe der Geschäftsführerin stehen aus).
-       Markup liegt in der Git-Historie (Commit vor Go-Live). ===== -->
+  <!-- ===== SEKTION 06: TESTIMONIAL =====
+       Zitat von Anja Krenn am 21.09.2026 über Norbert eingetroffen; ihr Porträt
+       folgt noch — dann wie bei Paltentaler ein <img class="pj-zitat__foto">
+       vor dem Anführungszeichen einhängen. ===== -->
+  <section class="section" id="stimme" aria-labelledby="stimme-title">
+    <div class="wrap">
+      <div class="section-head section-head--center reveal">
+        <p class="eyebrow">Referenz</p>
+        <h2 class="display" id="stimme-title">Aus Sicht der <span class="gradient-text">Auftraggeberin.</span></h2>
+      </div>
+      <div class="pj-zitat reveal">
+        <span class="anfz" aria-hidden="true">„</span>
+        <blockquote>
+          <p>Für mich ist eure Arbeit von Kortschak genau der perfekte Katalysator, wie ich mein Fachwissen und Wissenswertes zur Branche mit ausgezeichneter Aufbereitung und Know-how dorthin bringe, wo das Wissen auch gebraucht wird.</p>
+        </blockquote>
+        <cite>Dipl.-Ing. Anja Krenn<small>Geschäftsführerin · WKO Steiermark, Fachgruppe Güterbeförderungsgewerbe</small></cite>
+      </div>
+    </div>
+  </section>
 
   <!-- ===== SEKTION 07: CTA ===== -->
   <section class="section section--alt" id="anfrage" aria-labelledby="cta-title">
