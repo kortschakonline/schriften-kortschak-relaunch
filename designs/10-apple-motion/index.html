@@ -1556,6 +1556,7 @@
                 <h3 class="mega__titel"><a href="/leistungen/textildruck/">Textil &amp; Druck</a></h3>
                 <ul>
                   <li><a href="/leistungen/textildruck/">Textildruck</a></li>
+                  <li><a href="/leistungen/vereinsbekleidung/">Vereine</a></li>
                   <li><a href="/leistungen/drucksorten-grafikdesign/">Drucksorten &amp; Grafikdesign</a></li>
                 </ul>
               </div>
@@ -1638,6 +1639,7 @@
       <li class="mobile-menu__feld"><span>Textil &amp; Druck</span>
         <ul>
         <li><a href="/leistungen/textildruck/">Textildruck</a></li>
+        <li><a href="/leistungen/vereinsbekleidung/">Vereine</a></li>
         <li><a href="/leistungen/drucksorten-grafikdesign/">Drucksorten &amp; Grafikdesign</a></li>
         </ul>
       </li>
@@ -1762,6 +1764,7 @@
             <p>Arbeitskleidung, Merch und Drucksorten mit durchgehendem roten Faden – gestaltet von der eigenen Grafik.</p>
             <ul class="cat-card__links">
               <li><a href="/leistungen/textildruck/">Textildruck <span class="arr" aria-hidden="true">→</span></a></li>
+              <li><a href="/leistungen/vereinsbekleidung/">Vereine <span class="arr" aria-hidden="true">→</span></a></li>
               <li><a href="/leistungen/drucksorten-grafikdesign/">Drucksorten &amp; Grafikdesign <span class="arr" aria-hidden="true">→</span></a></li>
             </ul>
           </div>
@@ -2282,6 +2285,7 @@
               <label class="pill-check"><input type="checkbox" name="leistung[]" value="Außen- &amp; Innenbeschriftung"><span>Außen- &amp; Innenbeschriftung</span></label>
               <label class="pill-check"><input type="checkbox" name="leistung[]" value="Aufkleber &amp; Großauflagen"><span>Aufkleber &amp; Großauflagen</span></label>
               <label class="pill-check"><input type="checkbox" name="leistung[]" value="Textildruck"><span>Textildruck</span></label>
+              <label class="pill-check"><input type="checkbox" name="leistung[]" value="Vereinsbekleidung"><span>Vereinsbekleidung</span></label>
               <label class="pill-check"><input type="checkbox" name="leistung[]" value="Drucksorten &amp; Grafikdesign"><span>Drucksorten &amp; Grafikdesign</span></label>
               <label class="pill-check"><input type="checkbox" name="leistung[]" value="Online-Marketing"><span>Online-Marketing</span></label>
               <label class="pill-check"><input type="checkbox" name="leistung[]" value="Webdesign"><span>Webdesign</span></label>
@@ -2326,6 +2330,7 @@
           <li><a href="/leistungen/car-wrapping/">Car Wrapping</a></li>
           <li><a href="/leistungen/beschriftungen/">Beschriftungen</a></li>
           <li><a href="/leistungen/textildruck/">Textildruck</a></li>
+          <li><a href="/leistungen/vereinsbekleidung/">Vereine</a></li>
           <li><a href="/leistungen/drucksorten-grafikdesign/">Grafikdesign</a></li>
           <li><a href="/leistungen/montage/">Montage</a></li>
         </ul>
@@ -3037,6 +3042,17 @@ if(zeitTrack && !reduce && 'IntersectionObserver' in window){
         knopf.textContent = altText;
       }
     });
+  });
+})();
+</script>
+<script>
+/* ===== Anfrageformular: Leistung per ?leistung=… vorauswählen =====
+   z. B. von /leistungen/vereinsbekleidung/ → /?leistung=Vereinsbekleidung#kontakt */
+(function(){
+  var w = new URLSearchParams(location.search).get('leistung');
+  if(!w) return;
+  document.querySelectorAll('input[name="leistung[]"]').forEach(function(cb){
+    if(cb.value === w) cb.checked = true;
   });
 })();
 </script>
