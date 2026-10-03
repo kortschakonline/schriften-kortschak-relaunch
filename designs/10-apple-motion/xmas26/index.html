@@ -2398,8 +2398,8 @@ if(reduce || !('IntersectionObserver' in window)){
    Ablauf (ms ab Start): Paket fällt mit Stauchung (0–1000), ruckelt
    (1050–1500), Deckel samt Masche fliegt weg + Lichtblitz (1550), die
    17 Produkte schießen auf Bögen heraus und landen auf ihren Plätzen
-   (ab 1600, gestaffelt), das Paket sinkt weg (2000), der Text schreibt
-   sich auf (2150). Danach schweben die Produkte, folgen leicht der Maus
+   (ab 1600, gestaffelt), das Paket sinkt weg (1720–2440), danach schreibt
+   sich der Text auf (2350). Danach schweben die Produkte, folgen leicht der Maus
    und fliegen beim Scrollen nach außen an der Kamera vorbei.
    Die Endpositionen kommen aus dem CSS (--lu/--lv bzw. --pu/--pv im
    Hochformat) – das Skript animiert nur den Versatz dorthin.
@@ -2432,7 +2432,7 @@ if(reduce || !('IntersectionObserver' in window)){
     return;
   }
 
-  var T_OEFFNEN = 1550, T_FLUG = 1600, T_SINKEN = 2000, T_TEXT = 2150;
+  var T_OEFFNEN = 1550, T_FLUG = 1600, T_SINKEN = 1720, T_TEXT = 2350;
   var W = 0, H = 0, dpr = 1;
   var start = -1;          /* Startzeit der Sequenz, -1 = noch nicht */
   var fertig = false;
@@ -2647,7 +2647,7 @@ if(reduce || !('IntersectionObserver' in window)){
     paket.animate([
       { transform: mitte, opacity: 1 },
       { transform: mitte + ' translateY(48vh) scale(.82)', opacity: 0 }
-    ], { duration: 950, delay: T_SINKEN, easing: 'cubic-bezier(.5,0,.85,.4)', fill: 'forwards' });
+    ], { duration: 720, delay: T_SINKEN, easing: 'cubic-bezier(.5,0,.85,.4)', fill: 'forwards' });
     hero.classList.add('ist-laeuft');
   }
 
