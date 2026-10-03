@@ -1049,13 +1049,59 @@
   .xbadge--highlight{background:linear-gradient(135deg,var(--x-gold),var(--x-gold-tief));color:#fff;text-shadow:0 1px 1px rgba(90,60,10,.35);}
   .xgabe h3{margin-top:1.1rem;font-size:1.2rem;font-weight:700;letter-spacing:-.02em;line-height:1.25;}
   .xgabe h3 sup{color:var(--x-rot);font-size:.75em;margin-left:.05em;}
-  .xgabe__info{color:var(--text-2);font-size:.93rem;margin-top:.2rem;line-height:1.45;}
-  .xgabe__menge{
-    display:inline-block;margin-top:.55rem;font-size:.8rem;font-weight:600;
-    padding:.18rem .65rem;border-radius:var(--radius-pill);
-    border:1px solid var(--border);color:var(--text);
+  /* Einheitliche Kachel: Name 1 Zeile, Beschreibung genau 2 Zeilen, eine
+     Chip-Zeile (Farbe + ggf. Mindestmenge), Knopf – überall gleich hoch */
+  .xgabe{display:flex;flex-direction:column;align-items:center;container-type:inline-size;}
+  .xgabe h3{white-space:nowrap;}
+  .xgabe h3 sup{line-height:0;vertical-align:.5em;}
+  .xgabe__info{
+    color:var(--text-2);font-size:.93rem;margin-top:.25rem;line-height:1.45;max-width:24ch;
+    min-height:2.9em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+    text-wrap:balance;
   }
-  .xgabe__beispiel{display:block;margin-top:.45rem;font-size:.78rem;color:var(--text-2);font-style:italic;}
+  .xgabe__chips{display:flex;flex-wrap:nowrap;justify-content:center;align-items:center;gap:.35rem;min-height:34px;margin:.7rem 0 .85rem;}
+  .xgabe__chips .xfarben{margin:0;flex-wrap:nowrap;gap:.35rem;}
+  .xchip,.xgabe__chips .xfarbe{
+    display:inline-flex;align-items:center;gap:.4rem;height:32px;min-height:0;white-space:nowrap;
+    padding:0 .75rem 0 .4rem;border-radius:var(--radius-pill);border:1px solid var(--border);
+    font-size:.82rem;font-weight:500;color:var(--text);background:transparent;
+  }
+  .xchip i,.xgabe__chips .xfarbe i{width:16px;height:16px;border-radius:50%;flex-shrink:0;box-shadow:inset 0 0 0 1px rgba(255,255,255,.35),0 0 0 1px rgba(0,0,0,.08);}
+  .xgabe__chips .xfarbe[aria-pressed="true"]{border-color:var(--text);background:var(--bg-alt);}
+  .xchip--menge{padding:0 .7rem;font-weight:700;gap:0;}
+  .xchip--tel{padding:0 .8rem 0 .6rem;color:var(--accent);font-weight:600;}
+  .xchip--tel svg{width:15px;height:15px;}
+  .xchip--tel:hover{border-color:var(--accent);}
+  .xgabe .xins{margin-top:auto;}
+  /* schmale Kacheln: Chips kompakter, damit Farbe + Mindestmenge in eine Zeile passen */
+  @container (max-width:225px){
+    .xchip,.xgabe__chips .xfarbe{height:28px;font-size:.74rem;gap:.3rem;padding:0 .55rem 0 .3rem;}
+    .xchip i,.xgabe__chips .xfarbe i{width:13px;height:13px;}
+    .xchip--menge{padding:0 .5rem;}
+    .xgabe__chips{gap:.25rem;}
+  }
+  /* sehr schmal (Handy, 2 Spalten): noch kompakter, „Stk." fällt weg */
+  @container (max-width:185px){
+    .xchip,.xgabe__chips .xfarbe{height:27px;font-size:.68rem;gap:.25rem;padding:0 .45rem 0 .28rem;}
+    .xchip i,.xgabe__chips .xfarbe i{width:11px;height:11px;}
+    .xchip--menge{padding:0 .45rem;}
+    .xchip__stk{display:none;}
+    .xgabe__chips,.xgabe__chips .xfarben{gap:.2rem;}
+    .xgabe__info{font-size:.78rem;letter-spacing:-.005em;}
+  }
+  @container (max-width:168px){
+    .xchip,.xgabe__chips .xfarbe{font-size:.64rem;padding:0 .38rem 0 .25rem;gap:.2rem;}
+    .xchip i,.xgabe__chips .xfarbe i{width:10px;height:10px;}
+  }
+  @media (max-width:369px){
+    ul.xgabentisch{grid-template-columns:1fr;}
+    .xgabe .xgabe__kugel{width:72%;}
+    .xgabe .xgabe__info{max-width:22ch;font-size:.9rem;}
+  }
+  @media (max-width:420px){
+    .xgabentisch{column-gap:.6rem;}
+    #verpackung > .wrap,#inhalt > .wrap{padding-inline:14px;}
+  }
   @media (min-width:1100px){ #inhalt .xgabentisch{grid-template-columns:repeat(5,1fr);} }
   @media (max-width:560px){
     .xgabentisch{grid-template-columns:repeat(2,1fr);gap:2rem .9rem;}
@@ -1117,10 +1163,15 @@
     text-shadow:0 2px 8px rgba(60,0,10,.35);
   }
   .xgabe--wunsch:hover .xgabe__kugel{transform:rotate(-4deg) scale(1.03);}
-  .xgabe__info--klein{font-size:.82rem;margin-top:.45rem;}
-  .xgabe__info a{color:var(--accent);font-weight:600;}
-  .xgabe__info a[href^="tel:"]{white-space:nowrap;}
-  @media (max-width:560px){ .xins{font-size:.8rem;padding:.35rem .75rem .35rem .4rem;gap:.35rem;} .xins__plus{width:19px;height:19px;} }
+  @media (max-width:560px){
+    .xins{font-size:.8rem;padding:.35rem .75rem .35rem .4rem;gap:.35rem;}
+    .xins__plus{width:19px;height:19px;}
+    .xgabe__info{font-size:.82rem;max-width:none;}
+    .xgabe__chips{gap:.25rem;min-height:30px;}
+    .xchip,.xgabe__chips .xfarbe{height:28px;font-size:.72rem;gap:.3rem;padding:0 .55rem 0 .3rem;}
+    .xchip i,.xgabe__chips .xfarbe i{width:12px;height:12px;}
+    .xchip--menge{padding:0 .5rem;}
+  }
 
   /* ===== Für unterwegs (Samtband) ===== */
   .xunterwegs{
@@ -1699,51 +1750,46 @@
       <ul class="xgabentisch">
         <li class="xgabe" id="p1">
           <div class="xgabe__kugel"><span class="xnr">1</span><img src="img/stoffsackerl.webp" alt="Schwarzes Stoffsackerl mit buntem Kortschak-Logo" width="227" height="297" loading="lazy"></div>
-          <h3>Stoffsackerl</h3><p class="xgabe__info">38 × 42 cm, 13 Liter</p>
+          <h3>Stoffsackerl</h3>
+          <p class="xgabe__info">38 × 42 cm, 13 Liter – für den Einkauf.</p>
+          <div class="xgabe__chips"><span class="xchip"><i style="background:#1c1c1e" aria-hidden="true"></i>Schwarz</span></div>
           <button class="xins" type="button" data-wahl="w-p1" aria-pressed="false"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Ins Paket</span></button>
-
         </li>
         <li class="xgabe" id="p2">
           <div class="xgabe__kugel"><span class="xnr">2</span><span class="xbadge xbadge--neu">NEU</span>
             <div class="xgabe__paar" data-paar>
               <img class="ist-vorn" data-farbe="olive" src="img/outdoor-rucksack-olive.webp" alt="Outdoor-Rucksack in Olive mit Logo" width="462" height="640" loading="lazy">
               <img data-farbe="schwarz" src="img/outdoor-rucksack-schwarz.webp" alt="Outdoor-Rucksack in Schwarz mit Logo" width="462" height="640" loading="lazy">
-            </div>
-          </div>
+            </div></div>
           <h3>Outdoor-Rucksack</h3>
-          <div class="xfarben" role="group" aria-label="Farbe Outdoor-Rucksack">
-            <button class="xfarbe" type="button" data-zeige="olive" aria-pressed="true"><i style="background:#8a7c55"></i>Olive</button>
-            <button class="xfarbe" type="button" data-zeige="schwarz" aria-pressed="false"><i style="background:#1c1c1e"></i>Schwarz</button>
-          </div>
+          <p class="xgabe__info">Robust, mit Schnallen und Netztaschen.</p>
+          <div class="xgabe__chips"><div class="xfarben" role="group" aria-label="Farbe Outdoor-Rucksack"><button class="xfarbe" type="button" data-zeige="olive" aria-pressed="true"><i style="background:#8a7c55"></i>Olive</button><button class="xfarbe" type="button" data-zeige="schwarz" aria-pressed="false"><i style="background:#1c1c1e"></i>Schwarz</button></div></div>
           <button class="xins" type="button" data-wahl="w-p2" aria-pressed="false"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Ins Paket</span></button>
-
         </li>
         <li class="xgabe" id="p3">
           <div class="xgabe__kugel"><span class="xnr">3</span><span class="xbadge xbadge--neu">NEU</span>
             <div class="xgabe__paar" data-paar>
               <img class="ist-vorn" data-farbe="weinrot" src="img/retro-rucksack-weinrot.webp" alt="Retro-Rucksack in Weinrot mit Logo" width="575" height="640" loading="lazy">
               <img data-farbe="schwarz" src="img/retro-rucksack-schwarz.webp" alt="Retro-Rucksack in Schwarz mit Logo" width="576" height="640" loading="lazy">
-            </div>
-          </div>
-          <h3>Retro-Rucksack</h3><p class="xgabe__info">mit Laptop-Fach</p>
-          <div class="xfarben" role="group" aria-label="Farbe Retro-Rucksack">
-            <button class="xfarbe" type="button" data-zeige="weinrot" aria-pressed="true"><i style="background:#6e1630"></i>Weinrot</button>
-            <button class="xfarbe" type="button" data-zeige="schwarz" aria-pressed="false"><i style="background:#1c1c1e"></i>Schwarz</button>
-          </div>
+            </div></div>
+          <h3>Retro-Rucksack</h3>
+          <p class="xgabe__info">Mit Laptop-Fach für Papiere und Jause.</p>
+          <div class="xgabe__chips"><div class="xfarben" role="group" aria-label="Farbe Retro-Rucksack"><button class="xfarbe" type="button" data-zeige="weinrot" aria-pressed="true"><i style="background:#6e1630"></i>Weinrot</button><button class="xfarbe" type="button" data-zeige="schwarz" aria-pressed="false"><i style="background:#1c1c1e"></i>Schwarz</button></div></div>
           <button class="xins" type="button" data-wahl="w-p3" aria-pressed="false"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Ins Paket</span></button>
-
         </li>
         <li class="xgabe" id="p4">
           <div class="xgabe__kugel"><span class="xnr">4</span><img src="img/rolltop-rucksack.webp" alt="Schwarzer Rolltop-Rucksack mit Logo" width="230" height="296" loading="lazy"></div>
-          <h3>Rolltop-Rucksack</h3><p class="xgabe__info">schwarz</p>
+          <h3>Rolltop-Rucksack</h3>
+          <p class="xgabe__info">Rollverschluss – wächst mit dem Inhalt.</p>
+          <div class="xgabe__chips"><span class="xchip"><i style="background:#1c1c1e" aria-hidden="true"></i>Schwarz</span></div>
           <button class="xins" type="button" data-wahl="w-p4" aria-pressed="false"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Ins Paket</span></button>
-
         </li>
         <li class="xgabe" id="p5">
           <div class="xgabe__kugel"><span class="xnr">5</span><img src="img/einkaufskorb.webp" alt="Faltbarer schwarzer Einkaufskorb mit Logo" width="300" height="299" loading="lazy"></div>
-          <h3>Einkaufskorb</h3><p class="xgabe__info">faltbar</p>
+          <h3>Einkaufskorb</h3>
+          <p class="xgabe__info">Faltbar – ideal für Einkauf und Markt.</p>
+          <div class="xgabe__chips"><span class="xchip"><i style="background:#1c1c1e" aria-hidden="true"></i>Schwarz</span></div>
           <button class="xins" type="button" data-wahl="w-p5" aria-pressed="false"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Ins Paket</span></button>
-
         </li>
         <li class="xgabe" id="p6">
           <div class="xgabe__kugel"><span class="xnr">6</span>
@@ -1751,27 +1797,28 @@
               <img class="zu" src="img/kulturbeutel.webp" alt="Kulturbeutel geschlossen mit Logo" width="603" height="640" loading="lazy">
               <img class="buerste" src="img/zahnbuerste.webp" alt="Holz-Zahnbürste mit Logo-Gravur" width="66" height="640" loading="lazy">
               <img class="offen" src="img/kulturbeutel-offen.webp" alt="Kulturbeutel aufgeklappt mit Haken zum Aufhängen" width="485" height="900" loading="lazy">
-            </div>
-          </div>
-          <h3>Kulturbeutel</h3><p class="xgabe__info">mit Haken zum Aufhängen,<br>inkl. Holz-Zahnbürste</p>
+            </div></div>
+          <h3>Kulturbeutel</h3>
+          <p class="xgabe__info">Zum Aufhängen, mit Holz-Zahnbürste dabei.</p>
+          <div class="xgabe__chips"><span class="xchip"><i style="background:#393a46" aria-hidden="true"></i>Anthrazit</span></div>
           <button class="xins" type="button" data-wahl="w-p6" aria-pressed="false"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Ins Paket</span></button>
-
         </li>
         <li class="xgabe" id="p7">
           <div class="xgabe__kugel"><span class="xnr">7</span><img src="img/bauchtasche.webp" alt="Schwarze Bauchtasche mit Logo" width="297" height="174" loading="lazy"></div>
-          <h3>Bauchtasche</h3><p class="xgabe__info">schwarz</p>
+          <h3>Bauchtasche</h3>
+          <p class="xgabe__info">Hände frei – für Ausflug, Markt und Fest.</p>
+          <div class="xgabe__chips"><span class="xchip"><i style="background:#1c1c1e" aria-hidden="true"></i>Schwarz</span></div>
           <button class="xins" type="button" data-wahl="w-p7" aria-pressed="false"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Ins Paket</span></button>
-
         </li>
         <li class="xgabe xgabe--wunsch">
           <a class="xgabe__kugel" href="#x-text" tabindex="-1" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg>
             <strong>Sonderwunsch?</strong>
           </a>
-          <h3>Andere Verpackung, eigene Idee?</h3>
-          <p class="xgabe__info">Wir besorgen und veredeln auch Sonderwünsche.</p>
+          <h3>Eigene Idee?</h3>
+          <p class="xgabe__info">Wir besorgen und veredeln Sonderwünsche.</p>
+          <div class="xgabe__chips"><a class="xchip xchip--tel" href="tel:+43384767666"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>03847 / 67666</a></div>
           <a class="xins xins--link" href="#x-text"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Wunsch notieren</span></a>
-          <p class="xgabe__info xgabe__info--klein">oder anrufen: <a href="tel:+43384767666">03847 / 67666</a></p>
         </li>
       </ul>
     </div>
@@ -1790,65 +1837,73 @@
       <ul class="xgabentisch">
         <li class="xgabe" id="p8">
           <div class="xgabe__kugel"><span class="xnr">8</span><img src="img/tshirt.webp" alt="Schwarzes T-Shirt mit Logo auf der Brust" width="229" height="300" loading="lazy"></div>
-          <h3>T-Shirt</h3><p class="xgabe__info">in deiner Größe</p>
+          <h3>T-Shirt</h3>
+          <p class="xgabe__info">Logo auf der Brust, Größe nach Wunsch.</p>
+          <div class="xgabe__chips"><span class="xchip"><i style="background:#1c1c1e" aria-hidden="true"></i>Schwarz</span></div>
           <button class="xins" type="button" data-wahl="w-p8" aria-pressed="false"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Ins Paket</span></button>
-
         </li>
         <li class="xgabe" id="p9">
           <div class="xgabe__kugel"><span class="xnr">9</span><img src="img/hoodie.webp" alt="Schwarzer Zip-Hoodie mit Logo" width="207" height="300" loading="lazy"></div>
-          <h3>Hoodie / Weste</h3><p class="xgabe__info">in deiner Größe</p>
+          <h3>Hoodie / Weste</h3>
+          <p class="xgabe__info">Mit Zipp und Logo, Größe nach Wunsch.</p>
+          <div class="xgabe__chips"><span class="xchip"><i style="background:#1c1c1e" aria-hidden="true"></i>Schwarz</span></div>
           <button class="xins" type="button" data-wahl="w-p9" aria-pressed="false"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Ins Paket</span></button>
-
         </li>
         <li class="xgabe" id="p10">
           <div class="xgabe__kugel"><span class="xnr">10</span><img src="img/haube.webp" alt="Schwarze Strickhaube mit Logo-Patch" width="300" height="294" loading="lazy"></div>
-          <h3>Haube</h3><p class="xgabe__info">mit Logo-Patch</p>
+          <h3>Haube</h3>
+          <p class="xgabe__info">Strickhaube mit Logo-Patch – hält warm.</p>
+          <div class="xgabe__chips"><span class="xchip"><i style="background:#1c1c1e" aria-hidden="true"></i>Schwarz</span></div>
           <button class="xins" type="button" data-wahl="w-p10" aria-pressed="false"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Ins Paket</span></button>
-
         </li>
         <li class="xgabe" id="p11">
           <div class="xgabe__kugel"><span class="xnr">11</span><img src="img/haeferl.webp" alt="Schwarzes Häferl, innen rot, mit Logo" width="640" height="524" loading="lazy"></div>
-          <h3>Häferl<sup>*</sup></h3><p class="xgabe__info">schwarz, innen rot</p><span class="xgabe__menge">ab 25 Stück</span>
+          <h3>Häferl<sup>*</sup></h3>
+          <p class="xgabe__info">Für den Kaffee im Büro und unterwegs.</p>
+          <div class="xgabe__chips"><span class="xchip"><i style="background:linear-gradient(135deg,#1c1c1e 50%,#c8102e 50%)" aria-hidden="true"></i>Schwarz/Rot</span><span class="xchip xchip--menge">ab 25<span class="xchip__stk">&nbsp;Stk.</span></span></div>
           <button class="xins" type="button" data-wahl="w-p11" aria-pressed="false"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Ins Paket</span></button>
-
         </li>
         <li class="xgabe" id="p12">
           <div class="xgabe__kugel"><span class="xnr">12</span><img src="img/handwaermer.webp" alt="Roter Handwärmer in Herzform mit Logo" width="297" height="250" loading="lazy"></div>
-          <h3>Handwärmer<sup>*</sup></h3><p class="xgabe__info">in Herzform</p><span class="xgabe__menge">ab 25 Stück</span>
+          <h3>Handwärmer<sup>*</sup></h3>
+          <p class="xgabe__info">In Herzform – für kalte Finger im Winter.</p>
+          <div class="xgabe__chips"><span class="xchip"><i style="background:#d4142f" aria-hidden="true"></i>Rot</span><span class="xchip xchip--menge">ab 25<span class="xchip__stk">&nbsp;Stk.</span></span></div>
           <button class="xins" type="button" data-wahl="w-p12" aria-pressed="false"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Ins Paket</span></button>
-
         </li>
         <li class="xgabe" id="p13">
           <div class="xgabe__kugel"><span class="xnr">13</span><img src="img/massband.webp" alt="Rollmaßband mit Logo" width="504" height="420" loading="lazy"></div>
-          <h3>Maßband<sup>*</sup></h3><p class="xgabe__info">Rollmaßband</p><span class="xgabe__menge">ab 25 Stück</span>
+          <h3>Maßband<sup>*</sup></h3>
+          <p class="xgabe__info">Rollmaßband für Werkstatt und Baustelle.</p>
+          <div class="xgabe__chips"><span class="xchip"><i style="background:#1c1c1e" aria-hidden="true"></i>Schwarz</span><span class="xchip xchip--menge">ab 25<span class="xchip__stk">&nbsp;Stk.</span></span></div>
           <button class="xins" type="button" data-wahl="w-p13" aria-pressed="false"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Ins Paket</span></button>
-
         </li>
         <li class="xgabe" id="p14">
           <div class="xgabe__kugel"><span class="xnr">14</span><span class="xbadge xbadge--highlight">★ HIGHLIGHT</span><img src="img/schneidebrett.webp" alt="Drei Holz-Schneidebretter mit Gravur" width="800" height="505" loading="lazy"></div>
-          <h3>Schneidebrett<sup>***</sup></h3><p class="xgabe__info">Holz, in klein, mittel oder groß</p><span class="xgabe__menge">ab 10 Stück</span>
-          <span class="xgabe__beispiel">Beispiel-Gravur für Brandl Transport-Logistik</span>
+          <h3>Schneidebrett<sup>***</sup></h3>
+          <p class="xgabe__info">Holz mit Gravur, in klein, mittel, groß.</p>
+          <div class="xgabe__chips"><span class="xchip"><i style="background:linear-gradient(135deg,#d4a56c,#8a5a2b)" aria-hidden="true"></i>Holz natur</span><span class="xchip xchip--menge">ab 10<span class="xchip__stk">&nbsp;Stk.</span></span></div>
           <button class="xins" type="button" data-wahl="w-p14" aria-pressed="false"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Ins Paket</span></button>
-
         </li>
         <li class="xgabe" id="p15">
           <div class="xgabe__kugel"><span class="xnr">15</span><span class="xbadge xbadge--highlight">★ HIGHLIGHT</span><img src="img/schuhloeffel.webp" alt="Langer Holz-Schuhlöffel mit Gravur" width="640" height="628" loading="lazy"></div>
-          <h3>Schuhlöffel<sup>***</sup></h3><p class="xgabe__info">Holz, mit Logo-Gravur</p><span class="xgabe__menge">ab 10 Stück</span>
-          <span class="xgabe__beispiel">Beispiel-Gravur für Brandl Transport-Logistik</span>
+          <h3>Schuhlöffel<sup>***</sup></h3>
+          <p class="xgabe__info">Lang, aus Holz, mit deinem Logo graviert.</p>
+          <div class="xgabe__chips"><span class="xchip"><i style="background:linear-gradient(135deg,#d4a56c,#8a5a2b)" aria-hidden="true"></i>Holz natur</span><span class="xchip xchip--menge">ab 10<span class="xchip__stk">&nbsp;Stk.</span></span></div>
           <button class="xins" type="button" data-wahl="w-p15" aria-pressed="false"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Ins Paket</span></button>
-
         </li>
         <li class="xgabe" id="p16">
           <div class="xgabe__kugel"><span class="xnr">16</span><img src="img/feuerzeug.webp" alt="Schwarzes Feuerzeug mit Logo" width="90" height="287" loading="lazy"></div>
-          <h3>Feuerzeug<sup>**</sup></h3><p class="xgabe__info">schwarz</p><span class="xgabe__menge">ab 50 Stück</span>
+          <h3>Feuerzeug<sup>**</sup></h3>
+          <p class="xgabe__info">Passt in jede Tasche, immer griffbereit.</p>
+          <div class="xgabe__chips"><span class="xchip"><i style="background:#1c1c1e" aria-hidden="true"></i>Schwarz</span><span class="xchip xchip--menge">ab 50<span class="xchip__stk">&nbsp;Stk.</span></span></div>
           <button class="xins" type="button" data-wahl="w-p16" aria-pressed="false"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Ins Paket</span></button>
-
         </li>
         <li class="xgabe" id="p17">
           <div class="xgabe__kugel"><span class="xnr">17</span><img src="img/kugelschreiber.webp" alt="Schwarzer Metall-Kugelschreiber mit Logo" width="286" height="29" loading="lazy" style="transform:rotate(-24deg) scale(1.15)"></div>
-          <h3>Kugelschreiber<sup>**</sup></h3><p class="xgabe__info">Metall, schwarz</p><span class="xgabe__menge">ab 50 Stück</span>
+          <h3>Kugelschreiber<sup>**</sup></h3>
+          <p class="xgabe__info">Metall, schwarz – liegt gut in der Hand.</p>
+          <div class="xgabe__chips"><span class="xchip"><i style="background:#1c1c1e" aria-hidden="true"></i>Schwarz</span><span class="xchip xchip--menge">ab 50<span class="xchip__stk">&nbsp;Stk.</span></span></div>
           <button class="xins" type="button" data-wahl="w-p17" aria-pressed="false"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Ins Paket</span></button>
-
         </li>
       </ul>
     </div>
