@@ -1,8 +1,10 @@
 <?php
 // Formular-Backend der Kortschak-Website.
-// Nimmt beide Formulare entgegen (Startseite "kontakt", Unterseite
-// "social-media"), verschickt zwei Mails: Benachrichtigung an das Buero
-// (Reply-To = Kunde) und eine Bestaetigung an den Kunden.
+// Nimmt drei Formulare entgegen (Startseite "kontakt", Unterseite
+// "social-media", Aktionsseite /xmas26/ "geschenkpakete"), verschickt zwei
+// Mails: Benachrichtigung an das Buero (Reply-To = Kunde, beim
+// Geschenkpaket-Formular optional mit Logo-Datei im Anhang) und eine
+// Bestaetigung an den Kunden (immer ohne Anhang).
 // Versand per SMTP ueber das Hostinger-Postfach aus anfrage-config.php.
 
 declare(strict_types=1);
@@ -35,7 +37,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
 // ---------------------------------------------------------------- Eingaben
 
 $formular = feld('formular');
-if (!in_array($formular, ['kontakt', 'social-media'], true)) {
+if (!in_array($formular, ['kontakt', 'social-media', 'geschenkpakete'], true)) {
     antwort(false, 'Unbekanntes Formular.', 400);
 }
 
@@ -53,14 +55,87 @@ $datenschutz = ($_POST['datenschutz'] ?? '') !== '';
 $fehler = [];
 if ($name === '')      { $fehler[] = 'Bitte geben Sie Ihren Namen an.'; }
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) { $fehler[] = 'Bitte geben Sie eine gültige E-Mail-Adresse an.'; }
-if ($nachricht === '') { $fehler[] = 'Bitte schreiben Sie uns eine Nachricht.'; }
+if ($nachricht === '' && $formular !== 'geschenkpakete') { $fehler[] = 'Bitte schreiben Sie uns eine Nachricht.'; }
 if (!$datenschutz)     { $fehler[] = 'Bitte bestätigen Sie die Datenschutzerklärung.'; }
 
 $zeilen = [];   // Label/Wert-Paare fuer die Mail an das Buero
 $zeilen[] = ['Name', $name];
 $zeilen[] = ['E-Mail', $email];
+$anhang = null; // [Dateiname, MIME-Typ, Inhalt] – nur beim Geschenkpaket-Formular
 
-if ($formular === 'kontakt') {
+if ($formular === 'geschenkpakete') {
+    // Aktionsseite /xmas26/: Verpackung + Inhalt wie im Bestellformular-PDF,
+    // dazu Firmendaten und optional die Logo-Datei.
+    $unternehmen = feld('unternehmen', 160);
+    $telefon     = feld('telefon', 60);
+    $anschrift   = feld('anschrift', 240);
+    $stueck      = feld('stueckzahl', 10);
+    $termin      = feld('liefertermin', 60);
+    if ($unternehmen === '') { $fehler[] = 'Bitte gib deinen Firmennamen an.'; }
+    if (!ctype_digit($stueck) || (int)$stueck < 1 || (int)$stueck > 100000) { $fehler[] = 'Bitte gib an, wie viele Pakete du brauchst.'; }
+
+    $liste = function (string $schluessel, int $max): array {
+        $werte = [];
+        foreach ((array)($_POST[$schluessel] ?? []) as $w) {
+            if (!is_string($w)) { continue; }
+            $w = einzeilig($w, 80);
+            if ($w !== '' && count($werte) < $max) { $werte[] = $w; }
+        }
+        return $werte;
+    };
+    $verpackung = $liste('verpackung', 10);
+    $inhalt     = $liste('inhalt', 15);
+    if (!$verpackung && !$inhalt) { $fehler[] = 'Bitte wähle mindestens eine Verpackung oder einen Inhalt aus.'; }
+
+    // Zusatzangaben direkt an das jeweilige Produkt haengen
+    $zusatz = [
+        'Outdoor-Rucksack' => feld('farbe_outdoor', 30),
+        'Retro-Rucksack'   => feld('farbe_retro', 30),
+        'T-Shirt'          => feld('groessen_tshirt', 160),
+        'Hoodie / Weste'   => feld('groessen_hoodie', 160),
+        'Schneidebrett'    => implode(', ', array_intersect($liste('brett', 3), ['klein', 'mittel', 'groß'])),
+    ];
+    $mitZusatz = function (array $produkte) use ($zusatz): string {
+        return implode("; ", array_map(function ($p) use ($zusatz) {
+            foreach ($zusatz as $name => $wert) {
+                if ($wert !== '' && str_contains($p, $name)) { return $p . ' (' . $wert . ')'; }
+            }
+            return $p;
+        }, $produkte));
+    };
+
+    $zeilen[] = ['Unternehmen', $unternehmen];
+    if ($telefon   !== '') { $zeilen[] = ['Telefon', $telefon]; }
+    if ($anschrift !== '') { $zeilen[] = ['Anschrift', $anschrift]; }
+    $zeilen[] = ['Stückzahl', $stueck . ' Pakete'];
+    $zeilen[] = ['Verpackung', $verpackung ? $mitZusatz($verpackung) : '–'];
+    $zeilen[] = ['Inhalt', $inhalt ? $mitZusatz($inhalt) : '–'];
+    if ($termin !== '') { $zeilen[] = ['Wunschtermin', $termin]; }
+
+    // Logo-Datei (optional). Wird nur als Mail-Anhang weitergereicht und
+    // nirgends auf dem Server abgelegt.
+    $datei = $_FILES['logo'] ?? null;
+    if (is_array($datei) && is_int($datei['error'] ?? null) && $datei['error'] !== UPLOAD_ERR_NO_FILE) {
+        $erlaubt = ['pdf' => 'application/pdf', 'eps' => 'application/postscript', 'ai' => 'application/postscript',
+                    'svg' => 'image/svg+xml', 'png' => 'image/png', 'jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg',
+                    'tif' => 'image/tiff', 'tiff' => 'image/tiff'];
+        $endung = strtolower(pathinfo((string)($datei['name'] ?? ''), PATHINFO_EXTENSION));
+        if (in_array($datei['error'], [UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE], true) || ($datei['size'] ?? 0) > 15 * 1024 * 1024) {
+            $fehler[] = 'Die Logo-Datei ist größer als 15 MB – schick sie uns bitte per E-Mail an ' . MAIL_EMPFAENGER . '.';
+        } elseif ($datei['error'] !== UPLOAD_ERR_OK || !is_uploaded_file((string)$datei['tmp_name'])) {
+            $fehler[] = 'Die Logo-Datei konnte nicht übertragen werden. Bitte versuch es noch einmal oder schick sie per E-Mail.';
+        } elseif (!isset($erlaubt[$endung])) {
+            $fehler[] = 'Bitte lade dein Logo als PDF, EPS, AI, SVG, PNG, JPG oder TIF hoch.';
+        } else {
+            $basis = preg_replace('/[^A-Za-z0-9._-]+/', '_', pathinfo((string)$datei['name'], PATHINFO_FILENAME)) ?: 'logo';
+            $anhang = [mb_substr($basis, 0, 60) . '.' . $endung, $erlaubt[$endung], (string)file_get_contents((string)$datei['tmp_name'])];
+            $zeilen[] = ['Logo-Datei', $anhang[0] . ' (im Anhang)'];
+        }
+    } else {
+        $zeilen[] = ['Logo-Datei', 'keine hochgeladen'];
+    }
+    $betreffThema = $unternehmen . ' · ' . $stueck . ' Pakete';
+} elseif ($formular === 'kontakt') {
     $leistungen = [];
     foreach ((array)($_POST['leistung'] ?? []) as $l) {
         if (!is_string($l)) { continue; }
@@ -117,7 +192,9 @@ if (MAIL_TRANSPORT !== 'log' && !rate_limit_ok()) {
 // -------------------------------------------------------------- Mails bauen
 
 $istKontakt  = $formular === 'kontakt';
-$formularOrt = $istKontakt ? 'Kontaktformular Startseite' : 'Formular Social-Media-Marketing';
+$istPaket    = $formular === 'geschenkpakete';
+$formularOrt = $istKontakt ? 'Kontaktformular Startseite' : ($istPaket ? 'Formular Geschenkpakete (Weihnachten 2026)' : 'Formular Social-Media-Marketing');
+if ($istPaket && $nachricht === '') { $nachricht = '(keine Nachricht)'; }
 
 // Enthaelt die Nachricht Links, gibt es keine Bestaetigungsmail an die
 // (moeglicherweise gefaelschte) Absenderadresse — sonst werden wir zum
@@ -126,8 +203,10 @@ $mitLink = (bool)preg_match('~https?://|www\.~i', $nachricht . ' ' . $name);
 if ($mitLink) {
     $zeilen[] = ['Hinweis', 'Nachricht enthält Links — es wurde keine automatische Bestätigung an den Absender geschickt.'];
 }
-$betreff     = ($istKontakt ? 'Website-Anfrage von ' : 'Social-Media-Anfrage von ') . $name
-             . ($betreffThema !== '' && $istKontakt ? ' · ' . $betreffThema : '');
+$betreff     = $istPaket
+             ? 'Geschenkpakete-Anfrage: ' . $betreffThema
+             : ($istKontakt ? 'Website-Anfrage von ' : 'Social-Media-Anfrage von ') . $name
+               . ($betreffThema !== '' && $istKontakt ? ' · ' . $betreffThema : '');
 $vorname     = preg_split('/\s+/', trim($name))[0] ?? $name;
 
 // 1) Benachrichtigung an das Buero
@@ -142,6 +221,18 @@ $textBuero = mail_text('Neue Anfrage ueber die Website (' . $formularOrt . ')', 
 
 // 2) Bestaetigung an den Kunden
 $zeilenKunde = array_values(array_filter($zeilen, fn($z) => !in_array($z[0], ['Name', 'E-Mail', 'Hinweis'], true)));
+if ($istPaket) {
+    // Kampagne duzt (wie Bestellformular und /xmas26/); der Anhang geht nur ans Buero
+    $zeilenKunde = array_map(fn($z) => [$z[0], str_replace(' (im Anhang)', ' (erhalten)', $z[1])], $zeilenKunde);
+    $mailKunde = mail_html(
+        'Deine Anfrage ist bei uns angekommen',
+        'Hallo ' . e($vorname) . ', danke für deine Geschenkpaket-Anfrage! Wir stellen dein Angebot zusammen und melden uns so schnell wie möglich — in der Regel innerhalb eines Werktags. Hier noch einmal alles, was du uns geschickt hast.',
+        $zeilenKunde,
+        $nachricht,
+        'Du möchtest etwas ergänzen oder das Logo nachreichen? Antworte einfach auf diese E-Mail oder ruf uns an: +43 3847 67666.'
+    );
+    $textKunde = mail_text('Danke fuer deine Geschenkpaket-Anfrage! Wir melden uns in der Regel innerhalb eines Werktags.', $zeilenKunde, $nachricht);
+} else {
 $mailKunde = mail_html(
     'Ihre Anfrage ist bei uns angekommen',
     'Hallo ' . e($vorname) . ', vielen Dank für Ihre Nachricht! Wir haben Ihre Anfrage erhalten und melden uns so schnell wie möglich — in der Regel innerhalb eines Werktags. Zur Sicherheit fassen wir hier noch einmal zusammen, was Sie uns geschickt haben.',
@@ -150,11 +241,12 @@ $mailKunde = mail_html(
     'Sie möchten etwas ergänzen? Antworten Sie einfach auf diese E-Mail oder rufen Sie uns an: +43 3847 67666.'
 );
 $textKunde = mail_text('Vielen Dank fuer Ihre Anfrage! Wir melden uns in der Regel innerhalb eines Werktags.', $zeilenKunde, $nachricht);
+}
 
 // ------------------------------------------------------------------ Versand
 
 try {
-    mail_senden(MAIL_EMPFAENGER, 'Kortschak Website', $betreff, $mailBuero, $textBuero, [$email, $name]);
+    mail_senden(MAIL_EMPFAENGER, 'Kortschak Website', $betreff, $mailBuero, $textBuero, [$email, $name], $anhang);
 } catch (Throwable $t) {
     error_log('[anfrage.php] Versand an Buero fehlgeschlagen: ' . $t->getMessage());
     antwort(false, 'Ihre Anfrage konnte gerade nicht übermittelt werden. Bitte versuchen Sie es später noch einmal — oder schreiben Sie direkt an ' . MAIL_EMPFAENGER . '.', 502);
@@ -162,14 +254,16 @@ try {
 
 if (!$mitLink) {
     try {
-        mail_senden($email, $name, 'Ihre Anfrage bei Kortschak — wir melden uns!', $mailKunde, $textKunde, [MAIL_ANTWORT_AN, 'Kortschak Werbeagentur']);
+        mail_senden($email, $name, $istPaket ? 'Deine Geschenkpaket-Anfrage bei Kortschak' : 'Ihre Anfrage bei Kortschak — wir melden uns!', $mailKunde, $textKunde, [MAIL_ANTWORT_AN, 'Kortschak Werbeagentur']);
     } catch (Throwable $t) {
         // Anfrage ist beim Buero angekommen — Bestaetigungsfehler nicht dem Kunden anlasten.
         error_log('[anfrage.php] Bestaetigung an Kunden fehlgeschlagen: ' . $t->getMessage());
     }
 }
 
-antwort(true, 'Vielen Dank, ' . $vorname . '! Ihre Anfrage ist unterwegs — eine Bestätigung ist auf dem Weg in Ihr Postfach.');
+antwort(true, $istPaket
+    ? 'Danke, ' . $vorname . '! Deine Anfrage ist unterwegs — eine Bestätigung ist auf dem Weg in dein Postfach. Wir melden uns mit deinem Angebot.'
+    : 'Vielen Dank, ' . $vorname . '! Ihre Anfrage ist unterwegs — eine Bestätigung ist auf dem Weg in Ihr Postfach.');
 
 // ======================================================================
 // Hilfsfunktionen
@@ -381,8 +475,9 @@ function mail_text(string $intro, array $zeilen, string $nachricht): string {
 
 // --------------------------------------------------------------- Versand
 
-function mail_senden(string $an, string $anName, string $betreff, string $html, string $text, ?array $antwortAn): void {
+function mail_senden(string $an, string $anName, string $betreff, string $html, string $text, ?array $antwortAn, ?array $anhang = null): void {
     $grenze  = 'grenze-' . bin2hex(random_bytes(12));
+    $aussen  = 'aussen-' . bin2hex(random_bytes(12));
     $kopf = [
         'Date: ' . date('r'),
         'From: ' . kodiert(MAIL_ABSENDER_NAME) . ' <' . SMTP_USER . '>',
@@ -390,7 +485,9 @@ function mail_senden(string $an, string $anName, string $betreff, string $html, 
         'Subject: ' . kodiert($betreff),
         'Message-ID: <' . bin2hex(random_bytes(16)) . '@kortschak.online>',
         'MIME-Version: 1.0',
-        'Content-Type: multipart/alternative; boundary="' . $grenze . '"',
+        $anhang === null
+            ? 'Content-Type: multipart/alternative; boundary="' . $grenze . '"'
+            : 'Content-Type: multipart/mixed; boundary="' . $aussen . '"',
     ];
     if ($antwortAn !== null) {
         $kopf[] = 'Reply-To: ' . kodiert($antwortAn[1]) . ' <' . $antwortAn[0] . '>';
@@ -402,6 +499,19 @@ function mail_senden(string $an, string $anName, string $betreff, string $html, 
         . "Content-Type: text/html; charset=utf-8\r\nContent-Transfer-Encoding: quoted-printable\r\n\r\n"
         . quoted_printable_encode($html) . "\r\n"
         . '--' . $grenze . "--\r\n";
+    if ($anhang !== null) {
+        // Text/HTML als erster Teil, danach die Datei base64-kodiert
+        [$dateiName, $mime, $daten] = $anhang;
+        $rumpf = '--' . $aussen . "\r\n"
+            . 'Content-Type: multipart/alternative; boundary="' . $grenze . '"' . "\r\n\r\n"
+            . $rumpf
+            . '--' . $aussen . "\r\n"
+            . 'Content-Type: ' . $mime . '; name="' . $dateiName . '"' . "\r\n"
+            . "Content-Transfer-Encoding: base64\r\n"
+            . 'Content-Disposition: attachment; filename="' . $dateiName . '"' . "\r\n\r\n"
+            . chunk_split(base64_encode($daten), 76, "\r\n")
+            . '--' . $aussen . "--\r\n";
+    }
     $roh = implode("\r\n", $kopf) . "\r\n\r\n" . $rumpf;
 
     if (MAIL_TRANSPORT === 'log') {

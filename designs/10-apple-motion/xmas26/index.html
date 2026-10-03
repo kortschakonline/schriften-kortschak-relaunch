@@ -895,7 +895,7 @@
   .xhero__inhalt{
     position:relative;z-index:6;text-align:center;
     padding:calc(56px + 2rem) clamp(20px,4vw,48px) clamp(4.5rem,11vh,7rem);
-    max-width:960px;
+    max-width:min(1180px,100%);
   }
   .xhero__jahr{
     display:inline-block;font-size:.85rem;font-weight:700;letter-spacing:.06em;
@@ -903,9 +903,12 @@
     border:1px solid rgba(255,255,255,.55);color:#fff;
   }
   .xhero h1{margin-top:clamp(.6rem,2vh,1.2rem);font-weight:400;line-height:1;}
+  /* Breiter als der Textblock darf das Wort werden – darum über left/translate
+     mittig gesetzt statt über text-align (das zentriert nur, solange es passt). */
   .xhero__script{
-    display:block;font-family:var(--script);font-weight:400;
-    font-size:clamp(3.6rem,min(11.5vw,17vh),10.5rem);line-height:1.02;letter-spacing:-.01em;
+    display:block;width:max-content;position:relative;left:50%;transform:translateX(-50%);
+    white-space:nowrap;font-family:var(--script);font-weight:400;
+    font-size:clamp(3.6rem,min(10.4vw,15.5vh),10rem);line-height:1.02;letter-spacing:-.01em;
     padding:0 .12em .08em;
     text-shadow:0 .06em 0 rgba(60,0,10,.35),0 .25em .6em rgba(40,0,6,.35);
   }
@@ -959,21 +962,56 @@
     .xhero__aktionen .btn{width:min(100%,300px);}
   }
 
-  /* ===== Drei Schritte ===== */
-  .xschritte{padding-block:clamp(3rem,6vw,5rem) 0;}
-  .xschritte ol{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1.5rem,4vw,3.5rem);counter-reset:s;}
-  .xschritte li{display:grid;grid-template-columns:auto 1fr;gap:.35rem 1.1rem;align-items:start;}
-  .xschritte a{display:contents;}
+  /* Rote Nummernpunkte – dieselben Nummern wie im Bestellformular-PDF */
   .xnr{
     display:inline-grid;place-items:center;flex-shrink:0;
     width:2.6rem;height:2.6rem;border-radius:50%;
-    background:var(--x-rot);color:#fff;font-weight:800;font-size:1.1rem;font-variant-numeric:tabular-nums;
+    background:var(--x-rot);color:#fff;font-weight:800;font-size:1.1rem;font-variant-numeric:tabular-nums;line-height:1;
   }
-  .xschritte li .xnr{grid-row:span 2;width:3.2rem;height:3.2rem;font-size:1.35rem;}
-  .xschritte h2{font-size:1.3rem;font-weight:700;letter-spacing:-.02em;line-height:1.25;padding-top:.15rem;}
-  .xschritte p{color:var(--text-2);font-size:.98rem;line-height:1.5;}
-  .xschritte li:hover h2{color:var(--accent);}
-  @media (max-width:820px){.xschritte ol{grid-template-columns:1fr;}}
+
+  /* ===== Drei Schritte (Geschenkband) ===== */
+  .xschritte{--g:clamp(1.5rem,4vw,3.5rem);--kreis:3.4rem;padding-block:clamp(2.5rem,5vw,4rem) clamp(4.5rem,8vw,7rem);}
+  .xschritte__titel{font-size:clamp(1.5rem,1.6vw + .8rem,2.1rem);font-weight:800;letter-spacing:-.02em;margin-bottom:clamp(1.8rem,3.5vw,2.8rem);}
+  .xschritte__band{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:var(--g);}
+  .xschritte__band li{position:relative;}
+  .xschritte__band a{display:flex;flex-direction:column;gap:1rem;height:100%;}
+  .xschritte__band .xnr{
+    width:var(--kreis);height:var(--kreis);font-size:1.35rem;position:relative;z-index:1;
+    box-shadow:0 0 0 7px var(--bg),0 10px 24px rgba(160,10,30,.28);
+    transition:transform .35s cubic-bezier(.2,1.4,.4,1);
+  }
+  /* Band vom Kreis zum nächsten Kreis */
+  .xschritte__band li:not(:last-child)::after{
+    content:"";position:absolute;top:calc(var(--kreis) / 2 - 2px);height:4px;border-radius:2px;
+    left:var(--kreis);right:calc(var(--g) * -1);
+    background:linear-gradient(90deg,var(--x-rot),#e3203f 50%,var(--x-rot));
+    box-shadow:0 1px 0 rgba(0,0,0,.08);
+  }
+  .xschritte__text{display:flex;flex-direction:column;gap:.35rem;}
+  .xschritte__text strong{font-size:1.25rem;font-weight:700;letter-spacing:-.02em;line-height:1.25;transition:color .2s var(--ease);}
+  .xschritte__text span{color:var(--text-2);font-size:.98rem;line-height:1.5;max-width:30ch;}
+  .xschritte__band a:hover strong{color:var(--accent);}
+  .xschritte__band a:hover .xnr{transform:scale(1.08);}
+  @media (max-width:820px){
+    .xschritte__band{grid-template-columns:1fr;gap:1.8rem;}
+    .xschritte__band a{flex-direction:row;align-items:flex-start;gap:1.1rem;}
+    .xschritte__text{padding-top:.35rem;}
+    .xschritte__band li:not(:last-child)::after{
+      top:var(--kreis);bottom:-1.8rem;left:calc(var(--kreis) / 2 - 2px);right:auto;width:4px;height:auto;
+      background:linear-gradient(180deg,var(--x-rot),#e3203f 50%,var(--x-rot));
+    }
+  }
+
+  /* ===== Wellenkanten der dunklen Bänder (Motiv aus dem Bestellformular) ===== */
+  .xwelle{position:absolute;left:0;width:100%;height:clamp(28px,4.5vw,64px);z-index:1;pointer-events:none;}
+  .xwelle path{fill:var(--welle-farbe,var(--bg));}
+  .xwelle--oben{top:-1px;}
+  .xwelle--unten{bottom:-1px;}
+  .xholz,.xunterwegs{padding-block:clamp(6rem,11vw,10rem);}
+  .xholz{--welle-farbe:var(--bg);}
+  .xunterwegs .xwelle--oben path{fill:var(--bg-alt);}
+  .xunterwegs .xwelle--unten path{fill:var(--bg);}
+  .xholz > .wrap,.xunterwegs > .wrap{position:relative;z-index:2;}
 
   /* ===== Produktbereiche ===== */
   .xbereich-kopf{display:flex;align-items:center;gap:1.1rem;margin-bottom:clamp(2.2rem,5vw,3.6rem);}
@@ -1169,6 +1207,148 @@
     .xholz__grid{grid-template-columns:1fr;}
     .xholz__stueck--loeffel .xholz__bild{max-width:300px;}
   }
+
+  /* ===== „Ins Paket"-Knopf an den Produktkacheln ===== */
+  .xins{
+    display:inline-flex;align-items:center;gap:.45rem;margin-top:.8rem;min-height:38px;
+    padding:.4rem 1rem .4rem .5rem;border-radius:var(--radius-pill);
+    border:1.5px solid var(--x-rot);background:transparent;color:var(--x-rot);
+    font-size:.88rem;font-weight:600;transition:background .2s var(--ease),color .2s var(--ease),transform .2s var(--ease);
+  }
+  [data-theme="dark"] .xins{color:#ff5a6e;border-color:#ff5a6e;}
+  @media (prefers-color-scheme: dark){ :root:not([data-theme]) .xins{color:#ff5a6e;border-color:#ff5a6e;} }
+  .xins:hover{transform:translateY(-1px);}
+  .xins__plus{position:relative;width:22px;height:22px;border-radius:50%;background:currentColor;flex-shrink:0;}
+  .xins__plus::before,.xins__plus::after{content:"";position:absolute;left:50%;top:50%;width:10px;height:2px;margin:-1px 0 0 -5px;background:#fff;border-radius:1px;transition:transform .25s var(--ease);}
+  .xins__plus::after{transform:rotate(90deg);}
+  .xins[aria-pressed="true"]{background:var(--x-rot);border-color:var(--x-rot);color:#fff;}
+  .xins[aria-pressed="true"] .xins__plus{background:#fff;}
+  .xins[aria-pressed="true"] .xins__plus::before{width:5px;margin:0;transform:translate(-5px,1px) rotate(45deg);background:var(--x-rot);}
+  .xins[aria-pressed="true"] .xins__plus::after{width:10px;margin:0;transform:translate(-2px,-1px) rotate(-50deg);background:var(--x-rot);}
+  .xgabe.ist-gewaehlt .xgabe__kugel{box-shadow:0 0 0 4px var(--x-rot),inset 0 -10px 24px rgba(120,90,80,.12),0 18px 40px rgba(60,20,20,.12);}
+
+  /* ===== Online-Formular ===== */
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+  .hp-feld{position:absolute !important;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;}
+  .req{color:var(--accent);}
+  .check{display:flex;gap:.7rem;align-items:flex-start;font-size:.9rem;color:var(--text-2);margin-top:1.4rem;}
+  .check input{width:20px;height:20px;flex-shrink:0;accent-color:var(--x-rot);margin-top:2px;}
+  .check a{color:var(--accent);text-decoration:underline;text-underline-offset:3px;}
+  .form-status{margin:0;font-size:.9rem;font-weight:600;color:var(--accent);}
+  .form-erfolg{background:var(--bg-alt);border:1px solid var(--border);border-radius:var(--radius-lg);padding:clamp(1.6rem,4vw,3rem);text-align:center;}
+  .form-erfolg strong{display:block;font-family:var(--script);font-weight:400;font-size:clamp(2rem,4vw,3rem);color:var(--x-rot);}
+  .form-erfolg p{margin:.8rem auto 0;color:var(--text-2);line-height:1.55;max-width:48ch;}
+
+  .xbestell{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:clamp(1.5rem,3.5vw,3rem);align-items:start;}
+  .xbestell__haupt{display:grid;gap:clamp(1.5rem,3vw,2.2rem);}
+  .xbestell__gruppe{border:1px solid var(--border);border-radius:var(--radius-lg);padding:clamp(1.1rem,2.4vw,1.8rem);background:var(--surface);min-width:0;}
+  .xbestell__gruppe legend{display:flex;align-items:center;gap:.7rem;padding:0 .5rem;margin-left:-.5rem;font-size:1.2rem;font-weight:800;letter-spacing:-.02em;}
+  .xbestell__gruppe legend .xnr{width:2rem;height:2rem;font-size:.9rem;}
+  .xbestell__gruppe legend small{font-size:.88rem;font-weight:500;color:var(--text-2);letter-spacing:0;}
+  .xwahlen{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.75rem;margin-top:.6rem;}
+  .xwahl{position:relative;display:flex;flex-direction:column;}
+  .xwahl__cb{position:absolute;opacity:0;width:1px;height:1px;}
+  .xwahl__karte{
+    position:relative;display:flex;flex-direction:column;align-items:center;gap:.25rem;cursor:pointer;
+    padding:.8rem .6rem .75rem;border-radius:var(--radius-md);text-align:center;
+    border:1.5px solid var(--border);background:var(--bg);
+    transition:border-color .2s var(--ease),box-shadow .2s var(--ease),background .2s var(--ease);
+  }
+  .xwahl__karte:hover{border-color:color-mix(in srgb,var(--x-rot) 55%,var(--border));}
+  .xwahl__karte img{height:64px;width:auto;max-width:90%;object-fit:contain;margin-bottom:.3rem;filter:drop-shadow(0 6px 6px rgba(0,0,0,.18));}
+  [data-theme="dark"] .xwahl__karte img{background:radial-gradient(circle,#f1eeec 0 55%,transparent 72%);border-radius:50%;}
+  @media (prefers-color-scheme: dark){ :root:not([data-theme]) .xwahl__karte img{background:radial-gradient(circle,#f1eeec 0 55%,transparent 72%);border-radius:50%;} }
+  .xwahl__nr{position:absolute;left:.45rem;top:.45rem;min-width:1.5rem;height:1.5rem;padding:0 .3rem;border-radius:.75rem;background:var(--bg-alt);color:var(--text-2);font-size:.72rem;font-weight:800;display:grid;place-items:center;}
+  .xwahl__name{font-size:.9rem;font-weight:700;line-height:1.2;}
+  .xwahl__min{font-size:.74rem;color:var(--text-2);}
+  .xwahl__haken{position:absolute;right:.45rem;top:.45rem;width:1.4rem;height:1.4rem;border-radius:50%;border:1.5px solid var(--border);background:var(--bg);}
+  .xwahl__cb:checked + .xwahl__karte{border-color:var(--x-rot);box-shadow:0 0 0 1px var(--x-rot),0 8px 22px rgba(200,16,46,.14);}
+  .xwahl__cb:checked + .xwahl__karte .xwahl__nr{background:var(--x-rot);color:#fff;}
+  .xwahl__cb:checked + .xwahl__karte .xwahl__haken{border-color:var(--x-rot);background:var(--x-rot);}
+  .xwahl__cb:checked + .xwahl__karte .xwahl__haken::after{content:"";position:absolute;left:.42rem;top:.2rem;width:.35rem;height:.65rem;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg);}
+  .xwahl__cb:focus-visible + .xwahl__karte{outline:3px solid var(--accent);outline-offset:3px;}
+  .xwahl__opt{margin-top:.5rem;padding:.55rem .6rem;border-radius:var(--radius-sm);background:var(--bg-alt);border:0;display:flex;flex-wrap:wrap;gap:.35rem .8rem;font-size:.84rem;}
+  .xwahl__opt legend{float:left;width:100%;font-size:.74rem;font-weight:700;color:var(--text-2);margin-bottom:.2rem;}
+  .xwahl__opt label{display:inline-flex;align-items:center;gap:.35rem;cursor:pointer;}
+  .xwahl__opt input[type="radio"],.xwahl__opt input[type="checkbox"]{accent-color:var(--x-rot);width:16px;height:16px;}
+  .xwahl__opt input:not([type]){width:100%;font:inherit;font-size:.84rem;padding:.45rem .55rem;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);}
+  .xwahl__cb:not(:checked) ~ .xwahl__opt{display:none;}
+
+  .xfelder{display:grid;grid-template-columns:1fr 1fr;gap:1rem 1.1rem;margin-top:.8rem;}
+  .xfeld{display:flex;flex-direction:column;gap:.35rem;min-width:0;}
+  .xfeld--breit{grid-column:1 / -1;}
+  .xfeld label,.xfeld__label{font-size:.88rem;font-weight:600;}
+  .xfeld small{font-weight:500;color:var(--text-2);}
+  .xfeld input,.xfeld textarea{
+    font:inherit;font-size:1rem;color:var(--text);background:var(--bg);
+    border:1.5px solid var(--border);border-radius:12px;padding:.75rem .9rem;min-height:48px;
+    transition:border-color .2s var(--ease),box-shadow .2s var(--ease);
+  }
+  .xfeld textarea{resize:vertical;min-height:110px;}
+  .xfeld input:focus,.xfeld textarea:focus,.xwahl__opt input:not([type]):focus{outline:none;border-color:var(--x-rot);box-shadow:0 0 0 3px color-mix(in srgb,var(--x-rot) 22%,transparent);}
+  .xfeld__hinweis{font-size:.8rem;line-height:1.45;}
+  .xupload{
+    position:relative;display:flex;flex-wrap:wrap;align-items:center;gap:.4rem .8rem;cursor:pointer;
+    padding:1rem 1.1rem;border-radius:12px;border:1.5px dashed color-mix(in srgb,var(--x-rot) 45%,var(--border));
+    background:color-mix(in srgb,var(--x-rot) 4%,var(--bg));font-size:.95rem;transition:background .2s var(--ease),border-color .2s var(--ease);
+  }
+  .xupload:hover,.xupload.ist-drueber{background:color-mix(in srgb,var(--x-rot) 9%,var(--bg));border-color:var(--x-rot);}
+  .xupload input{position:absolute;inset:0;opacity:0;cursor:pointer;}
+  .xupload:has(input:focus-visible){outline:3px solid var(--accent);outline-offset:3px;}
+  .xupload svg{width:24px;height:24px;color:var(--x-rot);flex-shrink:0;}
+  .xupload__text strong{color:var(--x-rot);}
+  .xupload__datei{flex-basis:100%;font-size:.85rem;font-weight:600;color:var(--text);padding-left:2.2rem;}
+
+  .xkorb{position:sticky;top:84px;}
+  .xkorb__inner{
+    border-radius:var(--radius-lg);padding:1.5rem 1.4rem;color:#fff;
+    background:radial-gradient(ellipse 120% 80% at 30% 0%, #c0102b 0%, var(--x-samt) 55%, var(--x-samt-tief) 100%);
+    box-shadow:0 24px 60px rgba(90,0,15,.28);
+  }
+  .xkorb h3{font-family:var(--script);font-weight:400;font-size:2rem;line-height:1.1;}
+  .xkorb__leer{margin-top:.5rem;font-size:.9rem;color:rgba(255,255,255,.78);}
+  .xkorb__liste{list-style:none;margin-top:.8rem;display:grid;gap:.35rem;}
+  .xkorb__liste li{display:flex;align-items:center;gap:.6rem;font-size:.92rem;font-weight:600;padding:.35rem .4rem .35rem .35rem;border-radius:10px;background:rgba(255,255,255,.1);}
+  .xkorb__liste img{width:34px;height:34px;object-fit:contain;border-radius:8px;background:#f4f1ef;padding:3px;flex-shrink:0;}
+  .xkorb__liste small{display:block;font-weight:500;font-size:.78rem;color:rgba(255,255,255,.7);}
+  .xkorb__liste button{margin-left:auto;width:28px;height:28px;border-radius:50%;border:0;background:transparent;color:rgba(255,255,255,.75);font-size:1.1rem;line-height:1;}
+  .xkorb__liste button:hover{background:rgba(255,255,255,.18);color:#fff;}
+  .xkorb__menge{margin-top:.9rem;font-size:.95rem;}
+  .xkorb__menge strong{font-size:1.3rem;}
+  .xkorb__hinweise{list-style:none;margin-top:.6rem;display:grid;gap:.35rem;}
+  .xkorb__hinweise li{font-size:.82rem;line-height:1.4;padding:.45rem .6rem;border-radius:10px;background:rgba(255,214,140,.16);color:#ffe3ae;}
+  .xkorb .form-status{margin-top:.8rem;color:#ffd0d6;}
+  .xkorb__senden{width:100%;margin-top:1.1rem;background:#fff;color:var(--x-rot);font-weight:700;}
+  .xkorb__senden:hover{background:#fff;box-shadow:0 10px 26px rgba(20,0,4,.35);}
+  .xkorb__senden:disabled{opacity:.7;cursor:wait;transform:none;}
+  .xkorb__klein{margin-top:.55rem;font-size:.78rem;text-align:center;color:rgba(255,255,255,.7);}
+  .xkorb__alt{margin-top:1.1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.18);font-size:.85rem;color:rgba(255,255,255,.8);}
+  .xkorb__alt a{color:#fff;}
+  .xkorb__pdf{display:flex;align-items:center;gap:.8rem;margin-bottom:.6rem;}
+  .xkorb__pdf img{width:44px;height:auto;border-radius:3px;box-shadow:0 4px 12px rgba(0,0,0,.3);transform:rotate(-4deg);}
+  .xkorb__pdf span{display:flex;flex-direction:column;line-height:1.35;}
+  .xkorb__pdf:hover strong{text-decoration:underline;}
+  @media (max-width:980px){
+    .xbestell{grid-template-columns:1fr;}
+    .xkorb{position:static;}
+  }
+  @media (max-width:560px){
+    .xfelder{grid-template-columns:1fr;}
+    .xwahlen{grid-template-columns:repeat(2,1fr);gap:.55rem;}
+    .xwahl__karte img{height:52px;}
+    .xbestell__gruppe legend small{display:none;}
+  }
+
+  .xpille{
+    position:fixed;z-index:950;left:50%;bottom:max(16px,env(safe-area-inset-bottom));
+    display:inline-flex;align-items:center;gap:.55rem;padding:.6rem 1.1rem .6rem .6rem;border-radius:var(--radius-pill);
+    background:var(--x-rot);color:#fff;font-weight:600;font-size:.95rem;white-space:nowrap;
+    box-shadow:0 14px 34px rgba(120,0,20,.38);
+    transform:translate(-50%,0);transition:transform .35s cubic-bezier(.2,1.3,.4,1),opacity .25s var(--ease);
+  }
+  .xpille.ist-weg{transform:translate(-50%,140%);opacity:0;pointer-events:none;}
+  .xpille__zahl{min-width:1.9rem;height:1.9rem;padding:0 .45rem;border-radius:1rem;background:#fff;color:var(--x-rot);display:grid;place-items:center;font-weight:800;}
+  .xpille.ist-plopp .xpille__zahl{animation:k-plopp .5s cubic-bezier(.2,1.7,.4,1);}
 
   .xhero + .crumbs{padding-top:var(--space-3);}
   .xgabe img,.xunterwegs img,.xformular img{height:auto;}
@@ -1413,7 +1593,7 @@
       <p class="lead">Verpackung wählen, Inhalt aussuchen, Logo schicken – wir veredeln alles für deine Mitarbeiter, Fahrer und Kunden.</p>
       <div class="xhero__aktionen">
         <a class="btn btn--primary" href="#verpackung">Pakete ansehen</a>
-        <a class="btn btn--glass" href="Geschenkpakete-2026.pdf" download>Bestellformular (PDF)</a>
+        <a class="btn btn--glass" href="#bestellen">Paket anfragen</a>
       </div>
     </div>
 
@@ -1434,19 +1614,24 @@
     </div>
   </nav>
 
-  <!-- ===== DREI SCHRITTE ===== -->
-  <section class="xschritte" aria-label="So entsteht dein Geschenkpaket">
+  <!-- ===== DREI SCHRITTE =====
+       Die Nummern sitzen auf einem durchlaufenden Band (das „Geschenkband"),
+       im Hochformat läuft es senkrecht. -->
+  <section class="xschritte" aria-labelledby="schritte-title">
     <div class="wrap">
-      <ol>
-        <li><a href="#verpackung"><span class="xnr">1</span><h2>Verpackung wählen</h2><p>Stoffsackerl, Rucksack, Korb, Kulturbeutel oder Bauchtasche – eine pro Paket.</p></a></li>
-        <li><a href="#inhalt"><span class="xnr">2</span><h2>Inhalt aussuchen</h2><p>Vom Häferl bis zum Schneidebrett: so viel du willst, frei kombiniert.</p></a></li>
-        <li><a href="#bestellen"><span class="xnr">3</span><h2>Logo schicken</h2><p>Formular ausfüllen, Logo als EPS oder PDF dazu – den Rest machen wir.</p></a></li>
+      <h2 class="xschritte__titel" id="schritte-title">So kommt dein Paket zustande</h2>
+      <ol class="xschritte__band">
+        <li><a href="#verpackung"><span class="xnr">1</span><span class="xschritte__text"><strong>Verpackung wählen</strong><span>Stoffsackerl, Rucksack, Korb, Kulturbeutel oder Bauchtasche.</span></span></a></li>
+        <li><a href="#inhalt"><span class="xnr">2</span><span class="xschritte__text"><strong>Inhalt aussuchen</strong><span>Vom Häferl bis zum Schneidebrett – frei kombiniert.</span></span></a></li>
+        <li><a href="#bestellen"><span class="xnr">3</span><span class="xschritte__text"><strong>Logo hochladen &amp; anfragen</strong><span>Online absenden – du bekommst ein individuelles Angebot.</span></span></a></li>
       </ol>
     </div>
   </section>
 
   <!-- ===== HIGHLIGHTS: Holz mit Gravur ===== -->
   <section class="section xholz" id="highlights" aria-labelledby="holz-title">
+    <svg class="xwelle xwelle--oben" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 0H1440V38C1180 92 900 6 640 52C420 90 190 72 0 34Z"/></svg>
+    <svg class="xwelle xwelle--unten" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 90H1440V44C1230 6 980 80 720 50C460 20 230 -4 0 50Z"/></svg>
     <div class="wrap">
       <header class="xholz__kopf">
         <span class="xbadge xbadge--highlight">★ HIGHLIGHT 2026</span>
@@ -1502,6 +1687,8 @@
         <li class="xgabe" id="p1">
           <div class="xgabe__kugel"><span class="xnr">1</span><img src="img/stoffsackerl.webp" alt="Schwarzes Stoffsackerl mit buntem Kortschak-Logo" width="227" height="297" loading="lazy"></div>
           <h3>Stoffsackerl</h3><p class="xgabe__info">38 × 42 cm, 13 Liter</p>
+          <button class="xins" type="button" data-wahl="w-p1" aria-pressed="false"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Ins Paket</span></button>
+
         </li>
         <li class="xgabe" id="p2">
           <div class="xgabe__kugel"><span class="xnr">2</span><span class="xbadge xbadge--neu">NEU</span>
@@ -1515,6 +1702,8 @@
             <button class="xfarbe" type="button" data-zeige="olive" aria-pressed="true"><i style="background:#8a7c55"></i>Olive</button>
             <button class="xfarbe" type="button" data-zeige="schwarz" aria-pressed="false"><i style="background:#1c1c1e"></i>Schwarz</button>
           </div>
+          <button class="xins" type="button" data-wahl="w-p2" aria-pressed="false"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Ins Paket</span></button>
+
         </li>
         <li class="xgabe" id="p3">
           <div class="xgabe__kugel"><span class="xnr">3</span><span class="xbadge xbadge--neu">NEU</span>
@@ -1528,14 +1717,20 @@
             <button class="xfarbe" type="button" data-zeige="weinrot" aria-pressed="true"><i style="background:#6e1630"></i>Weinrot</button>
             <button class="xfarbe" type="button" data-zeige="schwarz" aria-pressed="false"><i style="background:#1c1c1e"></i>Schwarz</button>
           </div>
+          <button class="xins" type="button" data-wahl="w-p3" aria-pressed="false"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Ins Paket</span></button>
+
         </li>
         <li class="xgabe" id="p4">
           <div class="xgabe__kugel"><span class="xnr">4</span><img src="img/rolltop-rucksack.webp" alt="Schwarzer Rolltop-Rucksack mit Logo" width="230" height="296" loading="lazy"></div>
           <h3>Rolltop-Rucksack</h3><p class="xgabe__info">schwarz</p>
+          <button class="xins" type="button" data-wahl="w-p4" aria-pressed="false"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Ins Paket</span></button>
+
         </li>
         <li class="xgabe" id="p5">
           <div class="xgabe__kugel"><span class="xnr">5</span><img src="img/einkaufskorb.webp" alt="Faltbarer schwarzer Einkaufskorb mit Logo" width="300" height="299" loading="lazy"></div>
           <h3>Einkaufskorb</h3><p class="xgabe__info">faltbar</p>
+          <button class="xins" type="button" data-wahl="w-p5" aria-pressed="false"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Ins Paket</span></button>
+
         </li>
         <li class="xgabe" id="p6">
           <div class="xgabe__kugel"><span class="xnr">6</span>
@@ -1546,10 +1741,14 @@
             </div>
           </div>
           <h3>Kulturbeutel</h3><p class="xgabe__info">mit Haken zum Aufhängen,<br>inkl. Holz-Zahnbürste</p>
+          <button class="xins" type="button" data-wahl="w-p6" aria-pressed="false"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Ins Paket</span></button>
+
         </li>
         <li class="xgabe" id="p7">
           <div class="xgabe__kugel"><span class="xnr">7</span><img src="img/bauchtasche.webp" alt="Schwarze Bauchtasche mit Logo" width="297" height="174" loading="lazy"></div>
           <h3>Bauchtasche</h3><p class="xgabe__info">schwarz</p>
+          <button class="xins" type="button" data-wahl="w-p7" aria-pressed="false"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Ins Paket</span></button>
+
         </li>
         <li class="xgabe xgabe--wunsch">
           <a class="xgabe__kugel" href="#bestellen"><strong>Sonderwunsch?</strong><span>Andere Verpackung oder eigene Idee – wir machen dir ein Angebot.</span></a>
@@ -1573,44 +1772,64 @@
         <li class="xgabe" id="p8">
           <div class="xgabe__kugel"><span class="xnr">8</span><img src="img/tshirt.webp" alt="Schwarzes T-Shirt mit Logo auf der Brust" width="229" height="300" loading="lazy"></div>
           <h3>T-Shirt</h3><p class="xgabe__info">in deiner Größe</p>
+          <button class="xins" type="button" data-wahl="w-p8" aria-pressed="false"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Ins Paket</span></button>
+
         </li>
         <li class="xgabe" id="p9">
           <div class="xgabe__kugel"><span class="xnr">9</span><img src="img/hoodie.webp" alt="Schwarzer Zip-Hoodie mit Logo" width="207" height="300" loading="lazy"></div>
           <h3>Hoodie / Weste</h3><p class="xgabe__info">in deiner Größe</p>
+          <button class="xins" type="button" data-wahl="w-p9" aria-pressed="false"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Ins Paket</span></button>
+
         </li>
         <li class="xgabe" id="p10">
           <div class="xgabe__kugel"><span class="xnr">10</span><img src="img/haube.webp" alt="Schwarze Strickhaube mit Logo-Patch" width="300" height="294" loading="lazy"></div>
           <h3>Haube</h3><p class="xgabe__info">mit Logo-Patch</p>
+          <button class="xins" type="button" data-wahl="w-p10" aria-pressed="false"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Ins Paket</span></button>
+
         </li>
         <li class="xgabe" id="p11">
           <div class="xgabe__kugel"><span class="xnr">11</span><img src="img/haeferl.webp" alt="Schwarzes Häferl, innen rot, mit Logo" width="640" height="524" loading="lazy"></div>
           <h3>Häferl<sup>*</sup></h3><p class="xgabe__info">schwarz, innen rot</p><span class="xgabe__menge">ab 25 Stück</span>
+          <button class="xins" type="button" data-wahl="w-p11" aria-pressed="false"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Ins Paket</span></button>
+
         </li>
         <li class="xgabe" id="p12">
           <div class="xgabe__kugel"><span class="xnr">12</span><img src="img/handwaermer.webp" alt="Roter Handwärmer in Herzform mit Logo" width="297" height="250" loading="lazy"></div>
           <h3>Handwärmer<sup>*</sup></h3><p class="xgabe__info">in Herzform</p><span class="xgabe__menge">ab 25 Stück</span>
+          <button class="xins" type="button" data-wahl="w-p12" aria-pressed="false"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Ins Paket</span></button>
+
         </li>
         <li class="xgabe" id="p13">
           <div class="xgabe__kugel"><span class="xnr">13</span><img src="img/massband.webp" alt="Rollmaßband mit Logo" width="504" height="420" loading="lazy"></div>
           <h3>Maßband<sup>*</sup></h3><p class="xgabe__info">Rollmaßband</p><span class="xgabe__menge">ab 25 Stück</span>
+          <button class="xins" type="button" data-wahl="w-p13" aria-pressed="false"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Ins Paket</span></button>
+
         </li>
         <li class="xgabe" id="p14">
           <div class="xgabe__kugel"><span class="xnr">14</span><span class="xbadge xbadge--highlight">★ HIGHLIGHT</span><img src="img/schneidebrett.webp" alt="Drei Holz-Schneidebretter mit Gravur" width="800" height="505" loading="lazy"></div>
           <h3>Schneidebrett<sup>***</sup></h3><p class="xgabe__info">Holz, in klein, mittel oder groß</p><span class="xgabe__menge">ab 10 Stück</span>
           <span class="xgabe__beispiel">Beispiel-Gravur für Brandl Transport-Logistik</span>
+          <button class="xins" type="button" data-wahl="w-p14" aria-pressed="false"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Ins Paket</span></button>
+
         </li>
         <li class="xgabe" id="p15">
           <div class="xgabe__kugel"><span class="xnr">15</span><span class="xbadge xbadge--highlight">★ HIGHLIGHT</span><img src="img/schuhloeffel.webp" alt="Langer Holz-Schuhlöffel mit Gravur" width="640" height="628" loading="lazy"></div>
           <h3>Schuhlöffel<sup>***</sup></h3><p class="xgabe__info">Holz, mit Logo-Gravur</p><span class="xgabe__menge">ab 10 Stück</span>
           <span class="xgabe__beispiel">Beispiel-Gravur für Brandl Transport-Logistik</span>
+          <button class="xins" type="button" data-wahl="w-p15" aria-pressed="false"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Ins Paket</span></button>
+
         </li>
         <li class="xgabe" id="p16">
           <div class="xgabe__kugel"><span class="xnr">16</span><img src="img/feuerzeug.webp" alt="Schwarzes Feuerzeug mit Logo" width="90" height="287" loading="lazy"></div>
           <h3>Feuerzeug<sup>**</sup></h3><p class="xgabe__info">schwarz</p><span class="xgabe__menge">ab 50 Stück</span>
+          <button class="xins" type="button" data-wahl="w-p16" aria-pressed="false"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Ins Paket</span></button>
+
         </li>
         <li class="xgabe" id="p17">
           <div class="xgabe__kugel"><span class="xnr">17</span><img src="img/kugelschreiber.webp" alt="Schwarzer Metall-Kugelschreiber mit Logo" width="286" height="29" loading="lazy" style="transform:rotate(-24deg) scale(1.15)"></div>
           <h3>Kugelschreiber<sup>**</sup></h3><p class="xgabe__info">Metall, schwarz</p><span class="xgabe__menge">ab 50 Stück</span>
+          <button class="xins" type="button" data-wahl="w-p17" aria-pressed="false"><span class="xins__plus" aria-hidden="true"></span><span class="xins__text">Ins Paket</span></button>
+
         </li>
       </ul>
     </div>
@@ -1618,6 +1837,8 @@
 
   <!-- ===== FÜR UNTERWEGS ===== -->
   <section class="section xunterwegs" aria-labelledby="unterwegs-title">
+    <svg class="xwelle xwelle--oben" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 0H1440V38C1180 92 900 6 640 52C420 90 190 72 0 34Z"/></svg>
+    <svg class="xwelle xwelle--unten" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 90H1440V44C1230 6 980 80 720 50C460 20 230 -4 0 50Z"/></svg>
     <div class="wrap xunterwegs__grid">
       <div class="xunterwegs__bild" aria-hidden="true">
         <img class="zu" src="img/kulturbeutel.webp" alt="" width="603" height="640" loading="lazy">
@@ -1637,55 +1858,165 @@
     </div>
   </section>
 
-  <!-- ===== 3 · BESTELLEN ===== -->
+  <!-- ===== 3 · BESTELLEN (online) =====
+       Gleiche Auswahl wie im Bestellformular-PDF. Die „Ins Paket"-Knöpfe an
+       den Produktkacheln schalten dieselben Checkboxen. Versand über
+       /api/anfrage.php (formular=geschenkpakete), Logo als Mail-Anhang. -->
   <section class="section" id="bestellen" aria-labelledby="bestellen-title">
     <div class="wrap">
       <header class="xbereich-kopf">
         <span class="xnr" aria-hidden="true">3</span>
         <div>
-          <h2 id="bestellen-title">Logo schicken &amp; bestellen</h2>
-          <p>Einen fixen Bestellschluss gibt es nicht – je früher, desto entspannter vor Weihnachten.</p>
+          <h2 id="bestellen-title">Dein Paket anfragen</h2>
+          <p>Ankreuzen, Logo hochladen, absenden – du bekommst ein individuelles Angebot. Einen fixen Bestellschluss gibt es nicht.</p>
         </div>
       </header>
-      <div class="xbestellen__grid">
-        <div class="xformular">
-          <a class="xformular__vorschau" href="Geschenkpakete-2026.pdf" download aria-label="Bestellformular 2026 herunterladen (PDF)">
-            <img src="img/formular-vorschau.webp" alt="" width="420" height="595" loading="lazy">
-          </a>
-          <div>
-            <h3>Bestellformular 2026</h3>
-            <ol>
-              <li>PDF herunterladen – am Computer ausfüllen oder ausdrucken.</li>
-              <li>Verpackung, Inhalt und Stückzahl ankreuzen.</li>
-              <li>Mit deinem Logo als EPS oder PDF an <a href="mailto:office@schriften-kortschak.at?subject=Geschenkpakete%202026">office@schriften-kortschak.at</a> schicken.</li>
-            </ol>
-            <a class="btn btn--primary" href="Geschenkpakete-2026.pdf" download>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
-              Formular herunterladen
-            </a>
-            <small>PDF, 1,6 MB, ausfüllbar</small>
-          </div>
+
+      <form class="xbestell" action="/api/anfrage.php" method="post" enctype="multipart/form-data" data-xbestell>
+        <input type="hidden" name="formular" value="geschenkpakete">
+        <input type="hidden" name="fz" value="">
+        <div class="hp-feld" aria-hidden="true">
+          <label for="x-webseite">Webseite (bitte leer lassen)</label>
+          <input type="text" id="x-webseite" name="webseite" tabindex="-1" autocomplete="off">
         </div>
-        <div class="xdirekt">
-          <h3>Lieber direkt?</h3>
-          <p>Schreib uns kurz, was du dir vorstellst – wir melden uns mit einem individuellen Angebot.</p>
-          <div class="xdirekt__aktionen">
-            <a class="btn btn--secondary" href="/?leistung=Weihnachtsgeschenke#kontakt">Anfrage senden</a>
-            <a class="btn btn--ghost" href="tel:+43384767666">03847 / 67666</a>
-          </div>
-          <div class="xmengen">
-            Mindestmengen
-            <dl>
-              <dt>Taschen &amp; Rucksäcke</dt><dd>keine</dd>
-              <dt>Schneidebrett, Schuhlöffel<sup>***</sup></dt><dd>ab 10 Stück</dd>
-              <dt>Häferl, Handwärmer, Maßband<sup>*</sup></dt><dd>ab 25 Stück</dd>
-              <dt>Feuerzeug, Kugelschreiber<sup>**</sup></dt><dd>ab 50 Stück</dd>
-            </dl>
-          </div>
+
+        <div class="xbestell__haupt">
+          <fieldset class="xbestell__gruppe">
+            <legend><span class="xnr">1</span>Verpackung <small>– eine pro Paket, gern auch mehrere Varianten</small></legend>
+            <div class="xwahlen">
+              <div class="xwahl" data-min="0" data-name="Stoffsackerl">
+                <input class="xwahl__cb" type="checkbox" id="w-p1" name="verpackung[]" value="1 Stoffsackerl">
+                <label class="xwahl__karte" for="w-p1"><img src="img/stoffsackerl.webp" alt="" loading="lazy"><span class="xwahl__nr">1</span><span class="xwahl__name">Stoffsackerl</span><span class="xwahl__haken" aria-hidden="true"></span></label>
+              </div>
+              <div class="xwahl" data-min="0" data-name="Outdoor-Rucksack">
+                <input class="xwahl__cb" type="checkbox" id="w-p2" name="verpackung[]" value="2 Outdoor-Rucksack">
+                <label class="xwahl__karte" for="w-p2"><img src="img/outdoor-rucksack-olive.webp" alt="" loading="lazy"><span class="xwahl__nr">2</span><span class="xwahl__name">Outdoor-Rucksack</span><span class="xwahl__haken" aria-hidden="true"></span></label>
+                <fieldset class="xwahl__opt"><legend>Farbe</legend><label><input type="radio" name="farbe_outdoor" value="Olive" checked><span>Olive</span></label><label><input type="radio" name="farbe_outdoor" value="Schwarz"><span>Schwarz</span></label></fieldset>
+              </div>
+              <div class="xwahl" data-min="0" data-name="Retro-Rucksack">
+                <input class="xwahl__cb" type="checkbox" id="w-p3" name="verpackung[]" value="3 Retro-Rucksack">
+                <label class="xwahl__karte" for="w-p3"><img src="img/retro-rucksack-weinrot.webp" alt="" loading="lazy"><span class="xwahl__nr">3</span><span class="xwahl__name">Retro-Rucksack</span><span class="xwahl__haken" aria-hidden="true"></span></label>
+                <fieldset class="xwahl__opt"><legend>Farbe</legend><label><input type="radio" name="farbe_retro" value="Weinrot" checked><span>Weinrot</span></label><label><input type="radio" name="farbe_retro" value="Schwarz"><span>Schwarz</span></label></fieldset>
+              </div>
+              <div class="xwahl" data-min="0" data-name="Rolltop-Rucksack">
+                <input class="xwahl__cb" type="checkbox" id="w-p4" name="verpackung[]" value="4 Rolltop-Rucksack">
+                <label class="xwahl__karte" for="w-p4"><img src="img/rolltop-rucksack.webp" alt="" loading="lazy"><span class="xwahl__nr">4</span><span class="xwahl__name">Rolltop-Rucksack</span><span class="xwahl__haken" aria-hidden="true"></span></label>
+              </div>
+              <div class="xwahl" data-min="0" data-name="Einkaufskorb">
+                <input class="xwahl__cb" type="checkbox" id="w-p5" name="verpackung[]" value="5 Einkaufskorb">
+                <label class="xwahl__karte" for="w-p5"><img src="img/einkaufskorb.webp" alt="" loading="lazy"><span class="xwahl__nr">5</span><span class="xwahl__name">Einkaufskorb</span><span class="xwahl__haken" aria-hidden="true"></span></label>
+              </div>
+              <div class="xwahl" data-min="0" data-name="Kulturbeutel">
+                <input class="xwahl__cb" type="checkbox" id="w-p6" name="verpackung[]" value="6 Kulturbeutel">
+                <label class="xwahl__karte" for="w-p6"><img src="img/kulturbeutel.webp" alt="" loading="lazy"><span class="xwahl__nr">6</span><span class="xwahl__name">Kulturbeutel</span><span class="xwahl__haken" aria-hidden="true"></span></label>
+              </div>
+              <div class="xwahl" data-min="0" data-name="Bauchtasche">
+                <input class="xwahl__cb" type="checkbox" id="w-p7" name="verpackung[]" value="7 Bauchtasche">
+                <label class="xwahl__karte" for="w-p7"><img src="img/bauchtasche.webp" alt="" loading="lazy"><span class="xwahl__nr">7</span><span class="xwahl__name">Bauchtasche</span><span class="xwahl__haken" aria-hidden="true"></span></label>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="xbestell__gruppe">
+            <legend><span class="xnr">2</span>Inhalt <small>– so viel du willst</small></legend>
+            <div class="xwahlen">
+              <div class="xwahl" data-min="0" data-name="T-Shirt">
+                <input class="xwahl__cb" type="checkbox" id="w-p8" name="inhalt[]" value="8 T-Shirt">
+                <label class="xwahl__karte" for="w-p8"><img src="img/tshirt.webp" alt="" loading="lazy"><span class="xwahl__nr">8</span><span class="xwahl__name">T-Shirt</span><span class="xwahl__haken" aria-hidden="true"></span></label>
+                <div class="xwahl__opt"><label class="sr-only" for="w-groessen_tshirt">T-Shirt: Größen</label><input id="w-groessen_tshirt" name="groessen_tshirt" placeholder="Größen, z. B. 10× M, 5× L"></div>
+              </div>
+              <div class="xwahl" data-min="0" data-name="Hoodie / Weste">
+                <input class="xwahl__cb" type="checkbox" id="w-p9" name="inhalt[]" value="9 Hoodie / Weste">
+                <label class="xwahl__karte" for="w-p9"><img src="img/hoodie.webp" alt="" loading="lazy"><span class="xwahl__nr">9</span><span class="xwahl__name">Hoodie / Weste</span><span class="xwahl__haken" aria-hidden="true"></span></label>
+                <div class="xwahl__opt"><label class="sr-only" for="w-groessen_hoodie">Hoodie / Weste: Größen</label><input id="w-groessen_hoodie" name="groessen_hoodie" placeholder="Größen, z. B. 6× L, 4× XL"></div>
+              </div>
+              <div class="xwahl" data-min="0" data-name="Haube">
+                <input class="xwahl__cb" type="checkbox" id="w-p10" name="inhalt[]" value="10 Haube">
+                <label class="xwahl__karte" for="w-p10"><img src="img/haube.webp" alt="" loading="lazy"><span class="xwahl__nr">10</span><span class="xwahl__name">Haube</span><span class="xwahl__haken" aria-hidden="true"></span></label>
+              </div>
+              <div class="xwahl" data-min="25" data-name="Häferl">
+                <input class="xwahl__cb" type="checkbox" id="w-p11" name="inhalt[]" value="11 Häferl">
+                <label class="xwahl__karte" for="w-p11"><img src="img/haeferl.webp" alt="" loading="lazy"><span class="xwahl__nr">11</span><span class="xwahl__name">Häferl</span><span class="xwahl__min">ab 25 Stück</span><span class="xwahl__haken" aria-hidden="true"></span></label>
+              </div>
+              <div class="xwahl" data-min="25" data-name="Handwärmer">
+                <input class="xwahl__cb" type="checkbox" id="w-p12" name="inhalt[]" value="12 Handwärmer">
+                <label class="xwahl__karte" for="w-p12"><img src="img/handwaermer.webp" alt="" loading="lazy"><span class="xwahl__nr">12</span><span class="xwahl__name">Handwärmer</span><span class="xwahl__min">ab 25 Stück</span><span class="xwahl__haken" aria-hidden="true"></span></label>
+              </div>
+              <div class="xwahl" data-min="25" data-name="Maßband">
+                <input class="xwahl__cb" type="checkbox" id="w-p13" name="inhalt[]" value="13 Maßband">
+                <label class="xwahl__karte" for="w-p13"><img src="img/massband.webp" alt="" loading="lazy"><span class="xwahl__nr">13</span><span class="xwahl__name">Maßband</span><span class="xwahl__min">ab 25 Stück</span><span class="xwahl__haken" aria-hidden="true"></span></label>
+              </div>
+              <div class="xwahl" data-min="10" data-name="Schneidebrett">
+                <input class="xwahl__cb" type="checkbox" id="w-p14" name="inhalt[]" value="14 Schneidebrett">
+                <label class="xwahl__karte" for="w-p14"><img src="img/schneidebrett.webp" alt="" loading="lazy"><span class="xwahl__nr">14</span><span class="xwahl__name">Schneidebrett</span><span class="xwahl__min">ab 10 Stück</span><span class="xwahl__haken" aria-hidden="true"></span></label>
+                <fieldset class="xwahl__opt"><legend>Größe</legend><label><input type="checkbox" name="brett[]" value="klein"><span>klein</span></label><label><input type="checkbox" name="brett[]" value="mittel"><span>mittel</span></label><label><input type="checkbox" name="brett[]" value="groß"><span>groß</span></label></fieldset>
+              </div>
+              <div class="xwahl" data-min="10" data-name="Schuhlöffel">
+                <input class="xwahl__cb" type="checkbox" id="w-p15" name="inhalt[]" value="15 Schuhlöffel">
+                <label class="xwahl__karte" for="w-p15"><img src="img/schuhloeffel.webp" alt="" loading="lazy"><span class="xwahl__nr">15</span><span class="xwahl__name">Schuhlöffel</span><span class="xwahl__min">ab 10 Stück</span><span class="xwahl__haken" aria-hidden="true"></span></label>
+              </div>
+              <div class="xwahl" data-min="50" data-name="Feuerzeug">
+                <input class="xwahl__cb" type="checkbox" id="w-p16" name="inhalt[]" value="16 Feuerzeug">
+                <label class="xwahl__karte" for="w-p16"><img src="img/feuerzeug.webp" alt="" loading="lazy"><span class="xwahl__nr">16</span><span class="xwahl__name">Feuerzeug</span><span class="xwahl__min">ab 50 Stück</span><span class="xwahl__haken" aria-hidden="true"></span></label>
+              </div>
+              <div class="xwahl" data-min="50" data-name="Kugelschreiber">
+                <input class="xwahl__cb" type="checkbox" id="w-p17" name="inhalt[]" value="17 Kugelschreiber">
+                <label class="xwahl__karte" for="w-p17"><img src="img/kugelschreiber.webp" alt="" loading="lazy"><span class="xwahl__nr">17</span><span class="xwahl__name">Kugelschreiber</span><span class="xwahl__min">ab 50 Stück</span><span class="xwahl__haken" aria-hidden="true"></span></label>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="xbestell__gruppe">
+            <legend><span class="xnr">3</span>Logo &amp; Kontakt</legend>
+            <div class="xfelder">
+              <div class="xfeld"><label for="x-firma">Firmenname <span class="req" aria-hidden="true">*</span></label><input id="x-firma" name="unternehmen" autocomplete="organization" required></div>
+              <div class="xfeld"><label for="x-name">Ansprechperson <span class="req" aria-hidden="true">*</span></label><input id="x-name" name="name" autocomplete="name" required></div>
+              <div class="xfeld"><label for="x-mail">E-Mail <span class="req" aria-hidden="true">*</span></label><input id="x-mail" name="email" type="email" autocomplete="email" required></div>
+              <div class="xfeld"><label for="x-tel">Telefon</label><input id="x-tel" name="telefon" type="tel" autocomplete="tel"></div>
+              <div class="xfeld xfeld--breit"><label for="x-adr">Anschrift</label><input id="x-adr" name="anschrift" autocomplete="street-address" placeholder="Straße, PLZ Ort"></div>
+              <div class="xfeld"><label for="x-stueck">Stückzahl (Pakete) <span class="req" aria-hidden="true">*</span></label><input id="x-stueck" name="stueckzahl" type="number" inputmode="numeric" min="1" max="100000" step="1" required></div>
+              <div class="xfeld"><label for="x-termin">Wunschtermin <small>(optional)</small></label><input id="x-termin" name="liefertermin" placeholder="z. B. bis 15. Dezember"></div>
+              <div class="xfeld xfeld--breit">
+                <span class="xfeld__label" id="x-logo-label">Dein Logo <small>(optional, max. 15 MB)</small></span>
+                <label class="xupload" for="x-logo">
+                  <input id="x-logo" name="logo" type="file" accept=".pdf,.eps,.ai,.svg,.png,.jpg,.jpeg,.tif,.tiff" aria-describedby="x-logo-hinweis">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M4 20h16"/></svg>
+                  <span class="xupload__text"><strong>Datei auswählen</strong> oder hierher ziehen</span>
+                  <span class="xupload__datei" hidden></span>
+                </label>
+                <small class="xfeld__hinweis" id="x-logo-hinweis">Am besten als Vektordatei (PDF, EPS, AI oder SVG). PNG oder JPG gehen auch – unsere Grafik bereitet dein Logo druckfertig auf.</small>
+              </div>
+              <div class="xfeld xfeld--breit"><label for="x-text">Nachricht oder Sonderwunsch</label><textarea id="x-text" name="nachricht" rows="4" placeholder="z. B. unterschiedliche Pakete für Mitarbeiter und Kunden, andere Verpackung …"></textarea></div>
+            </div>
+            <label class="check" for="x-ds">
+              <input type="checkbox" id="x-ds" name="datenschutz" required>
+              <span>Ich habe die <a href="/datenschutz/">Datenschutzerklärung</a> gelesen und stimme der Verarbeitung meiner Daten zur Bearbeitung der Anfrage zu. <span class="req" aria-hidden="true">*</span></span>
+            </label>
+          </fieldset>
         </div>
-      </div>
+
+        <aside class="xkorb" aria-labelledby="xkorb-titel">
+          <div class="xkorb__inner">
+            <h3 id="xkorb-titel">Dein Paket</h3>
+            <p class="xkorb__leer">Noch leer – kreuz an, was hinein soll, oder nutze „Ins Paket" bei den Produkten.</p>
+            <ul class="xkorb__liste" aria-live="polite"></ul>
+            <p class="xkorb__menge" hidden></p>
+            <ul class="xkorb__hinweise" aria-live="polite"></ul>
+            <p class="form-status" role="status" aria-live="polite" hidden></p>
+            <button type="submit" class="btn btn--primary xkorb__senden">Anfrage senden</button>
+            <p class="xkorb__klein">Unverbindlich – du bekommst ein Angebot per E-Mail.</p>
+            <div class="xkorb__alt">
+              <a class="xkorb__pdf" href="Geschenkpakete-2026.pdf" download><img src="img/formular-vorschau.webp" alt="" width="420" height="595" loading="lazy"><span><strong>Lieber auf Papier?</strong>Bestellformular als PDF (1,6 MB, ausfüllbar)</span></a>
+              <p>Oder ruf uns an: <a href="tel:+43384767666">03847 / 67666</a></p>
+            </div>
+          </div>
+        </aside>
+      </form>
     </div>
   </section>
+
+  <!-- Schwebende Paket-Pille: erscheint nach der ersten Auswahl -->
+  <a class="xpille" href="#bestellen" hidden><span class="xpille__zahl">0</span><span class="xpille__text">im Paket · Anfrage</span><span aria-hidden="true">↓</span></a>
 
   <!-- ===== FAQ ===== -->
   <section class="section section--alt" id="faq-xmas" aria-labelledby="faq-title">
@@ -2348,6 +2679,174 @@ document.addEventListener('click', function(ev){
   if (a && typeof window.fbq === 'function') window.fbq('trackCustom', 'BestellformularDownload');
 });
 
+/* ===== Online-Anfrage Geschenkpakete =====
+   - „Ins Paket"-Knöpfe an den Produktkacheln schalten dieselben Checkboxen
+     wie das Formular (eine Quelle der Wahrheit: die Checkbox).
+   - Rechts „Dein Paket": Liste, Stückzahl, Hinweise zu Mindestmengen
+     (nur Hinweis, kein Blocker – das Angebot klärt der Mensch).
+   - Pille unten erscheint nach der ersten Auswahl, solange das Formular
+     nicht im Bild ist.
+   - Versand per fetch an /api/anfrage.php inkl. Logo-Datei; ohne JS normaler
+     POST (dann ohne Datei-Rückfrage, der Endpoint bestätigt per Seite). */
+(function(){
+  'use strict';
+  var form = document.querySelector('form[data-xbestell]');
+  if(!form) return;
+  var boxen = [].slice.call(form.querySelectorAll('.xwahl__cb'));
+  var knoepfe = [].slice.call(document.querySelectorAll('.xins'));
+  var liste = form.querySelector('.xkorb__liste');
+  var leer = form.querySelector('.xkorb__leer');
+  var menge = form.querySelector('.xkorb__menge');
+  var hinweise = form.querySelector('.xkorb__hinweise');
+  var stueck = form.querySelector('#x-stueck');
+  var pille = document.querySelector('.xpille');
+  var pilleZahl = pille.querySelector('.xpille__zahl');
+  var formSichtbar = false, letzteZahl = 0;
+
+  function info(cb){
+    var w = cb.closest('.xwahl');
+    return { nr: cb.id.replace('w-p',''), name: w.dataset.name, min: +w.dataset.min || 0,
+             bild: w.querySelector('img').getAttribute('src'), w: w };
+  }
+  function zusatz(w){
+    var teile = [];
+    w.querySelectorAll('.xwahl__opt input:checked').forEach(function(i){ teile.push(i.value); });
+    var t = w.querySelector('.xwahl__opt input:not([type])');
+    if(t && t.value.trim()) teile.push(t.value.trim());
+    return teile.join(', ');
+  }
+
+  function aktualisieren(){
+    var gewaehlt = boxen.filter(function(b){ return b.checked; });
+    liste.textContent = '';
+    gewaehlt.forEach(function(cb){
+      var d = info(cb), li = document.createElement('li');
+      var img = document.createElement('img'); img.src = d.bild; img.alt = '';
+      var txt = document.createElement('span'); txt.textContent = d.nr + ' · ' + d.name;
+      var z = zusatz(d.w);
+      if(z){ var s = document.createElement('small'); s.textContent = z; txt.appendChild(s); }
+      var weg = document.createElement('button'); weg.type = 'button'; weg.textContent = '×';
+      weg.setAttribute('aria-label', d.name + ' aus dem Paket nehmen');
+      weg.addEventListener('click', function(){ cb.checked = false; cb.dispatchEvent(new Event('change', { bubbles: true })); });
+      li.appendChild(img); li.appendChild(txt); li.appendChild(weg);
+      liste.appendChild(li);
+    });
+    leer.hidden = gewaehlt.length > 0;
+    var n = parseInt(stueck.value, 10);
+    menge.hidden = !(n > 0);
+    if(n > 0){ menge.innerHTML = ''; menge.append('× ', Object.assign(document.createElement('strong'), { textContent: n }), n === 1 ? ' Paket' : ' Pakete'); }
+    hinweise.textContent = '';
+    gewaehlt.forEach(function(cb){
+      var d = info(cb);
+      if(d.min && n > 0 && n < d.min){
+        var li = document.createElement('li');
+        li.textContent = d.name + ' gibt es ab ' + d.min + ' Stück – wir finden gemeinsam eine Lösung.';
+        hinweise.appendChild(li);
+      }
+    });
+    /* Knöpfe + Kacheln oben */
+    knoepfe.forEach(function(k){
+      var cb = document.getElementById(k.dataset.wahl);
+      var an = !!(cb && cb.checked);
+      k.setAttribute('aria-pressed', String(an));
+      k.querySelector('.xins__text').textContent = an ? 'Im Paket' : 'Ins Paket';
+      var gabe = k.closest('.xgabe'); if(gabe) gabe.classList.toggle('ist-gewaehlt', an);
+    });
+    /* Pille */
+    var zahl = gewaehlt.length;
+    pilleZahl.textContent = zahl;
+    pille.hidden = false;
+    pille.classList.toggle('ist-weg', zahl === 0 || formSichtbar);
+    if(zahl > letzteZahl){ pille.classList.remove('ist-plopp'); void pille.offsetWidth; pille.classList.add('ist-plopp'); }
+    letzteZahl = zahl;
+  }
+
+  knoepfe.forEach(function(k){
+    k.addEventListener('click', function(){
+      var cb = document.getElementById(k.dataset.wahl);
+      if(!cb) return;
+      cb.checked = !cb.checked;
+      aktualisieren();
+    });
+  });
+  form.addEventListener('change', aktualisieren);
+  form.addEventListener('input', function(e){ if(e.target === stueck || e.target.closest('.xwahl__opt')) aktualisieren(); });
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(function(e){ formSichtbar = e[0].isIntersecting; aktualisieren(); }, { rootMargin: '0px 0px -30% 0px' })
+      .observe(form);
+  }
+  pille.classList.add('ist-weg');
+  aktualisieren();
+
+  /* Logo-Upload: Dateiname zeigen, Größe prüfen, Drag & Drop hervorheben */
+  var upload = form.querySelector('.xupload'), datei = form.querySelector('#x-logo'), anzeige = form.querySelector('.xupload__datei');
+  var MAX = 15 * 1024 * 1024;
+  datei.addEventListener('change', function(){
+    var f = datei.files && datei.files[0];
+    anzeige.hidden = !f;
+    if(!f) return;
+    if(f.size > MAX){
+      anzeige.textContent = '„' + f.name + '" ist größer als 15 MB – bitte per E-Mail an office@schriften-kortschak.at schicken.';
+      datei.value = '';
+      return;
+    }
+    anzeige.textContent = '✓ ' + f.name + ' (' + (f.size / 1048576).toFixed(1).replace('.', ',') + ' MB)';
+  });
+  ['dragenter','dragover'].forEach(function(t){ upload.addEventListener(t, function(){ upload.classList.add('ist-drueber'); }); });
+  ['dragleave','drop'].forEach(function(t){ upload.addEventListener(t, function(){ upload.classList.remove('ist-drueber'); }); });
+
+  /* Versand */
+  var fz = form.querySelector('input[name="fz"]');
+  function tokenHolen(){
+    if(fz.value) return Promise.resolve();
+    return fetch(form.action + '?token', { headers: { 'Accept': 'application/json' } })
+      .then(function(a){ return a.json(); }).then(function(d){ if(d && d.token) fz.value = d.token; })
+      .catch(function(){});
+  }
+  tokenHolen();
+  var status = form.querySelector('.form-status');
+  var knopf = form.querySelector('.xkorb__senden');
+  form.addEventListener('submit', function(ev){
+    ev.preventDefault();
+    status.hidden = true;
+    if(!boxen.some(function(b){ return b.checked; })){
+      status.textContent = 'Bitte wähle mindestens eine Verpackung oder einen Inhalt aus.';
+      status.hidden = false;
+      form.querySelector('.xbestell__gruppe').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+    if(!form.reportValidity()) return;
+    var alt = knopf.textContent;
+    knopf.disabled = true; knopf.textContent = 'Wird gesendet…';
+    tokenHolen().then(function(){
+      return fetch(form.action, { method: 'POST', body: new FormData(form),
+        headers: { 'Accept': 'application/json', 'X-Requested-With': 'fetch' } });
+    })
+    .then(function(a){ return a.json().catch(function(){ return null; }); })
+    .then(function(d){
+      if(d && d.ok){
+        var karte = document.createElement('div');
+        karte.className = 'form-erfolg'; karte.setAttribute('tabindex', '-1');
+        var t = document.createElement('strong'); t.textContent = 'Danke – dein Paket ist unterwegs!';
+        var p = document.createElement('p'); p.textContent = d.meldung;
+        karte.append(t, p);
+        form.replaceWith(karte);
+        karte.focus();
+        pille.classList.add('ist-weg');
+        knoepfe.forEach(function(k){ k.disabled = true; });
+        document.dispatchEvent(new CustomEvent('anfrage:erfolg'));
+        return;
+      }
+      fehler(d && d.meldung);
+    })
+    .catch(function(){ fehler(''); });
+    function fehler(m){
+      status.textContent = m || 'Gerade hat das Senden leider nicht geklappt. Bitte versuch es gleich noch einmal – oder schreib direkt an office@schriften-kortschak.at.';
+      status.hidden = false; knopf.disabled = false; knopf.textContent = alt;
+    }
+  });
+})();
+
 /* ===== Rucksack-Farben: Klick holt die Farbe nach vorn ===== */
 (function(){
   'use strict';
@@ -2361,6 +2860,11 @@ document.addEventListener('click', function(ev){
           img.classList.toggle('ist-vorn', img.dataset.farbe === k.dataset.zeige);
         });
         knoepfe.forEach(function(b){ b.setAttribute('aria-pressed', String(b === k)); });
+        /* Farbe gleich auch im Anfrageformular vormerken */
+        var feld = { p2: 'farbe_outdoor', p3: 'farbe_retro' }[gabe.id];
+        var radio = feld && [].slice.call(document.querySelectorAll('input[name="' + feld + '"]'))
+          .filter(function(r){ return r.value.toLowerCase() === k.dataset.zeige; })[0];
+        if(radio){ radio.checked = true; radio.form.dispatchEvent(new Event('change')); }
       });
     });
   });
