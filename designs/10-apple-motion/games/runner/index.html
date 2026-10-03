@@ -29,10 +29,25 @@
   }
   #rotate span { display: block; font-size: 96px; margin-bottom: 24px; }
   @media (orientation: portrait) { #rotate { display: flex; } }
+  /* Rechtliche Links (Impressum/Datenschutz) – klein in der Ecke, im
+     Vollbild und als Home-Bildschirm-App ausgeblendet, damit am Messestand
+     niemand versehentlich aus dem Spiel tippt. */
+  .rechtliches {
+    position: fixed; z-index: 11;
+    left: 50%; transform: translateX(-50%); bottom: max(4px, env(safe-area-inset-bottom));
+    display: flex; gap: 14px;
+    font: 500 12px/1 system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  }
+  .rechtliches a { color: rgba(255,255,255,.5); text-decoration: none; padding: 6px 2px; }
+  .rechtliches a:hover, .rechtliches a:focus-visible { color: #fff; text-decoration: underline; }
+  html:fullscreen .rechtliches { display: none; }
+  html:-webkit-full-screen .rechtliches { display: none; }
+  @media (display-mode: standalone), (display-mode: fullscreen) { .rechtliches { display: none; } }
 </style>
 </head>
 <body>
 <canvas id="c"></canvas>
+<nav class="rechtliches" aria-label="Rechtliches"><a href="/impressum/">Impressum</a><a href="/datenschutz/">Datenschutz</a></nav>
 <div id="rotate"><div><span>🔄</span>Bitte das Tablet drehen!</div></div>
 <script>
 'use strict';
