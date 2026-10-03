@@ -18,6 +18,10 @@ if (!is_file($configDatei)) {
 }
 require $configDatei;
 
+// Geschenkpaket-Anfragen (/xmas26/) gehen zusaetzlich an den Vertrieb –
+// eigene Mail mit gleichem Inhalt und Logo-Anhang (Reply-To = Kunde).
+const GESCHENKPAKETE_ZUSATZ_EMPFAENGER = ['vertrieb@schriften-kortschak.at'];
+
 // Token-Ausgabe: GET /api/anfrage.php?token
 // Das Formular-JS holt sich beim Laden einen signierten Zeitstempel und
 // schickt ihn beim Absenden mit (Feld "fz"). Ein Token ist erst nach ein
@@ -250,6 +254,17 @@ try {
 } catch (Throwable $t) {
     error_log('[anfrage.php] Versand an Buero fehlgeschlagen: ' . $t->getMessage());
     antwort(false, 'Ihre Anfrage konnte gerade nicht übermittelt werden. Bitte versuchen Sie es später noch einmal — oder schreiben Sie direkt an ' . MAIL_EMPFAENGER . '.', 502);
+}
+
+if ($istPaket) {
+    foreach (GESCHENKPAKETE_ZUSATZ_EMPFAENGER as $zusatz) {
+        try {
+            mail_senden($zusatz, 'Kortschak Vertrieb', $betreff, $mailBuero, $textBuero, [$email, $name], $anhang);
+        } catch (Throwable $t) {
+            // Das Buero hat die Anfrage – eine fehlende Kopie dem Kunden nicht anlasten.
+            error_log('[anfrage.php] Kopie an ' . $zusatz . ' fehlgeschlagen: ' . $t->getMessage());
+        }
+    }
 }
 
 if (!$mitLink) {
