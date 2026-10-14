@@ -1,7 +1,8 @@
 <?php
 // Formular-Backend der Kortschak-Website.
 // Nimmt drei Formulare entgegen (Startseite "kontakt", Unterseite
-// "social-media", Aktionsseite /xmas26/ "geschenkpakete"), verschickt zwei
+// "social-media", Aktionsseite /xmas26/ "geschenkpakete") plus die
+// Newsletter-Anmeldung im Footer ("newsletter"). Anfragen verschicken zwei
 // Mails: Benachrichtigung an das Buero (Reply-To = Kunde, beim
 // Geschenkpaket-Formular optional mit Logo-Datei im Anhang) und eine
 // Bestaetigung an den Kunden (immer ohne Anhang).
@@ -22,6 +23,13 @@ require $configDatei;
 // eigene Mail mit gleichem Inhalt und Logo-Anhang (Reply-To = Kunde).
 const GESCHENKPAKETE_ZUSATZ_EMPFAENGER = ['vertrieb@schriften-kortschak.at'];
 
+// Newsletter: Listmonk (Projekt ~/Projekte/Newsletter). Die oeffentliche
+// Anmelde-API braucht keinen Schluessel; Listmonk verschickt die Double-Opt-in-
+// Mail selbst, erst nach dem Klick darauf ist die Adresse in der Liste.
+const NEWSLETTER_API   = 'https://newsletter.kortschak.online/api/public/subscription';
+const NEWSLETTER_LISTE = '67ab8356-f8cd-4a43-a8b6-f023c282340f';   // „Kortschak Newsletter“
+const NEWSLETTER_DANKE = 'Fast geschafft! Bitte bestätigen Sie die Anmeldung über den Link in der E-Mail, die gerade zu Ihnen unterwegs ist.';
+
 // Token-Ausgabe: GET /api/anfrage.php?token
 // Das Formular-JS holt sich beim Laden einen signierten Zeitstempel und
 // schickt ihn beim Absenden mit (Feld "fz"). Ein Token ist erst nach ein
@@ -41,26 +49,33 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
 // ---------------------------------------------------------------- Eingaben
 
 $formular = feld('formular');
-if (!in_array($formular, ['kontakt', 'social-media', 'geschenkpakete'], true)) {
+if (!in_array($formular, ['kontakt', 'social-media', 'geschenkpakete', 'newsletter'], true)) {
     antwort(false, 'Unbekanntes Formular.', 400);
 }
+
+$istNewsletter = $formular === 'newsletter';
 
 // Honeypot: Feld ist fuer Menschen unsichtbar. Ausgefuellt = Bot.
 // Bewusst "Erfolg" melden, damit der Bot nichts lernt.
 if (feld('webseite') !== '') {
-    antwort(true, 'Vielen Dank! Ihre Anfrage ist bei uns angekommen.');
+    antwort(true, $istNewsletter ? NEWSLETTER_DANKE : 'Vielen Dank! Ihre Anfrage ist bei uns angekommen.');
 }
 
 $name       = feld('name', 120);
 $email      = feld('email', 190);
 $nachricht  = mehrzeilig('nachricht', 8000);
 $datenschutz = ($_POST['datenschutz'] ?? '') !== '';
+// Haekchen "Newsletter abonnieren" in den Anfrage-Formularen
+$newsletterAuch = ($_POST['newsletter'] ?? '') !== '';
 
 $fehler = [];
-if ($name === '')      { $fehler[] = 'Bitte geben Sie Ihren Namen an.'; }
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) { $fehler[] = 'Bitte geben Sie eine gültige E-Mail-Adresse an.'; }
-if ($nachricht === '' && $formular !== 'geschenkpakete') { $fehler[] = 'Bitte schreiben Sie uns eine Nachricht.'; }
-if (!$datenschutz)     { $fehler[] = 'Bitte bestätigen Sie die Datenschutzerklärung.'; }
+if (!$istNewsletter) {
+    // Footer-Anmeldung: nur E-Mail; Einwilligung = Hinweistext + Double-Opt-in
+    if ($name === '')      { array_unshift($fehler, 'Bitte geben Sie Ihren Namen an.'); }
+    if ($nachricht === '' && $formular !== 'geschenkpakete') { $fehler[] = 'Bitte schreiben Sie uns eine Nachricht.'; }
+    if (!$datenschutz)     { $fehler[] = 'Bitte bestätigen Sie die Datenschutzerklärung.'; }
+}
 
 $zeilen = [];   // Label/Wert-Paare fuer die Mail an das Buero
 $zeilen[] = ['Name', $name];
@@ -148,7 +163,7 @@ if ($formular === 'geschenkpakete') {
     }
     if ($leistungen) { $zeilen[] = ['Anfrage zu', implode(', ', $leistungen)]; }
     $betreffThema = $leistungen ? $leistungen[0] . (count($leistungen) > 1 ? ' u. a.' : '') : '';
-} else {
+} elseif ($formular === 'social-media') {
     $unternehmen = feld('unternehmen', 160);
     $funktion    = feld('funktion', 120);
     $telefon     = feld('telefon', 60);
@@ -191,6 +206,15 @@ if (!token_gueltig(feld('fz', 200))) {
 
 if (MAIL_TRANSPORT !== 'log' && !rate_limit_ok()) {
     antwort(false, 'Es wurden gerade sehr viele Anfragen gesendet. Bitte versuchen Sie es in einer Stunde noch einmal — oder schreiben Sie direkt an ' . MAIL_EMPFAENGER . '.', 429);
+}
+
+// ------------------------------------------------------ Newsletter (Footer)
+
+if ($istNewsletter) {
+    if (!newsletter_anmelden($email, $name)) {
+        antwort(false, 'Die Anmeldung hat gerade nicht geklappt. Bitte versuchen Sie es später noch einmal.', 502);
+    }
+    antwort(true, NEWSLETTER_DANKE);
 }
 
 // -------------------------------------------------------------- Mails bauen
@@ -276,6 +300,11 @@ if (!$mitLink) {
     }
 }
 
+// Newsletter-Haekchen: Anfrage ist schon durch, ein Fehler hier bleibt still
+if ($newsletterAuch) {
+    newsletter_anmelden($email, $name);
+}
+
 antwort(true, $istPaket
     ? 'Danke, ' . $vorname . '! Deine Anfrage ist unterwegs — eine Bestätigung ist auf dem Weg in dein Postfach. Wir melden uns mit deinem Angebot.'
     : 'Vielen Dank, ' . $vorname . '! Ihre Anfrage ist unterwegs — eine Bestätigung ist auf dem Weg in Ihr Postfach.');
@@ -283,6 +312,36 @@ antwort(true, $istPaket
 // ======================================================================
 // Hilfsfunktionen
 // ======================================================================
+
+/**
+ * Traegt die Adresse ueber die oeffentliche Listmonk-API ein. Listmonk schickt
+ * die Bestaetigungsmail (Double-Opt-in) und meldet bei bekannten Adressen
+ * ebenfalls Erfolg — es verraet also nicht, wer schon abonniert hat.
+ */
+function newsletter_anmelden(string $email, string $name): bool {
+    if (MAIL_TRANSPORT === 'log') {   // lokale Entwicklung: nichts eintragen
+        error_log('[anfrage.php] Newsletter-Anmeldung (nur Log): ' . $email);
+        return true;
+    }
+    $daten = ['email' => $email, 'list_uuids' => [NEWSLETTER_LISTE]];
+    if ($name !== '') { $daten['name'] = $name; }
+    $ch = curl_init(NEWSLETTER_API);
+    curl_setopt_array($ch, [
+        CURLOPT_POST           => true,
+        CURLOPT_POSTFIELDS     => json_encode($daten, JSON_UNESCAPED_UNICODE),
+        CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT        => 10,
+    ]);
+    $antwort = curl_exec($ch);
+    $status  = (int)curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+    curl_close($ch);
+    if ($status !== 200) {
+        error_log('[anfrage.php] Newsletter-Anmeldung fehlgeschlagen (' . $status . '): ' . mb_substr((string)$antwort, 0, 200));
+        return false;
+    }
+    return true;
+}
 
 function feld(string $name, int $max = 200): string {
     $wert = $_POST[$name] ?? '';

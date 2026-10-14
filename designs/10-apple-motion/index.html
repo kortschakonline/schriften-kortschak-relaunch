@@ -1513,6 +1513,7 @@
     :root:not([data-theme]) .footer__partner img{filter:brightness(0) invert(1);}
   }
 </style>
+<link rel="stylesheet" href="/assets/css/newsletter.css">
 </head>
 <body>
 
@@ -2304,6 +2305,10 @@
             <input type="checkbox" id="datenschutz" name="datenschutz" required>
             <span>Ich habe die <a href="/datenschutz/">Datenschutzerklärung</a> gelesen und stimme der Verarbeitung meiner Daten zur Bearbeitung der Anfrage zu. <span class="req" aria-hidden="true">*</span></span>
           </label>
+          <label class="check" for="newsletter">
+            <input type="checkbox" id="newsletter" name="newsletter" value="1">
+            <span>Ja, ich möchte den Kortschak-Newsletter mit Aktionen und Neuheiten erhalten (Bestätigung per E-Mail, Abmeldung jederzeit).</span>
+          </label>
           <p class="form-status" role="status" aria-live="polite" hidden></p>
           <button type="submit" class="btn btn--primary">Anfrage senden</button>
         </form>
@@ -2325,6 +2330,18 @@
           <a href="mailto:office@schriften-kortschak.at">office@schriften-kortschak.at</a>
         </address>
         <p class="footer__claim">Wir machen Unternehmen sichtbar – von der Folienbeschriftung bis zum Werbeschild.<br>Kreation. Klarheit. Fokus.</p>
+        <form class="footer-nl" action="/api/anfrage.php" method="post" data-newsletter>
+          <input type="hidden" name="formular" value="newsletter">
+          <input type="hidden" name="fz" value="">
+          <div class="hp-feld" aria-hidden="true"><label>Webseite <input type="text" name="webseite" tabindex="-1" autocomplete="off"></label></div>
+          <label class="footer-nl__titel" for="footer-nl-email">Newsletter</label>
+          <div class="footer-nl__zeile">
+            <input id="footer-nl-email" type="email" name="email" required autocomplete="email" placeholder="Ihre E-Mail-Adresse">
+            <button type="submit">Anmelden</button>
+          </div>
+          <p class="footer-nl__hinweis">Aktionen und Neuheiten aus der Werkstatt, ein paar Mal im Jahr. Bestätigung per E-Mail, Abmeldung jederzeit. <a href="/datenschutz/#newsletter">Datenschutz</a></p>
+          <p class="footer-nl__status" role="status" aria-live="polite"></p>
+        </form>
       </div>
       <nav aria-label="Footer Leistungen">
         <h3>Leistungen</h3>
@@ -3060,5 +3077,6 @@ if(zeitTrack && !reduce && 'IntersectionObserver' in window){
   });
 })();
 </script>
+<script src="/assets/js/newsletter.js" defer></script>
 </body>
 </html>

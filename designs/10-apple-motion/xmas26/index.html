@@ -1417,6 +1417,7 @@
   .xhero + .crumbs{padding-top:var(--space-3);}
   .xgabe img,.xunterwegs img,.xformular img{height:auto;}
 </style>
+<link rel="stylesheet" href="/assets/css/newsletter.css">
 </head>
 <body>
 
@@ -2066,6 +2067,10 @@
               <input type="checkbox" id="x-ds" name="datenschutz" required>
               <span>Ich habe die <a href="/datenschutz/">Datenschutzerklärung</a> gelesen und stimme der Verarbeitung meiner Daten zur Bearbeitung der Anfrage zu. <span class="req" aria-hidden="true">*</span></span>
             </label>
+            <label class="check" for="x-nl">
+              <input type="checkbox" id="x-nl" name="newsletter" value="1">
+              <span>Ja, ich möchte den Kortschak-Newsletter mit Aktionen und Neuheiten bekommen (Bestätigung per E-Mail, Abmeldung jederzeit).</span>
+            </label>
           </fieldset>
         </div>
 
@@ -2142,6 +2147,18 @@
           <a href="mailto:office@schriften-kortschak.at">office@schriften-kortschak.at</a>
         </address>
         <p class="footer__claim">Wir machen Unternehmen sichtbar – von der Folienbeschriftung bis zum Werbeschild.<br>Kreation. Klarheit. Fokus.</p>
+        <form class="footer-nl" action="/api/anfrage.php" method="post" data-newsletter>
+          <input type="hidden" name="formular" value="newsletter">
+          <input type="hidden" name="fz" value="">
+          <div class="hp-feld" aria-hidden="true"><label>Webseite <input type="text" name="webseite" tabindex="-1" autocomplete="off"></label></div>
+          <label class="footer-nl__titel" for="footer-nl-email">Newsletter</label>
+          <div class="footer-nl__zeile">
+            <input id="footer-nl-email" type="email" name="email" required autocomplete="email" placeholder="Ihre E-Mail-Adresse">
+            <button type="submit">Anmelden</button>
+          </div>
+          <p class="footer-nl__hinweis">Aktionen und Neuheiten aus der Werkstatt, ein paar Mal im Jahr. Bestätigung per E-Mail, Abmeldung jederzeit. <a href="/datenschutz/#newsletter">Datenschutz</a></p>
+          <p class="footer-nl__status" role="status" aria-live="polite"></p>
+        </form>
       </div>
       <nav aria-label="Footer Leistungen">
         <h3>Leistungen</h3>
@@ -2951,5 +2968,6 @@ document.addEventListener('click', function(ev){
 })();
 </script>
 <script src="/assets/js/tracking-consent.js" defer></script>
+<script src="/assets/js/newsletter.js" defer></script>
 </body>
 </html>
