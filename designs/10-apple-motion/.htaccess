@@ -9,6 +9,19 @@ AddType image/avif .avif
 # funktioniert, aber pruef-assets.py meldet es. Sauber nachgeruestet:
 AddType application/javascript .js
 
+# Sicherheits-Header (14.10.2026, nach browser-qa-Check).
+# nosniff ist erst seit den AddType-Zeilen oben gefahrlos: am 14.10. lieferten
+# alle Endungen (avif, webp, jpg, png, svg, mp4, woff2, css, js, json, pdf)
+# den passenden Content-Type. Neue Dateitypen -> vorher pruef-assets.py laufen
+# lassen, sonst blockiert der Browser sie.
+# HSTS bewusst ohne includeSubDomains/preload — erst mal nur diese Domain.
+<IfModule mod_headers.c>
+  Header always set Strict-Transport-Security "max-age=31536000"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
 # ============================================================ Go-Live 28.08.2026
 # (Der fruehere Staging-noindex-Block fuer view.kortschak.online wurde am
 # 03.09.2026 entfernt — das Staging gibt es nicht mehr, einzige Domain ist

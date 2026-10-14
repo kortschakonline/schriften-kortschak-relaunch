@@ -9,11 +9,13 @@
   background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-pill, 980px);
 }
 .footer-nl__zeile input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
+/* Button bewusst nicht auf --accent: Weiß auf #FF3B3E (dunkel) bzw. #FF1C20
+   (hell) liegt unter WCAG-AA 4,5:1. #E0191D = 4,85:1, Hover #CC1418 = 5,7:1. */
 .footer-nl__zeile button {
   min-height: 44px; padding: 0 18px; border: 0; border-radius: var(--radius-pill, 980px);
-  font: inherit; font-size: .9rem; font-weight: 600; color: #fff; background: var(--accent); cursor: pointer;
+  font: inherit; font-size: .9rem; font-weight: 600; color: #fff; background: #E0191D; cursor: pointer;
 }
-.footer-nl__zeile button:hover { background: var(--accent-hover, var(--accent)); }
+.footer-nl__zeile button:hover { background: #CC1418; }
 .footer-nl__zeile button:disabled { opacity: .6; cursor: default; }
 .footer-nl__hinweis { margin: 8px 0 0; font-size: .75rem; line-height: 1.45; color: var(--text-2); }
 .footer-nl__hinweis a { color: inherit; text-decoration: underline; }
