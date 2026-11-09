@@ -80,6 +80,7 @@ schriften-kortschak/
    │  ├─ assets/              (Bilder, Video, Fonts, Iris-Sequenz; Fotos-Lama = Rohmaterial)
    │  ├─ leistungen/<slug>/index.html   (11 Leistungs-Unterseiten)
    │  ├─ impressum/ + datenschutz/
+   │  ├─ winter/              (Winter-Hero „Sichtbar“, Studie 16, noindex, live seit 09.11.2026 unter /winter/; Quellen + encode.sh in designs/16-winter-scroll/)
    │  └─ _archiv/, hero-c/, *.bak-*     (Arbeitsstände – nicht deployen, Abschnitt 5)
    ├─ 11-scroll-hero/ … 14-iris-hero/   (Hero-Studien, liegen live neben der Site)
    └─ _screenshots/          (Voll-Screenshots aller Entwürfe + Unterseiten)
