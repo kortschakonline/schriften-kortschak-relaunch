@@ -1,0 +1,3 @@
+{ "asset": "winter-sichtbar-video", "ext": "avif", "quelle": "video-1_sonnenaufgang-dolly.mp4 (Magnific, Seedance 2.5)",
+  "renditions": { "desktop": { "path": "desktop/", "frames": 144, "size": "1920x1072" },
+                  "mobile":  { "path": "mobile/",  "frames": 144, "size": "1280x714" } } }
