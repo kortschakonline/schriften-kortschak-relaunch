@@ -19,6 +19,7 @@
 <!-- Anton fürs Hero-Wort – SELBST GEHOSTET (kein Google-Fonts-Request,
      datenschutzrelevant: keine IP-Übermittlung an Drittserver) -->
 <link rel="preload" href="/assets/fonts/anton-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/winter/img/scheibe-1920.webp" as="image" media="(min-width:761px)">
 
 <!-- Lokales SEO -->
 <meta name="geo.region" content="AT-6">
@@ -75,6 +76,9 @@
      Basis = Design 06 (Kundenfavorit), plus:
      - Headlines deutlich größer und in Weight 800 (System-Stack/SF Pro
        bringt Bold–Black von Haus aus mit; Anton nur fürs Hero-Wort)
+     - WINTERZEIT (ab 09.11.2026): Hero = Winter-Hero „Sichtbar“ (Studie 16,
+       Assets unter /winter/). Der Iris-Hero unten ruht nur – Markup liegt in
+       designs/16-winter-scroll/hero-iris-markup.html.
      - Hero = Iris-Zoom (FINAL, Kundenentscheidung 19.8.2026, Entwurf 14):
        scrollgescrubbte AVIF-Sequenz (assets/seq/iris/) hinter dem
        Anton-„SICHTBAR." – Schwarz-Weiß -> Farbeinbruch -> Glühen mit
@@ -1512,6 +1516,88 @@
   @media (prefers-color-scheme: dark){
     :root:not([data-theme]) .footer__partner img{filter:brightness(0) invert(1);}
   }
+  /* ===== WINTER-HERO „Sichtbar“ (Studie 16, Winterzeit 2026/27) =====
+     Farben lokal auf der Section, damit Light/Dark der Seite nicht hineinwirkt. */
+  .winter{--text:#f5f6f7;--text-2:#c3c7ce;--nacht:#05070d;--nacht-2:#0b1220;
+    --display:'Anton',Impact,sans-serif;color:var(--text)}
+  /* ===== Bühne – Grundzustand = Schlussbild (ohne JS / reduced motion) ===== */
+  .winter{position:relative;background:var(--nacht);--p:1}
+  .winter__sticky{position:relative;min-height:100svh;overflow:hidden;
+    background:url('/winter/seq/poster-ende.jpg') 50% 50%/cover no-repeat var(--nacht)}
+  .winter__bild{position:absolute;inset:0}
+  .winter__bild canvas,.winter__schnee{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .winter__schnee{pointer-events:none}
+  .winter__schnee--vorne{z-index:3}
+
+  /* Scrims: Navigation oben, Claim unten lesbar über hellem Schnee */
+  .winter__scrim{position:absolute;inset:0;z-index:2;pointer-events:none;
+    background:linear-gradient(rgba(5,7,13,.55),transparent 16%),
+               linear-gradient(to top,rgba(5,7,13,calc(.8 * var(--claimT,1))),rgba(5,7,13,calc(.35 * var(--claimT,1))) 26%,transparent 46%)}
+
+  /* Scheibe: Kondenswasser (Magnific-Textur, Graustufen) + Milchschleier, taut mit --nebel ab */
+  .scheibe{position:absolute;inset:0;z-index:1;pointer-events:none;display:none;
+    background:rgba(150,166,188,calc(.14 * var(--nebel,0)))}
+  .scheibe::before{content:'';position:absolute;inset:-3%;
+    background:url('/winter/img/scheibe-1920.webp') 50% 50%/cover no-repeat;mix-blend-mode:screen;
+    opacity:calc(.62 * var(--nebel,0));transform:scale(calc(1 + .05 * var(--p)))}
+  @media (max-width:760px){.scheibe::before{background-image:url('/winter/img/scheibe-1100.webp')}}
+  .vignette{position:absolute;inset:0;z-index:1;pointer-events:none;display:none;opacity:var(--vig,0);
+    background:radial-gradient(ellipse min(58vw,80vh) min(52vh,72vw) at 50% 50%,rgba(5,7,13,0) 0%,rgba(5,7,13,.5) 42%,rgba(5,7,13,.96) 78%,#05070d 100%)}
+
+  /* Riesenschrift */
+  .gross{position:absolute;inset:0;z-index:2;pointer-events:none;display:none;font-size:var(--fs-eins,17vw)}
+  .gross__zeile{position:absolute;left:50%;top:50%;font-family:var(--display);font-weight:400;text-transform:uppercase;
+    line-height:.9;letter-spacing:0;white-space:nowrap;color:var(--text);will-change:transform,opacity}
+  .gross__zeile > span{display:inline-block}
+  .gross__wir{color:transparent;-webkit-text-stroke:max(1px,.012em) rgba(245,246,247,.9);
+    background:linear-gradient(to top,#f5f6f7 50%,rgba(245,246,247,0) 50%) 0 calc(var(--wf,0) * 100%)/100% 200% no-repeat;
+    -webkit-background-clip:text;background-clip:text;
+    transform:translate3d(calc(-50% + var(--wx,0) * 1vw),calc(var(--wy,-.5) * .9em),0);opacity:var(--wo,1)}
+  .gross__machen{transform:translate3d(calc(-50% + var(--mx,0) * 1vw),calc(-.5 * .9em + var(--my,0) * 1vh),0);opacity:var(--mo,1)}
+  .gross__machen > span{opacity:var(--a,0);filter:blur(calc((1 - var(--a,0)) * 14px));
+    transform:translate3d(0,calc((1 - var(--a,0)) * .25em),0) scale(calc(1 + (1 - var(--a,0)) * 1.6))}
+  .gross__sie{transform:translate3d(calc(-50% + var(--sx,0) * 1vw),calc(.5 * .9em + var(--sy,0) * 1vh),0);opacity:var(--seo,1);
+    clip-path:inset(-.1em -.2em -.2em -.2em)}
+  .gross__sie > span{transform:translate3d(0,calc((1 - var(--a,0)) * -115%),0) rotate(calc((1 - var(--a,0)) * -8deg))}
+
+  /* SICHTBAR: steigt aus dem Wald, unten durchsichtig, oben Silber */
+  .gross__sichtbar{font-size:var(--fs-sicht,22vw);line-height:1;
+    transform:translate(-50%,calc(-50% + var(--sy2,0) * 1vh)) scale(var(--ss,1));filter:blur(calc(var(--sb,0) * 1px)) drop-shadow(0 .02em .07em rgba(5,7,13,.28));opacity:var(--so,1)}
+  .gross__sichtbar .bu{display:inline-block;padding:.06em .01em}
+  .gross__sichtbar .bu > span{display:inline-block;color:transparent;
+    background:linear-gradient(to top,rgba(214,221,230,0) 4%,rgba(214,221,230,.35) 26%,rgba(226,231,238,.8) 52%,#eef1f5 74%,#fff 100%);
+    -webkit-background-clip:text;background-clip:text;
+    transform:translate3d(0,calc(var(--by,0) * 1%),0);opacity:var(--bo,1)}
+
+  /* Claim */
+  .winter__claim{position:absolute;left:50%;bottom:clamp(24px,6vh,64px);transform:translateX(-50%);
+    z-index:4;width:min(92vw,760px);text-align:center}
+  .winter__h1{font-family:var(--display);font-weight:400;text-transform:uppercase;line-height:.92;letter-spacing:0;
+    font-size:clamp(2.6rem,7vw,5.5rem);margin-bottom:.35em;text-wrap:balance}
+  .winter__claim .lead{font-size:clamp(1.0625rem,1.1vw + .6rem,1.3rem);color:#eceef2;max-width:46ch;margin-inline:auto;text-wrap:balance}
+  .winter__actions{display:flex;flex-wrap:wrap;gap:.75rem;justify-content:center;margin-top:1.25rem}
+  .winter__lade{position:absolute;left:50%;bottom:6vh;transform:translateX(-50%);z-index:4;
+    font-variant-numeric:tabular-nums;font-size:.8rem;letter-spacing:.14em;color:var(--text-2);
+    transition:opacity .6s var(--ease);pointer-events:none}
+  .winter__lade:empty{display:none}
+
+  /* ===== Live (Scroll-Modus) ===== */
+  .winter--live{--p:0;height:620vh}
+  .winter--live .winter__sticky{position:sticky;top:0;height:100svh;background:var(--nacht)}
+  .winter--live .winter__sticky.is-bereit{background:var(--nacht)}
+  .winter--live .winter__bild{filter:blur(calc(var(--nb,0) * 1px)) brightness(var(--hell,1));transform:scale(calc(1 + .04 * var(--nebel,0)))}
+  .winter--live .winter__bild.ist-klar{filter:none;transform:none}
+  .winter--live .gross,.winter--live .scheibe,.winter--live .vignette{display:block}
+  .winter--live .winter__h1{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;margin:0}
+  .winter--live .winter__claim{opacity:var(--claimT);transform:translate(-50%,calc((1 - var(--claimT)) * 28px));visibility:hidden}
+  .winter--live.is-zeigt .winter__claim{visibility:visible}
+  .winter--live .winter__scrim{--claimT:clamp(0,(var(--p) - .86) / .1,1)}
+  .winter--live .winter__claim{--claimT:clamp(0,(var(--p) - .9) / .08,1)}
+
+  .winter__claim .lead{color:#eceef2}
+  .winter__claim .btn--secondary{background:rgba(255,255,255,.12);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.4);
+    -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+  .winter__claim .btn--secondary:hover{background:rgba(255,255,255,.22);color:#fff}
 </style>
 <link rel="stylesheet" href="/assets/css/newsletter.css?v=20261014">
 </head>
@@ -1671,42 +1757,35 @@
 
 <main id="main">
 
-  <!-- ===== HERO B – Iris-Zoom (Entwurf 14): eine Iris kommt beim Scrollen
-       aus dem Dunkel – erst Schwarz-Weiß, dann bricht die Farbe ein, am
-       Ende glüht sie rot-orange und tritt zurück, während SICHTBAR.
-       kreisförmig aus der Pupille zündet und die Neon-Kontur angeht.
-       Klebende 100vh-Bühne über 420vh; --p (0..1) treibt Canvas-Scrub und
-       Ebenen. Ohne JS oder bei reduced-motion: Standbild, Wort fertig.
-       Debug: #foil=0.5 oder ?p=0.5 -->
-  <section class="heroB" aria-labelledby="hero-title">
-    <div class="heroB__sticky">
-      <div class="heroB__bg" aria-hidden="true">
-        <canvas class="heroB__canvas" id="heroB-canvas"></canvas>
-        <div class="heroB__glut" id="heroB-glut"></div>
-        <div class="heroB__korn"></div>
+  <!-- ===== WINTER-HERO „Sichtbar“ (Studie 16, Freigabe Anja 09.11.2026) =====
+       Ersetzt über die Winterzeit den Iris-Hero. Der Iris-Hero bleibt im CSS
+       und JS ruhend erhalten (sein Script bricht ab, wenn .heroB fehlt);
+       zurück im Frühling: diese Section gegen designs/16-winter-scroll/
+       hero-iris-markup.html tauschen. Assets liegen unter /winter/.
+       Debug: ?p=0.5 -->
+  <section class="winter" id="winter" aria-labelledby="hero-title">
+    <div class="winter__sticky" id="winter-sticky">
+      <div class="winter__bild" id="winter-bild"><canvas id="winter-canvas" aria-hidden="true"></canvas></div>
+      <canvas class="winter__schnee" id="schnee-hinten" aria-hidden="true"></canvas>
+      <div class="scheibe" aria-hidden="true"></div>
+      <div class="vignette" aria-hidden="true"></div>
+      <div class="gross" id="gross" aria-hidden="true">
+        <div class="gross__zeile gross__wir"><span>Wir</span></div>
+        <div class="gross__zeile gross__machen" id="machen">Machen</div>
+        <div class="gross__zeile gross__sie" id="sie">Sie</div>
+        <div class="gross__zeile gross__sichtbar" id="sichtbar">Sichtbar.</div>
       </div>
-      <div class="heroB__inner">
-        <p class="eyebrow heroB__eyebrow">Werbeagentur · Trofaiach · Seit 1958</p>
-        <h1 class="heroB__word" id="hero-title" aria-label="Wir machen Sie sichtbar.">
-          <span class="heroB__kicker">WIR MACHEN SIE</span>
-          <span class="heroB__big" id="heroB-big">
-            <span class="heroB__txt heroB__txt--umriss" aria-hidden="true">SICHTBAR.</span>
-            <span class="heroB__lage heroB__schein" id="heroB-schein" aria-hidden="true"><span class="heroB__txt heroB__txt--fuell">SICHTBAR.</span></span>
-            <span class="heroB__lage heroB__clip" id="heroB-clip" aria-hidden="true"><span class="heroB__txt heroB__txt--fuell">SICHTBAR.</span></span>
-            <span class="heroB__lage heroB__neon" id="heroB-neon" aria-hidden="true"><span class="heroB__txt heroB__txt--neon">SICHTBAR.</span></span>
-          </span>
-        </h1>
-        <div class="heroB__claim">
-          <p class="lead">Werbetechnik, Grafik und Montage aus einer Hand – vom kleinsten Aufkleber bis zur Vollfolierung, vom Logo bis zur fertigen Website.</p>
-          <div class="hero__actions">
-            <a class="btn btn--primary" href="#leistungen">Leistungen entdecken</a>
-            <a class="btn btn--secondary" href="#kontakt">Angebot anfragen</a>
-          </div>
-          <p class="hero__meta">Eigene Grafik · Eigene Fertigung · Eigene Montage-Crew</p>
+      <div class="winter__scrim" aria-hidden="true"></div>
+      <canvas class="winter__schnee winter__schnee--vorne" id="schnee-vorne" aria-hidden="true"></canvas>
+      <div class="winter__claim">
+        <h1 class="winter__h1" id="hero-title">Wir machen Sie sichtbar.</h1>
+        <p class="lead">Werbetechnik, Grafik und Montage aus einer Hand – vom kleinsten Aufkleber bis zur Vollfolierung, vom Logo bis zur fertigen Website.</p>
+        <div class="winter__actions">
+          <a class="btn btn--primary" href="/#leistungen">Leistungen entdecken</a>
+          <a class="btn btn--secondary" href="/#kontakt">Angebot anfragen</a>
         </div>
       </div>
-      <div class="heroB__lade" id="heroB-lade" aria-hidden="true"></div>
-      <div class="heroB__hint" aria-hidden="true">Scrollen<span class="heroB__hint-arrow">↓</span></div>
+      <div class="winter__lade" id="winter-lade" aria-hidden="true"></div>
     </div>
   </section>
 
@@ -2798,6 +2877,278 @@ if(zeitTrack && !reduce && 'IntersectionObserver' in window){
     sec.dataset.p = cur.toFixed(3);        /* QA-Hook */
     requestAnimationFrame(tick);
   }
+})();
+</script>
+<script>
+/* ===== WINTER-HERO „Sichtbar“ – Scroll -> --p, Bildsequenz /winter/seq/, Riesenschrift, Schnee ===== */
+(function(){
+  'use strict';
+  var $ = function(id){ return document.getElementById(id); };
+  var sec = $('winter'), sticky = $('winter-sticky'), bild = $('winter-bild'), cv = $('winter-canvas');
+  var lade = $('winter-lade'), nav = $('navbar'), gross = $('gross'), sicht = $('sichtbar');
+  var cvH = $('schnee-hinten'), cvV = $('schnee-vorne');
+  if(!cv.getContext) return;
+  var ctx = cv.getContext('2d'), ctxH = cvH.getContext('2d'), ctxV = cvV.getContext('2d');
+  var SEQ = '/winter/seq/';
+  var SEQ_ENDE = 0.9;              /* ab hier steht das Schlussbild */
+  var LOGO = { cx: .51, cy: .55, breite: .76 };  /* Logo im Schlussbild, Anteil der Bildbreite (Mobil-Ausschnitt) */
+
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var qp = new URLSearchParams(location.search).get('p');
+  var pFix = qp !== null ? Math.min(1, Math.max(0, parseFloat(qp) || 0)) : null;
+  var statisch = reduce && pFix === null;
+  if(statisch){ nav.classList.add('k-rot'); return; }   /* Grundzustand im CSS ist das Schlussbild */
+
+  var clamp01 = function(x){ return Math.min(1, Math.max(0, x)); };
+  var seg = function(p, a, b){ return clamp01((p - a) / (b - a)); };
+  var easeOut = function(t){ return 1 - Math.pow(1 - t, 3); };
+  var easeIO = function(t){ return t * t * (3 - 2 * t); };
+  var lerp = function(a, b, t){ return a + (b - a) * t; };
+
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  var vw = 0, vh = 0, dirty = true, hochkant = false;
+  var mini = document.createElement('canvas'); mini.width = 160; mini.height = 90;
+  var miniCtx = mini.getContext('2d');
+  var frames = [], nFrames = 0, basis = '', ext = 'avif', fehlschlag = false;
+
+  /* ---------- Riesenschrift: Wörter in Einzelbuchstaben, Größen einpassen ---------- */
+  function zerlegen(el){
+    var t = el.textContent, out = []; el.textContent = '';
+    for(var i = 0; i < t.length; i++){
+      var o = document.createElement('span'); o.className = 'bu';
+      var n = document.createElement('span'); n.textContent = t[i];
+      if(el === sicht){ o.appendChild(n); el.appendChild(o); out.push(n); }
+      else { el.appendChild(n); out.push(n); }
+    }
+    return out;
+  }
+  var bMachen = zerlegen($('machen')), bSie = zerlegen($('sie')), buchstaben = zerlegen(sicht);
+  var wirEl = gross.querySelector('.gross__wir');
+  /* Tiefe je Buchstabe: Reihenfolge und Nebel-Drift von SICHTBAR */
+  var TIEFE = [.15, .7, .35, 1, .5, .05, .85, .4, .6];
+  function einpassen(){
+    gross.style.setProperty('--fs-eins', '100px'); gross.style.setProperty('--fs-sicht', '100px');
+    var bM = $('machen').offsetWidth, bS = sicht.offsetWidth;
+    gross.style.setProperty('--fs-eins', Math.min(vw * (hochkant ? .88 : .62) / bM * 100, vh * (hochkant ? .2 : .27)).toFixed(1) + 'px');
+    gross.style.setProperty('--fs-sicht', Math.min(vw * .92 / bS * 100, vh * .42).toFixed(1) + 'px');
+  }
+
+  /* ---------- Schnee in zwei Tiefen ---------- */
+  var flocken = [];
+  function flockenBauen(){
+    flocken = [];
+    var dichte = (vw * vh) / (1440 * 900);
+    var nH = Math.round(150 * dichte), nV = Math.round(22 * dichte) + 6;
+    for(var i = 0; i < nH + nV; i++){
+      var vorne = i >= nH;
+      flocken.push({ vorne: vorne, x: Math.random(), y: Math.random(),
+        r: vorne ? 2.2 + Math.random() * 3.6 : .5 + Math.random() * 1.4,
+        v: vorne ? .05 + Math.random() * .05 : .012 + Math.random() * .02,
+        par: vorne ? 1.6 + Math.random() : .25 + Math.random() * .35,
+        ph: Math.random() * 6.28, a: vorne ? .55 + Math.random() * .3 : .35 + Math.random() * .45 });
+    }
+  }
+  var sprite = document.createElement('canvas');
+  (function(){
+    sprite.width = sprite.height = 64; var c = sprite.getContext('2d');
+    var g = c.createRadialGradient(32, 32, 0, 32, 32, 32);
+    g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(.35, 'rgba(255,255,255,.7)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+    c.fillStyle = g; c.fillRect(0, 0, 64, 64);
+  })();
+  function schnee(now, p){
+    var t = now / 1000, W = cvH.width, H = cvH.height;
+    ctxH.clearRect(0, 0, W, H); ctxV.clearRect(0, 0, W, H);
+    /* Nachts dichter und kühler, im Sonnenlicht glitzernd, beim Logo leiser */
+    var sichtbar = lerp(.3, 1, seg(p, .06, .3)) * lerp(1, .55, seg(p, .82, 1));
+    for(var i = 0; i < flocken.length; i++){
+      var f = flocken[i], c = f.vorne ? ctxV : ctxH;
+      var y = (f.y + t * f.v - p * f.par) % 1; if(y < 0) y += 1;
+      var x = f.x + Math.sin(t * .6 + f.ph) * (f.vorne ? .012 : .006);
+      var r = f.r * dpr * (f.vorne ? 1 : 1);
+      c.globalAlpha = f.a * sichtbar;
+      c.drawImage(sprite, x * W - r * 2, (y * 1.1 - .05) * H - r * 2, r * 4, r * 4);
+    }
+    ctxH.globalAlpha = ctxV.globalAlpha = 1;
+  }
+
+  /* ---------- Bildsequenz ---------- */
+  function resize(){
+    vw = sticky.clientWidth || innerWidth; vh = sticky.clientHeight || innerHeight;
+    hochkant = vh > vw * 1.05;
+    [cv, cvH, cvV].forEach(function(c){ c.width = Math.round(vw * dpr); c.height = Math.round(vh * dpr); });
+    einpassen(); flockenBauen(); dirty = true;
+  }
+  addEventListener('resize', function(){
+    if(Math.abs((sticky.clientWidth || innerWidth) - vw) > 1 || Math.abs((sticky.clientHeight || innerHeight) - vh) > 120) resize();
+  });
+  function posterFallback(){
+    if(fehlschlag) return; fehlschlag = true;
+    sec.classList.remove('winter--live'); lade.textContent = '';
+    sec.style.setProperty('--p', 1);
+  }
+  function avifCheck(cb){
+    var probe = new Image();
+    probe.onload = function(){ cb(probe.naturalWidth > 0); };
+    probe.onerror = function(){ cb(false); };
+    probe.src = 'data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADybWV0YQAAAAAAAAAoaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAGxpYmF2aWYAAAAADnBpdG0AAAAAAAEAAAAeaWxvYwAAAABEAAABAAEAAAABAAABGgAAAB0AAAAoaWluZgAAAAAAAQAAABppbmZlAgAAAAABAABhdjAxQ29sb3IAAAAAamlwcnAAAABLaXBjbwAAABRpc3BlAAAAAAAAAAIAAAACAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgQ0MAAAAABNjb2xybmNseAACAAIAAYAAAAAXaXBtYQAAAAAAAAABAAEEAQKDBAAAACVtZGF0EgAKCBgANogQEAwgMg8f8D///8WfhwB8+ErK42A=';
+  }
+  function sequenzLaden(){
+    var mobil = Math.min(vw, vh) < 700;
+    fetch(SEQ + 'manifest.json').then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(mf){
+      var rend = mobil ? mf.renditions.mobile : mf.renditions.desktop;
+      basis = SEQ + rend.path; nFrames = rend.frames; ext = mf.ext; frames = new Array(nFrames);
+      var plan = [], i;
+      for(i = 0; i < nFrames; i += 8) plan.push(i);
+      for(i = 0; i < nFrames; i++) if(i % 8) plan.push(i);
+      var offen = 0, MAX = 6, zeiger = 0, geladen = 0, erfolge = 0, bereit = false;
+      function nachladen(){
+        while(offen < MAX && zeiger < plan.length){
+          (function(idx){
+            offen++;
+            var img = new Image(); img.decoding = 'async';
+            function fertig(ok){
+              offen--; geladen++;
+              if(ok){ erfolge++; frames[idx] = img; dirty = true; }
+              if(!frames[0] && !bereit) lade.textContent = Math.round(100 * geladen / plan.length) + ' %';
+              if(!bereit && frames[0]){ bereit = true; lade.style.opacity = 0; sticky.classList.add('is-bereit'); }
+              if(geladen >= plan.length && !erfolge) posterFallback();
+              nachladen();
+            }
+            img.onload = function(){ fertig(img.naturalWidth > 0); };
+            img.onerror = function(){ fertig(false); };
+            img.src = basis + String(idx + 1).padStart(4, '0') + '.' + ext;
+          })(plan[zeiger++]);
+        }
+      }
+      nachladen();
+    }).catch(posterFallback);
+  }
+  function frameBei(idx){
+    if(frames[idx]) return frames[idx];
+    for(var d = 1; d < nFrames; d++){
+      if(frames[idx - d]) return frames[idx - d];
+      if(frames[idx + d]) return frames[idx + d];
+    }
+    return null;
+  }
+  function zeichnen(p){
+    if(!nFrames) return;
+    var idx = Math.round(clamp01(p / SEQ_ENDE) * (nFrames - 1));
+    var img = frameBei(idx); if(!img) return;
+    var W = cv.width, H = cv.height, iw = img.naturalWidth, ih = img.naturalHeight;
+    var sCover = Math.max(W / iw, H / ih), s = sCover, cx = .5, cy = .5;
+    if(hochkant){
+      /* Hochformat: anfangs füllend, zum Logo hin so weit zurück, dass die ganze Wortmarke im Bild steht */
+      var k = easeIO(seg(p, .56, .86));
+      s = lerp(sCover, Math.min(sCover, W / (iw * LOGO.breite)), k);
+      cx = lerp(.5, LOGO.cx, k); cy = lerp(.5, LOGO.cy, k);
+    }
+    var zw = iw * s, zh = ih * s;
+    var dx = Math.min(0, Math.max(W - zw, W / 2 - zw * cx));
+    var dy = zh >= H ? Math.min(0, Math.max(H - zh, H / 2 - zh * cy)) : H * .4 - zh * cy;
+    if(zh < H){
+      /* Freie Flächen oben/unten: derselbe Frame, füllend und stark weich (Mini-Bild hochskaliert = billige Unschärfe) */
+      miniCtx.filter = 'blur(7px)';
+      miniCtx.drawImage(img, -16, -9, mini.width + 32, mini.height + 18);
+      miniCtx.filter = 'none';
+      var bw = iw * sCover, bh = ih * sCover, bx = (W - bw) / 2, by = (H - bh) / 2;
+      ctx.drawImage(mini, bx, by, bw, bh);
+      ctx.drawImage(img, dx, dy, zw, zh);
+      /* weiche Übergänge: Unschärfe in Streifen mit abnehmender Deckung über die Bildkanten legen */
+      var fe = Math.min(zh * .16, 70 * dpr), n = 10, sh = fe / n;
+      for(var k2 = 0; k2 < n; k2++){
+        ctx.globalAlpha = 1 - (k2 + .5) / n;
+        var y1 = dy + k2 * sh, y2 = dy + zh - (k2 + 1) * sh;
+        ctx.drawImage(mini, 0, (y1 - by) / bh * mini.height, mini.width, sh / bh * mini.height, bx, y1, bw, sh + 1);
+        ctx.drawImage(mini, 0, (y2 - by) / bh * mini.height, mini.width, sh / bh * mini.height, bx, y2, bw, sh + 1);
+      }
+      ctx.globalAlpha = 1;
+    } else ctx.drawImage(img, dx, dy, zw, zh);
+    for(var d = -2; d <= 6; d++){
+      var f = frames[idx + d];
+      if(f && !f.dekodiert && f.decode){ f.dekodiert = 1; f.decode().catch(function(){}); }
+    }
+  }
+
+  /* ---------- Choreografie ---------- */
+  function takt(p){
+    var st = sec.style;
+    /* Takt 1a: Scheibe taut auf, Vignette öffnet sich, das Bild wird hell und klar */
+    var nebel = 1 - easeIO(seg(p, .03, .3));
+    st.setProperty('--nebel', nebel.toFixed(3));
+    st.setProperty('--nb', (nebel * 16).toFixed(2));
+    st.setProperty('--hell', (.74 + .26 * (1 - nebel)).toFixed(3));
+    bild.classList.toggle('ist-klar', nebel < .005);
+    st.setProperty('--vig', (1 - easeIO(seg(p, .02, .26))).toFixed(3));
+
+    /* Takt 1b: WIR füllt sich, rückt nach oben; MACHEN aus der Tiefe, SIE fällt von oben */
+    st.setProperty('--wf', easeOut(seg(p, 0, .045)).toFixed(3));
+    st.setProperty('--wy', (-.5 - easeIO(seg(p, .035, .1))).toFixed(3));
+    var mitte = (bMachen.length - 1) / 2;
+    for(var m = 0; m < bMachen.length; m++){
+      var off = Math.abs(m - mitte) / mitte;
+      bMachen[m].style.setProperty('--a', easeOut(seg(p, .04 + off * .03, .095 + off * .03)).toFixed(3));
+    }
+    for(var k = 0; k < bSie.length; k++)
+      bSie[k].style.setProperty('--a', easeOut(seg(p, .085 + k * .012, .125 + k * .012)).toFixed(3));
+    /* Abgang mit Parallax: drei Zeilen, drei Tempi */
+    var d = easeIO(seg(p, .15, .24)), fo = 1 - easeIO(seg(p, .17, .235));
+    st.setProperty('--wx', (-d * 18).toFixed(2)); st.setProperty('--wo', fo.toFixed(3));
+    st.setProperty('--wy', (-.5 - easeIO(seg(p, .035, .1)) - d * 1.4).toFixed(3));
+    st.setProperty('--mx', (d * 6).toFixed(2)); st.setProperty('--my', (-d * 9).toFixed(2)); st.setProperty('--mo', fo.toFixed(3));
+    st.setProperty('--sx', (d * 30).toFixed(2)); st.setProperty('--sy', (d * 14).toFixed(2)); st.setProperty('--seo', fo.toFixed(3));
+
+    /* Takt 2: SICHTBAR. steigt wie Nebel aus dem Wald – Buchstaben nach Tiefe gestaffelt, dann Flug hindurch */
+    var steig = easeOut(seg(p, .22, .42));
+    st.setProperty('--sy2', ((1 - steig) * 26).toFixed(2));
+    for(var i = 0; i < buchstaben.length; i++){
+      var tf = TIEFE[i] || .5;
+      var auf = easeOut(seg(p, .22 + tf * .06, .38 + tf * .06));
+      var schweb = Math.sin(p * 40 + tf * 6) * (1 - auf) * 6;
+      buchstaben[i].style.setProperty('--by', ((1 - auf) * (35 + tf * 45) + schweb).toFixed(2));
+      buchstaben[i].style.setProperty('--bo', auf.toFixed(3));
+    }
+    var flug = seg(p, .48, .64);
+    st.setProperty('--ss', (1 + Math.pow(flug, 2.2) * 9).toFixed(3));
+    st.setProperty('--sb', ((1 - steig) * 10 + Math.pow(flug, 1.5) * 10).toFixed(2));
+    st.setProperty('--so', (p < .2 ? 0 : 1 - easeIO(seg(p, .54, .63))).toFixed(3));
+
+    sec.classList.toggle('is-zeigt', p > .89);
+    if(p >= .62){ nav.classList.add('k-rot'); nav.classList.add('k-plopp'); }
+    else if(p < .6){ nav.classList.remove('k-rot'); nav.classList.remove('k-plopp'); }
+  }
+
+  function target(){
+    if(pFix !== null) return pFix;
+    var denom = sec.offsetHeight - sticky.offsetHeight;
+    return denom > 0 ? clamp01(-sec.getBoundingClientRect().top / denom) : 0;
+  }
+  var cur = pFix !== null ? pFix : 0, lastP = -1, tPrev = 0;
+  function tick(now){
+    if(fehlschlag) return;
+    var t = target();
+    var dt = tPrev ? Math.min(50, now - tPrev) : 16.7; tPrev = now;
+    cur += (t - cur) * (1 - Math.pow(0.82, dt / 16.7));
+    if(Math.abs(t - cur) < 0.0004) cur = t;
+    if(cur !== lastP || dirty){
+      lastP = cur; dirty = false;
+      zeichnen(cur); takt(cur);
+      sec.style.setProperty('--p', cur.toFixed(4));
+    }
+    schnee(now, cur);
+    requestAnimationFrame(tick);
+  }
+
+  (function warte(){
+    if(innerWidth > 0 && innerHeight > 0){
+      sec.classList.add('winter--live');
+      resize();
+      takt(cur); sec.style.setProperty('--p', cur.toFixed(4));   /* Startzustand sofort, kein Aufblitzen vor dem ersten Frame */
+      if(document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ einpassen(); dirty = true; });
+      avifCheck(function(ok){ ok ? sequenzLaden() : posterFallback(); });
+      requestAnimationFrame(tick);
+    } else requestAnimationFrame(warte);
+  })();
 })();
 </script>
 <script>

@@ -1,0 +1,39 @@
+  <!-- ===== HERO B – Iris-Zoom (Entwurf 14): eine Iris kommt beim Scrollen
+       aus dem Dunkel – erst Schwarz-Weiß, dann bricht die Farbe ein, am
+       Ende glüht sie rot-orange und tritt zurück, während SICHTBAR.
+       kreisförmig aus der Pupille zündet und die Neon-Kontur angeht.
+       Klebende 100vh-Bühne über 420vh; --p (0..1) treibt Canvas-Scrub und
+       Ebenen. Ohne JS oder bei reduced-motion: Standbild, Wort fertig.
+       Debug: #foil=0.5 oder ?p=0.5 -->
+  <section class="heroB" aria-labelledby="hero-title">
+    <div class="heroB__sticky">
+      <div class="heroB__bg" aria-hidden="true">
+        <canvas class="heroB__canvas" id="heroB-canvas"></canvas>
+        <div class="heroB__glut" id="heroB-glut"></div>
+        <div class="heroB__korn"></div>
+      </div>
+      <div class="heroB__inner">
+        <p class="eyebrow heroB__eyebrow">Werbeagentur · Trofaiach · Seit 1958</p>
+        <h1 class="heroB__word" id="hero-title" aria-label="Wir machen Sie sichtbar.">
+          <span class="heroB__kicker">WIR MACHEN SIE</span>
+          <span class="heroB__big" id="heroB-big">
+            <span class="heroB__txt heroB__txt--umriss" aria-hidden="true">SICHTBAR.</span>
+            <span class="heroB__lage heroB__schein" id="heroB-schein" aria-hidden="true"><span class="heroB__txt heroB__txt--fuell">SICHTBAR.</span></span>
+            <span class="heroB__lage heroB__clip" id="heroB-clip" aria-hidden="true"><span class="heroB__txt heroB__txt--fuell">SICHTBAR.</span></span>
+            <span class="heroB__lage heroB__neon" id="heroB-neon" aria-hidden="true"><span class="heroB__txt heroB__txt--neon">SICHTBAR.</span></span>
+          </span>
+        </h1>
+        <div class="heroB__claim">
+          <p class="lead">Werbetechnik, Grafik und Montage aus einer Hand – vom kleinsten Aufkleber bis zur Vollfolierung, vom Logo bis zur fertigen Website.</p>
+          <div class="hero__actions">
+            <a class="btn btn--primary" href="#leistungen">Leistungen entdecken</a>
+            <a class="btn btn--secondary" href="#kontakt">Angebot anfragen</a>
+          </div>
+          <p class="hero__meta">Eigene Grafik · Eigene Fertigung · Eigene Montage-Crew</p>
+        </div>
+      </div>
+      <div class="heroB__lade" id="heroB-lade" aria-hidden="true"></div>
+      <div class="heroB__hint" aria-hidden="true">Scrollen<span class="heroB__hint-arrow">↓</span></div>
+    </div>
+  </section>
+

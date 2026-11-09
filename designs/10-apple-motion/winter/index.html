@@ -453,6 +453,7 @@
     if(innerWidth > 0 && innerHeight > 0){
       sec.classList.add('winter--live');
       resize();
+      takt(cur); sec.style.setProperty('--p', cur.toFixed(4));   /* Startzustand sofort, kein Aufblitzen vor dem ersten Frame */
       if(document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ einpassen(); dirty = true; });
       avifCheck(function(ok){ ok ? sequenzLaden() : posterFallback(); });
       requestAnimationFrame(tick);
