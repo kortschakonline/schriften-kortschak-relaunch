@@ -31,3 +31,8 @@ designs/10-apple-motion/api/anfrage-config.php
 
 # Umzugsunterlagen mit Auth-Code — nie ins oeffentliche Repo
 umzug/
+
+# Download-Originale der Weihnachtspullover-Materialseite (228 MB) — nicht versioniert.
+# Reproduzierbar: ~/Projekte/Trofaiach Webshop/Weihnachten-2026/website/bauen.py, danach den Ordner hierher kopieren.
+# ACHTUNG: muss vor jedem Deploy lokal vorhanden sein, sonst fehlen die Downloads live.
+designs/10-apple-motion/xmas-pullover/dl/

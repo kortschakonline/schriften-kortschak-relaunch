@@ -1,0 +1,7 @@
+# Interne Material-Seite: nicht in Suchmaschinen (zusaetzlich zum Meta-Tag).
+<IfModule mod_headers.c>
+  Header set X-Robots-Tag "noindex, nofollow"
+</IfModule>
+
+# Die Website sendet X-Content-Type-Options: nosniff - GLB braucht einen Typ.
+AddType model/gltf-binary .glb
